@@ -75,14 +75,6 @@ struct comm_chunk;
 struct exfile;
 
 
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#ifndef TRUE
-#define TRUE (!FALSE)
-#endif
-
 /* memory test */
 #ifdef MUNG
 #define malloc(n) do_malloc(n, __FILE__, __LINE__)
