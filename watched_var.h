@@ -56,22 +56,22 @@ typedef void (*notify_function)(enum watched_var name, VALUE new_value,
 /* set_watched_xxx(var, new_val):
  * set variable var to its new val, and notifies applicable clients
  */
-XT void set_watched_scalar(enum watched_var var, long new_val);
-XT void set_watched_real(enum watched_var, float new_val);
-XT void set_watched_pointer(enum watched_var, GENERIC new_val);
+extern void set_watched_scalar(enum watched_var var, long new_val);
+extern void set_watched_real(enum watched_var, float new_val);
+extern void set_watched_pointer(enum watched_var, GENERIC new_val);
 
 /* get_watched_xxx(var):
  * get the value of var
  */
-XT long get_watched_scalar(enum watched_var var);
-XT float get_watched_real(enum watched_var var);
-XT GENERIC get_watched_pointer(enum watched_var var);
+extern long get_watched_scalar(enum watched_var var);
+extern float get_watched_real(enum watched_var var);
+extern GENERIC get_watched_pointer(enum watched_var var);
 
 /* add_notify(f, var, context):
  * add a notify function to var. This function will be called as
  * f(var, value, context) each time the variable is set to a new value.
  * The function f must be ready to be called at add_notify() time.
  */
-XT void add_notify(notify_function f, enum watched_var var, void *context);
+extern void add_notify(notify_function f, enum watched_var var, void *context);
 
 
