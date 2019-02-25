@@ -60,8 +60,8 @@
 
 #define NUMBER_PREFS    (PREF_TRANSPOSE - BASE_PREFS + 1)
 
-XT VALUE get_pref P((int index));
-XT void set_pref P((int index, VALUE value));
-XT long get_pref_scalar P((int index));
-XT void set_pref_scalar P((int index, long value));
-XT struct tag *get_prefs P((void));
+XT VALUE get_pref (int index);
+XT void set_pref (int index, VALUE value);
+XT long get_pref_scalar (int index);
+XT void set_pref_scalar (int index, long value);
+XT struct tag *get_prefs (void);

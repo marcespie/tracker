@@ -28,10 +28,10 @@ struct tag
 #define TAG_JUMP 4      /* jump to <taglist> */
 #endif
 
-unsigned long tag_length P((struct tag *t));
-struct tag *tags_copy P((struct tag *t));
-struct tag *alloc_tags P((unsigned long l));
-struct tag *get_tag P((struct tag *t));
+unsigned long tag_length (struct tag *t);
+struct tag *tags_copy (struct tag *t);
+struct tag *alloc_tags (unsigned long l);
+struct tag *get_tag (struct tag *t);
 
 #ifdef KLUDGE_TAG
 

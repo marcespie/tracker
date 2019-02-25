@@ -216,14 +216,14 @@ XT struct tag *get_ui(void);
 /* notice(s, ...): important message for the user (terminal error maybe).
  * take extra pain to make it apparent even if run in background
  */
-XT void notice(char *fmt, ...);
-XT void vnotice(char *fmt, va_list al);
+XT void notice(const char *fmt, ...);
+XT void vnotice(const char *fmt, va_list al);
 
 /* status(s): some indication of the system current status... 
  * Used for fleeing error messages too. 
  * s = 0 is valid and indicates return to the default status.
  */
-XT void status(char *s);
+XT void status(const char *s);
 
 /* begin_info: open a logical information window.
  * returns 0 if the window couldn't be opened.
@@ -274,7 +274,7 @@ XT void display_time(unsigned long time_elapsed, unsigned long check);
  * ui implementors: Don't count on this pointer remaining valid AFTER the call,
  * make a copy if needed
  */
-XT void song_title(char *s);
+XT void song_title(const char *s);
 
 /* boolean checkbrk():
  * check whether a break occured and we should end right now.

@@ -5,7 +5,7 @@
 #include "tags.h"
 #include "autoinit.h"
 
-LOCAL void init_prefs P((void));
+LOCAL void init_prefs (void);
 
 LOCAL void (*INIT)(void) = init_prefs;
 

@@ -354,7 +354,7 @@ struct tag *get_ui(void)
          
 
 
-void notice(char *fmt, ...)
+void notice(const char *fmt, ...)
    {
 	va_list al;
 
@@ -363,14 +363,14 @@ void notice(char *fmt, ...)
 	va_end(al);
    }
 
-void vnotice(char *fmt, va_list al)
+void vnotice(const char *fmt, va_list al)
 	{
 	
 	vfprintf(stderr, fmt, al);
 	fputc('\n', stderr);
 	}
 
-void status(char *s)
+void status(const char *s)
    {
    if (run_in_fg())
       {
@@ -384,7 +384,7 @@ void status(char *s)
    }
 
 LOCAL char title[25];
-void song_title(char *s)
+void song_title(const char *s)
    {
 	int i;
 
