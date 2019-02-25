@@ -43,29 +43,24 @@
  * same value.
  */
 
-enum watched_var
-	{
+enum watched_var {
 	OVERSAMPLE, 
 	FREQUENCY,
 	NUMBER_WATCHED
-	};
+};
 
-typedef void (*notify_function)(enum watched_var name, VALUE new_value, 
+typedef void (*notify_function)(enum watched_var name, long new_value, 
 	void *context);
  
 /* set_watched_xxx(var, new_val):
  * set variable var to its new val, and notifies applicable clients
  */
 extern void set_watched_scalar(enum watched_var var, long new_val);
-extern void set_watched_real(enum watched_var, float new_val);
-extern void set_watched_pointer(enum watched_var, GENERIC new_val);
 
 /* get_watched_xxx(var):
  * get the value of var
  */
 extern long get_watched_scalar(enum watched_var var);
-extern float get_watched_real(enum watched_var var);
-extern GENERIC get_watched_pointer(enum watched_var var);
 
 /* add_notify(f, var, context):
  * add a notify function to var. This function will be called as

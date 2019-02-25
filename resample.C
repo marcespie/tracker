@@ -155,18 +155,18 @@ LOCAL void readjust_beat(void)
 	number_samples = resampling_frequency * num / tempo / den;
 	}
 
-LOCAL void notify_resample(enum watched_var var, VALUE n, void *nil)
+LOCAL void notify_resample(enum watched_var var, long n, void *nil)
 	{
 	switch(var)
 		{
 	case FREQUENCY:
-		resampling_frequency = n.scalar;
+		resampling_frequency = n;
 		build_step_table(oversample, resampling_frequency);
 		readjust_beat();
 		readjust_current_steps();
 		break;
 	case OVERSAMPLE:
-		oversample = n.scalar;
+		oversample = n;
 		if (resampling_frequency)
 			{
 			build_step_table(oversample, resampling_frequency);
