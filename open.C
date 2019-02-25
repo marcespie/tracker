@@ -11,7 +11,8 @@
 #include "open.h"
 
 /* forward declarations */
-LOCAL struct exfile *do_open(struct exfile *file, char *fname, char *path);
+LOCAL struct exfile *do_open(struct exfile *file, const char *fname, 
+    const char *path);
 
 
 
@@ -59,8 +60,8 @@ struct exfile {
 	size_t (*tell)(struct exfile *f);
 
 	/* kludge to reopen file */
-	char *name;
-	char *path;
+	const char *name;
+	const char *path;
 };
 
 /***
@@ -349,15 +350,15 @@ exist_file(const char *fname)
 
 /* note that find_file returns a STATIC value */
 LOCAL char *
-find_file(char *fname, char *path)
+find_file(const char *fname, const char *path)
 {
-	char *sep;
+	const char *sep;
 	static char buffer[MAXPATHLEN];
 	size_t len;
 
 	/* first, check the current directory */
 	if (exist_file(fname))
-		return fname;
+		return (char *)fname;
 	while(path) {
 		sep = strchr(path, ':');
 		if (sep)
@@ -383,49 +384,48 @@ find_file(char *fname, char *path)
 }
 
 /* opening a file is bigger than it seems (much bigger) */
-LOCAL struct exfile *do_open(struct exfile *file, char *fname, char *path)
-   {
+LOCAL struct exfile *
+do_open(struct exfile *file, const char *fname, const char *path)
+{
 #ifndef NO_PIPES
-   struct compression_method *comp;
+	struct compression_method *comp;
 
-   INIT_ONCE;
+	INIT_ONCE;
 #endif
-    
+
 	file->name = fname;
 	file->path = path;
 
-   fname = find_file(fname, path);
-   if (!fname)
-      goto not_opened;
+	fname = find_file(fname, path);
+	if (!fname)
+		goto not_opened;
 #ifndef NO_PIPES
-         /* check for extension */
-   for (comp = comp_list; comp; comp = comp->next)
-      if (check_ext(fname, comp->extension))
-         {
-         char *pipe;
-         
-         pipe = (char *)malloc(strlen(comp->command) + strlen(fname) + 25);
-         if (!pipe)
-            goto not_opened;
+	/* check for extension */
+	for (comp = comp_list; comp; comp = comp->next)
+		if (check_ext(fname, comp->extension)) {
+			char *pipe = (char *)malloc(strlen(comp->command) + 
+			    strlen(fname) + 25);
+			if (!pipe)
+				goto not_opened;
 
-         sprintf(pipe, comp->command, fname);
-         file->close = do_pclose;
-         file->handle = popen(pipe, READ_ONLY);
-         free(pipe);
-         if (file->handle)
-            return init_buffered(file);
-         else
-            goto not_opened;
-         }
+			sprintf(pipe, comp->command, fname);
+			file->close = do_pclose;
+			file->handle = popen(pipe, READ_ONLY);
+			free(pipe);
+			if (file->handle)
+				return init_buffered(file);
+			else
+				goto not_opened;
+		}
 #endif
-   file->close = do_fclose;
-   if ( (file->handle = fopen(fname, READ_ONLY)) )
-      return init_buffered(file);
+	file->close = do_fclose;
+	if ( (file->handle = fopen(fname, READ_ONLY)) )
+		return init_buffered(file);
 
 not_opened:
-   free(file);
-   return NULL;
-   }
+	free(file);
+	return NULL;
+}
 
 
 
@@ -455,7 +455,8 @@ void rewind_file(struct exfile *f)
 	(*f->rewind)(f);
 	}
 
-struct exfile *open_file(char *fname, char *mode, char *path)
+struct exfile *
+open_file(const char *fname, const char *mode, const char *path)
 /* right now, only mode "r" is supported */
 {
 	struct exfile *n;
@@ -470,12 +471,12 @@ struct exfile *open_file(char *fname, char *mode, char *path)
 }
 
 
-void close_file(struct exfile *file)
-   {
-	if (file)
-		{
-		(*file->close)(file);
-		free(file);
-		}
-   }
+void 
+close_file(struct exfile *file)
+{
+    if (file) {
+	    (*file->close)(file);
+	    free(file);
+    }
+}
 

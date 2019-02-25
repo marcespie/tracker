@@ -12,7 +12,8 @@
 /* handle = open_file(filename, mode, path):
  * transparently open a compressed file.
  */
-XT struct exfile *open_file(char *fname, char *fmode, char *path);
+XT struct exfile *open_file(const char *fname, const char *fmode, 
+	const char *path);
 
 /* close_file(handle):
  * close a file that was opened with open_file.
