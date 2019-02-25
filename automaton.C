@@ -19,7 +19,7 @@ LOCAL void clear_repeats(struct automaton *a, unsigned int from,
    unsigned int i;
 
    for (i = from; i <= upto; i++)
-      a->gonethrough[i] = FALSE;
+      a->gonethrough[i] = false;
    }
 
 /* set up the automaton so that I haven't got through any patterns
@@ -27,7 +27,7 @@ LOCAL void clear_repeats(struct automaton *a, unsigned int from,
 LOCAL void reset_repeats(struct automaton *a)
    {
    clear_repeats(a, 0, a->info->length);
-   a->gonethrough[a->info->length] = TRUE;
+   a->gonethrough[a->info->length] = true;
    }
 
 /* update the pattern to play in the automaton. Checks that the pattern 
@@ -47,7 +47,7 @@ LOCAL void set_pattern(struct automaton *a)
       reset_repeats(a);
       }
    else
-      a->gonethrough[a->pattern_num] = TRUE;
+      a->gonethrough[a->pattern_num] = true;
 
       /* there is a level of indirection in the format,
        * i.e., patterns can be repeated.

@@ -98,7 +98,7 @@ LOCAL void set_pattern(struct automaton *a)
 		error = ENDED;
 		return;
 		}
-	a->gonethrough[a->pattern_num] = TRUE;
+	a->gonethrough[a->pattern_num] = true;
 	a->pattern = a->info->patterns+a->pattern_num;
 	}
 

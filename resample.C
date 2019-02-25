@@ -284,7 +284,7 @@ void resample(void)
 	default:		/* standard oversampling code */
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
 		i = sampling = 0;
-		while(TRUE)
+		while(true)
          {
          for (channel = 0; channel < allocated; channel++)
 				{

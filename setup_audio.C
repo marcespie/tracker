@@ -14,7 +14,7 @@ LOCAL void init_audio(void);
 
 LOCAL void (*INIT)(void) = init_audio;
 
-LOCAL bool opened = FALSE;
+LOCAL bool opened = false;
 LOCAL unsigned long ask_freq, real_freq;
 LOCAL int stereo;
 
@@ -46,7 +46,7 @@ void setup_audio(unsigned long f, int s)
 			real_freq = 22050;
 			set_watched_scalar(FREQUENCY, real_freq);
 			}
-      opened = TRUE;
+      opened = true;
       }
    else
       {
@@ -76,6 +76,6 @@ LOCAL void do_close_audio(void)
       {
       close_audio();
       }
-   opened = FALSE;
+   opened = false;
    }
 

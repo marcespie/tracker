@@ -514,12 +514,12 @@ LOCAL void set_gliss_ctrl(struct channel *ch, struct event *e)
 	{
 	if (e->parameters)
 		{
-		ch->funk_glissando = TRUE;
+		ch->funk_glissando = true;
 /*		notice("Funk true");		*/
 		}
 	else
 		{
-		ch->funk_glissando = FALSE;
+		ch->funk_glissando = false;
 /*		notice("Funk false");	*/
 		}
 	}
@@ -528,9 +528,9 @@ LOCAL void set_sine_wave(struct event *e, struct sinusoid *s)
 	{
 	s->table = vibrato_table[e->parameters & 3];
 	if (e->parameters & 4)
-		s->reset = FALSE;
+		s->reset = false;
 	else
-		s->reset = TRUE;
+		s->reset = true;
 	}
 
 LOCAL void set_vibrato_wave(struct channel *ch, struct event *e)

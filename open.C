@@ -321,11 +321,11 @@ check_ext(const char *s, const char *ext)
 	ext_len = strlen(ext);
 	s_len = strlen(s);
 	if (s_len < ext_len)
-		return FALSE;
+		return false;
 	for (c = s + s_len - ext_len; *c; c++, ext++)
 	    if (tolower(*c) != tolower(*ext))
-		    return FALSE;
-	return TRUE;
+		    return false;
+	return true;
 }
 
 #endif
@@ -338,10 +338,10 @@ exist_file(const char *fname)
 	temp = fopen(fname, READ_ONLY);
 	if (temp) {
 		fclose(temp);
-		return TRUE;
+		return true;
 	}
 	else 
-		return FALSE;
+		return false;
 }
 
 #ifndef MAXPATHLEN

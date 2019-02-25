@@ -29,11 +29,6 @@
 #endif
 
 
-#ifndef TRUE
-#define TRUE 1
-#define FALSE 0
-#endif
-
 /* broken ANSI compilers */
 #ifndef EXIT_FAILURE
 #define EXIT_FAILURE 1

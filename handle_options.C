@@ -11,15 +11,6 @@
 #include "autoinit.h"
 #include "open.h"
 
-#ifdef VOLUME_CONTROL
-#ifdef __hpux
-#define true /* kludge to avoid typedef of boolean (name clash with macro) */
-#include <audio/Alib.h>
-#undef true
-AGainDB	volume = -20;
-char use_speaker = 0;
-#endif
-#endif
 
 XT void print_usage(void);
 XT struct option_set *port_options;
@@ -31,7 +22,7 @@ int stereo;
 int start;			/* parameters for st_play */
 int trandom;
 
-int loop = FALSE;	/* main automaton looping at end of argv ? */
+int loop = false;	/* main automaton looping at end of argv ? */
 
 LOCAL struct option opts[] =
 	{

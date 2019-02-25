@@ -59,13 +59,13 @@ LOCAL void init_channel(struct channel *ch, int side)
    ch->vib.depth = 0;
    ch->vib.rate = 0;
 	ch->vib.table = vibrato_table[0];
-	ch->vib.reset = FALSE;
+	ch->vib.reset = false;
 
 	ch->trem.offset = 0;
 	ch->trem.depth = 0;
 	ch->trem.rate = 0;
 	ch->trem.table = vibrato_table[0];
-	ch->trem.reset = FALSE;
+	ch->trem.reset = false;
 
    ch->slide = 0; 
 
@@ -75,7 +75,7 @@ LOCAL void init_channel(struct channel *ch, int side)
    ch->volumerate = 0;
 
 	
-	ch->funk_glissando = FALSE;
+	ch->funk_glissando = false;
 	ch->start_offset = 0;
    ch->adjust = do_nothing;
 		/* initialize loop to no loop, loop start at 0 

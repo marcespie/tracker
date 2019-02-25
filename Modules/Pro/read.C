@@ -198,11 +198,11 @@ LOCAL void setup_used_samples(struct song *song, unsigned char used[])
 	unsigned int i;
 
 	for (i = 1; i <= song->ninstr; i++)
-		used[i] = FALSE;
+		used[i] = false;
 	for (i = 0; i < song->info.plength * song->ntracks * song->info.npat; i++)
 			{
 			assert(song->info.data[i].sample_number < MAX_NUMBER_SAMPLES);
-			used[song->info.data[i].sample_number] = TRUE;
+			used[song->info.data[i].sample_number] = true;
 			}
 	}
 	
@@ -573,7 +573,7 @@ LOCAL struct song *error_song(struct song *song)
    return NULL;
    }
 
-/* bad_sig(f, song): read the signature on file f and returns TRUE if 
+/* bad_sig(f, song): read the signature on file f and returns true if 
  * it is not a known sig. Set some parameters of song as a side effect
  */
 LOCAL int bad_sig(struct exfile *f, struct song *song)
@@ -585,22 +585,22 @@ LOCAL int bad_sig(struct exfile *f, struct song *song)
    c = getc_file(f);
    d = getc_file(f);
    if (a == 'M' && b == '.' && c == 'K' && d == '.')
-      return FALSE;
+      return false;
    if (a == 'M' && b == '&' && c == 'K' && d == '!')
-      return FALSE;
+      return false;
    if (a == 'F' && b == 'L' && c == 'T' && d == '4')
-      return FALSE;
+      return false;
 	if (a == '6' && b == 'C' && c == 'H' && d == 'N')
 		{
 		song->ntracks = 6;
-		return FALSE;
+		return false;
 		}
 	if (a == '8' && b == 'C' && c == 'H' && d == 'N')
 		{
 		song->ntracks= 8;
-		return FALSE;
+		return false;
 		}
-   return TRUE;
+   return true;
    }
 
 /* s = read_song(f, type): try to read a song s of type NEW/OLD/NEW_NOCHECK

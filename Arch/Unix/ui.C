@@ -113,10 +113,10 @@ int run_in_fg(void)
 
 		/* this should work on every unix */
 	if (!isatty(fileno(stdin)) || !isatty(fileno(stdout)))
-		return FALSE;
+		return false;
 
 #ifdef OSK
-	return TRUE;
+	return true;
 #else
    /* real check for running in foreground */
 #ifdef USE_TERMIOS
@@ -124,22 +124,22 @@ int run_in_fg(void)
 	if (val == -1)
 		{
 		if (errno == ENOTTY)
-			return FALSE;
+			return false;
 		else
-			return TRUE;
+			return true;
 		}
 #else
    if (ioctl(fileno(stdin), TIOCGPGRP, &val))
-      return FALSE;
+      return false;
 #endif
 #ifdef IS_POSIX
    if (val == getpgrp())
 #else
    if (val == getpgrp(0))
 #endif
-      return TRUE;
+      return true;
    else
-      return FALSE;
+      return false;
 #endif
    }
 
@@ -207,10 +207,10 @@ LOCAL void switch_mode(int sig)
       _ss_opt(fileno(stdin), &zap);
 #endif
 
-      is_fg = TRUE;
+      is_fg = true;
       }
    else
-      is_fg = FALSE;
+      is_fg = false;
    }
 
 /* nonblocking_io():
@@ -563,5 +563,5 @@ void display_time(unsigned long time, unsigned long check)
 
 int checkbrk(void)
    {
-   return FALSE;
+   return false;
    }

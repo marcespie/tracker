@@ -86,8 +86,8 @@ struct song *song;
       }
    for (i = 0; i < 16; i++)
       {
-      use_command[i] = FALSE;
-      use_extended[i] = FALSE;
+      use_command[i] = false;
+      use_extended[i] = false;
       }
    for (i = 0; i < song->info.npat; i++)
       analyze_block(song->info.pblocks+i, i);

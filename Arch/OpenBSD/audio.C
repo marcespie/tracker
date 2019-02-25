@@ -204,7 +204,7 @@ LOCAL unsigned long idx;
 LOCAL int dsize;			/* current data size */
 LOCAL unsigned long samples_max;	/* number of samples in buffer */
 
-LOCAL int tsync = FALSE;
+LOCAL int tsync = false;
 #endif	/* DEFAULT_BUFFERS */
 
 #ifdef SEPARATE_BUFFERS
