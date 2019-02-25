@@ -440,15 +440,14 @@ char *new_scroll(void)
 	return scroll_line;
    }
    
-LOCAL void do_scroll(char *line)
-	{
-   if (run_in_fg())
-		{
-      puts((char *)line);
+LOCAL void do_scroll(void *line)
+{
+	if (run_in_fg()) {
+		puts((char *)line);
 		fflush(stdout);
-		}
+	}
 	free(line);
-   }
+}
 
 LOCAL void free_p(void *line)
 	{
@@ -466,7 +465,7 @@ void scroll(char *end)
 			p = (char *)malloc(t+1);
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
-			//sync_audio(do_scroll, free_p, p);
+			sync_audio(do_scroll, free_p, p);
 		}
 	}
 }
