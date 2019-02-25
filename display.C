@@ -178,89 +178,83 @@ LOCAL void disp_note_name(struct channel *ch, note note)
 	}
 
 /* all the various dump for the effects */
-LOCAL void disp_default(unsigned samp, unsigned para, note note, struct channel *ch)
-   {
+LOCAL void 
+disp_default(unsigned, unsigned, note note, struct channel *ch)
+{
 	disp_note_name(ch, note);
 	copy7(empty);
 	color(0);
-   }
+}
 
-LOCAL void disp_nothing(unsigned samp, unsigned para, note note, struct channel *ch)
-	{
+LOCAL void 
+disp_nothing(unsigned, unsigned, note note, struct channel *ch)
+{
 	disp_note_name(ch, note);
 	color(0);
 	num3(debug);
 	copy4("!!!!");
-	}
+}
 
-LOCAL void disp_speed(unsigned samp, unsigned para, note note, struct channel *ch)
-   {
+LOCAL void 
+disp_speed(unsigned, unsigned para, note note, struct channel *ch)
+{
 	disp_note_name(ch, note);
 	color(0);
-   if (para < 32)
-      {
+	if (para < 32) {
 		copy5("SPD  ");
-      num2(para);
-      }
-   else
-      {
+		num2(para);
+	} else {
 		copy4("spd%");
-      num3(para * 100/NORMAL_FINESPEED);
-      }
-   }
+		num3(para * 100/NORMAL_FINESPEED);
+	}
+}
 
 
-LOCAL void disp_old_speed(unsigned samp, unsigned para, note note, struct channel *ch)
-   {
+LOCAL void 
+disp_old_speed(unsigned, unsigned para, note note, struct channel *ch)
+{
 	disp_note_name(ch, note);
 	color(0);
 	copy5("SPD  ");
 	num2(para);
-   }
+}
 
 
-LOCAL void disp_portamento(unsigned samp, unsigned para, note note, struct channel *ch)
-   {
-	if (ch->samp->start)
-		{
+LOCAL void 
+disp_portamento(unsigned, unsigned para, note note, struct channel *ch)
+{
+	if (ch->samp->start) {
 		copy3("-->");
 		copy3(note2name(note));
-		if (para)
-			{
+		if (para) {
 			*base++ = '(';
 			num3(para);
 			*base++ = ')';
-			}
-		else
+		} else
 			copy5(empty);
-		}
-	else
+	} else
 		copy11(empty);
 	color(0);
-   }
+}
 
-LOCAL void disp_portaslide(unsigned samp, unsigned para, note note, struct channel *ch)
-   {
-	if (ch->samp->start)
-		{
+LOCAL void 
+disp_portaslide(unsigned, unsigned para, note note, struct channel *ch)
+{
+	if (ch->samp->start) {
 		copy3("-->");
 		copy3(note2name(note));
-		if (LOW(para))
-			{
+		if (LOW(para)) {
 			copy2(" -");
 			num2(LOW(para));
-			}
-		else
-			{
+		} else {
 			copy2(" +");
 			num2(HI(para));
-			}
-		*base++ = ' ';
 		}
-	else
+		*base++ = ' ';
+	} else
 		copy11(empty);
 	color(0);
-   }
+}
 
 LOCAL void disp_upslide(unsigned samp, unsigned para, note note, struct channel *ch)
    {
