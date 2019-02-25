@@ -43,94 +43,21 @@ color(unsigned int c)
 		base = write_color(base, c);
 }
 
-/* utility functions to avoid the overhead of strncpy */
-/*
-LOCAL void copy1(char *from)
-   {
-	*base++ = *from;
-   }
-*/
-   
-LOCAL void 
-copy2(const char *from)
+template<int N>
+void 
+copy(const char *from)
 {
 	*base++ = *from++;
+	copy<N-1>(from);
+}
+
+template<>
+void
+copy<1>(const char *from)
+{
 	*base++ = *from;
 }
 
-LOCAL void 
-copy3(const char *from)
-{
-	*base++ = *from++;
-	*base++ = *from++;
-	*base++ = *from;
-}
-
-LOCAL void 
-copy4(const char *from)
-{
-	*base++ = *from++;
-	*base++ = *from++;
-	*base++ = *from++;
-	*base++ = *from;
-}
-
-LOCAL void copy5(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
-
-LOCAL void copy6(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
-
-LOCAL void copy7(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
-
-LOCAL void copy8(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
-
-LOCAL void copy11(const char *from)
-	{
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-	}
 
 LOCAL void 
 stringcopy(const char *from)
@@ -174,11 +101,11 @@ LOCAL void disp_note_name(struct channel *ch, note note)
 	{
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
+		copy<3>(note2name(note));
 		*base++ = ' ';
 		}
 	else
-		copy4(empty);
+		copy<4>(empty);
 	}
 
 /* all the various dump for the effects */
@@ -186,7 +113,7 @@ LOCAL void
 disp_default(unsigned, unsigned, note note, struct channel *ch)
 {
 	disp_note_name(ch, note);
-	copy7(empty);
+	copy<7>(empty);
 	color(0);
 }
 
@@ -196,7 +123,7 @@ disp_nothing(unsigned, unsigned, note note, struct channel *ch)
 	disp_note_name(ch, note);
 	color(0);
 	num3(debug);
-	copy4("!!!!");
+	copy<4>("!!!!");
 }
 
 LOCAL void 
@@ -205,10 +132,10 @@ disp_speed(unsigned, unsigned para, note note, struct channel *ch)
 	disp_note_name(ch, note);
 	color(0);
 	if (para < 32) {
-		copy5("SPD  ");
+		copy<5>("SPD  ");
 		num2(para);
 	} else {
-		copy4("spd%");
+		copy<4>("spd%");
 		num3(para * 100/NORMAL_FINESPEED);
 	}
 }
@@ -219,7 +146,7 @@ disp_old_speed(unsigned, unsigned para, note note, struct channel *ch)
 {
 	disp_note_name(ch, note);
 	color(0);
-	copy5("SPD  ");
+	copy<5>("SPD  ");
 	num2(para);
 }
 
@@ -228,16 +155,16 @@ LOCAL void
 disp_portamento(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3("-->");
-		copy3(note2name(note));
+		copy<3>("-->");
+		copy<3>(note2name(note));
 		if (para) {
 			*base++ = '(';
 			num3(para);
 			*base++ = ')';
 		} else
-			copy5(empty);
+			copy<5>(empty);
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -245,18 +172,18 @@ LOCAL void
 disp_portaslide(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3("-->");
-		copy3(note2name(note));
+		copy<3>("-->");
+		copy<3>(note2name(note));
 		if (LOW(para)) {
-			copy2(" -");
+			copy<2>(" -");
 			num2(LOW(para));
 		} else {
-			copy2(" +");
+			copy<2>(" +");
 			num2(HI(para));
 		}
 		*base++ = ' ';
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -264,15 +191,15 @@ LOCAL void
 disp_upslide(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
-		copy5("    -");
+		copy<3>(note2name(note));
+		copy<5>("    -");
 		if (para)
 			num3(para);
 		else
-			copy3(empty);
+			copy<3>(empty);
 	}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -280,15 +207,15 @@ LOCAL void
 disp_downslide(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
-		copy5("    +");
+		copy<3>(note2name(note));
+		copy<5>("    +");
 		if (para)
 			num3(para);
 		else
-			copy3(empty);
+			copy<3>(empty);
 	}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -297,16 +224,16 @@ disp_vibrato(unsigned, unsigned para, note note, struct channel *ch)
 {
 	disp_note_name(ch, note);
 	if (para || ch->samp->start)
-		copy2("vb");
+		copy<2>("vb");
 	else
-		copy2(empty);
+		copy<2>(empty);
 	if (para) {
 		num2(LOW(para));
 		*base++ = '/';
 		num2(HI(para));
 	}
 	else
-		copy5(empty);
+		copy<5>(empty);
 	color(0);
 }
 
@@ -315,16 +242,16 @@ disp_tremolo(unsigned, unsigned para, note note, struct channel *ch)
 {
 	disp_note_name(ch, note);
 	if (para || ch->samp->start)
-		copy2("tr");
+		copy<2>("tr");
 	else
-		copy2(empty);
+		copy<2>(empty);
 	if (para) {
 		num2(LOW(para));
 		*base++ = '/';
 		num2(HI(para));
 	}
 	else
-		copy5(empty);
+		copy<5>(empty);
 	color(0);
 }
 
@@ -332,21 +259,21 @@ LOCAL void
 disp_arpeggio(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
+		copy<3>(note2name(note));
 		*base++=' ';
 		if (note != NO_NOTE) {
-			copy3(note2name(note + LOW(para)));
+			copy<3>(note2name(note + LOW(para)));
 			*base++=' ';
-			copy3(note2name(note + HI(para)));
+			copy<3>(note2name(note + HI(para)));
 		} else if (ch->note == NO_NOTE)
 			stringcopy("Arp err ");
 		else {
-			copy3(note2name(ch->note + LOW(para)));
+			copy<3>(note2name(ch->note + LOW(para)));
 			*base++=' ';
-			copy3(note2name(ch->note + HI(para)));
+			copy<3>(note2name(ch->note + HI(para)));
 		}  
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -355,14 +282,14 @@ LOCAL void
 disp_volume(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
+		copy<3>(note2name(note));
 		if (para) {
-			copy5(" vol ");
+			copy<5>(" vol ");
 			num3(para);
 		} else
-			copy8(" silent ");
+			copy<8>(" silent ");
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -370,8 +297,8 @@ LOCAL void
 disp_slidevol(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
-		copy5(" vol ");
+		copy<3>(note2name(note));
+		copy<5>(" vol ");
 		if (LOW(para)) {
 			*base++ = '-';
 			num2(LOW(para));
@@ -379,9 +306,9 @@ disp_slidevol(unsigned, unsigned para, note note, struct channel *ch)
 			*base++ = '+';
 			num2(HI(para));
 		} else
-			copy3(empty);
+			copy<3>(empty);
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -389,11 +316,11 @@ LOCAL void
 disp_smooth_upvolume(unsigned, unsigned para, note note, struct channel *ch)
 {
 	if (ch->samp->start) {
-		copy3(note2name(note));
-		copy5("   ++");
+		copy<3>(note2name(note));
+		copy<5>("   ++");
 		num3(para);
 	} else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
 }
 
@@ -402,12 +329,12 @@ LOCAL void disp_smooth_downvolume(unsigned samp, unsigned para, note note,
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5("   --");
+		copy<3>(note2name(note));
+		copy<5>("   --");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -416,12 +343,12 @@ LOCAL void disp_late_start(unsigned samp, unsigned para, note note, struct chann
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" lte ");
+		copy<3>(note2name(note));
+		copy<5>(" lte ");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -429,12 +356,12 @@ LOCAL void disp_retrig(unsigned samp, unsigned para, note note, struct channel *
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" rtg ");
+		copy<3>(note2name(note));
+		copy<5>(" rtg ");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -442,12 +369,12 @@ LOCAL void disp_note_cut(unsigned samp, unsigned para, note note, struct channel
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" cut ");
+		copy<3>(note2name(note));
+		copy<5>(" cut ");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -455,8 +382,8 @@ LOCAL void disp_offset(unsigned samp, unsigned para, note note, struct channel *
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy4(" off");
+		copy<3>(note2name(note));
+		copy<4>(" off");
 		if (ch->samp->length)
 			{
 			int percent;
@@ -464,14 +391,14 @@ LOCAL void disp_offset(unsigned samp, unsigned para, note note, struct channel *
 			if (percent <= 105)
 				num3(percent);
 			else
-				copy3("???");
+				copy<3>("???");
 			}
 		else
-			copy3(empty);
+			copy<3>(empty);
 		*base++ = '%';
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -482,11 +409,11 @@ LOCAL void disp_skip(unsigned samp, unsigned para, note note, struct channel *ch
 	color(0);
    if (para)
       {
-		copy4("skp ");
+		copy<4>("skp ");
       num3(para);
       }
    else
-		copy7("next   ");
+		copy<7>("next   ");
    }
 
 LOCAL void disp_loop(unsigned samp, unsigned para, note note, struct channel *ch)
@@ -494,10 +421,10 @@ LOCAL void disp_loop(unsigned samp, unsigned para, note note, struct channel *ch
 	disp_note_name(ch, note);
 	color(0);
    if (para == 0)
-      copy7("SETLOOP");
+      copy<7>("SETLOOP");
    else
       {
-		copy4("LOOP");
+		copy<4>("LOOP");
       num3(para+1);
       }
    }
@@ -506,8 +433,8 @@ LOCAL void disp_vibratoslide(unsigned samp, unsigned para, note note, struct cha
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" vibs");
+		copy<3>(note2name(note));
+		copy<5>(" vibs");
 		if (LOW(para))
 			{
 			*base++='-';
@@ -520,7 +447,7 @@ LOCAL void disp_vibratoslide(unsigned samp, unsigned para, note note, struct cha
 			}
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -528,7 +455,7 @@ LOCAL void disp_delay_pattern(unsigned samp, unsigned para, note note, struct ch
    {
 	disp_note_name(ch, note);
 	color(0);
-   copy4("DLAY");
+   copy<4>("DLAY");
    num3(para);
    }
 
@@ -537,12 +464,12 @@ LOCAL void disp_smooth_up(unsigned samp, unsigned para, note note, struct channe
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" sth-");
+		copy<3>(note2name(note));
+		copy<5>(" sth-");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -550,12 +477,12 @@ LOCAL void disp_smooth_down(unsigned samp, unsigned para, note note, struct chan
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy5(" sth+");
+		copy<3>(note2name(note));
+		copy<5>(" sth+");
 		num3(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
@@ -563,7 +490,7 @@ LOCAL void disp_fastskip(unsigned samp, unsigned para, note note, struct channel
    {
 	disp_note_name(ch, note);
 	color(0);
-   copy4(" ff ");
+   copy<4>(" ff ");
    num3(para);
    }
 
@@ -572,11 +499,11 @@ LOCAL void disp_invert_loop(unsigned samp, unsigned para, note note, struct chan
 	disp_note_name(ch, note);
 	if (para)
 		{
-		copy4("inv ");
+		copy<4>("inv ");
       num3(para);
 		}
 	else
-		copy7("inv off");
+		copy<7>("inv off");
 	color(0);
 	}
 
@@ -585,41 +512,41 @@ LOCAL void disp_change_finetune(unsigned samp, unsigned para, note note,
    {
 	if (ch->samp->start)
 		{
-		copy3(note2name(note));
-		copy6(" fine ");
+		copy<3>(note2name(note));
+		copy<6>(" fine ");
 		num2(para);
 		}
 	else
-		copy11(empty);
+		copy<11>(empty);
 	color(0);
    }
 
 LOCAL void disp_vibrato_wave(unsigned samp, unsigned para, note note, struct channel *ch)
 	{
 	disp_note_name(ch, note);
-	copy3("vb ");
+	copy<3>("vb ");
 	switch(para)
 		{
 	case 0:
-		copy4("sine");
+		copy<4>("sine");
 		break;
 	case 1:
-		copy4("sqre");
+		copy<4>("sqre");
 		break;
 	case 2:
-		copy4("ramp");
+		copy<4>("ramp");
 		break;
 	case 4:
-		copy4("SINE");
+		copy<4>("SINE");
 		break;
 	case 5:
-		copy4("SQRE");
+		copy<4>("SQRE");
 		break;
 	case 6:
-		copy4("RAMP");
+		copy<4>("RAMP");
 		break;
 	default:
-		copy4("????");
+		copy<4>("????");
 		}
 	color(0);
 	}
@@ -627,29 +554,29 @@ LOCAL void disp_vibrato_wave(unsigned samp, unsigned para, note note, struct cha
 LOCAL void disp_tremolo_wave(unsigned samp, unsigned para, note note, struct channel *ch)
 	{
 	disp_note_name(ch, note);
-	copy3("tr ");
+	copy<3>("tr ");
 	switch(para)
 		{
 	case 0:
-		copy4("sine");
+		copy<4>("sine");
 		break;
 	case 1:
-		copy4("sqre");
+		copy<4>("sqre");
 		break;
 	case 2:
-		copy4("ramp");
+		copy<4>("ramp");
 		break;
 	case 4:
-		copy4("SINE");
+		copy<4>("SINE");
 		break;
 	case 5:
-		copy4("SQRE");
+		copy<4>("SQRE");
 		break;
 	case 6:
-		copy4("RAMP");
+		copy<4>("RAMP");
 		break;
 	default:
-		copy4("????");
+		copy<4>("????");
 		}
 	color(0);
 	}
@@ -659,9 +586,9 @@ LOCAL void disp_gliss_ctrl(unsigned samp, unsigned para, note note, struct chann
 	{
 	disp_note_name(ch, note);
 	if (para)
-		copy6("gls on");
+		copy<6>("gls on");
 	else
-		copy6("gls off");
+		copy<6>("gls off");
 	}
 
 LOCAL void init_display(void)
