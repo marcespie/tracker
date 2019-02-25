@@ -29,7 +29,7 @@ LOCAL void (*INIT)(void) = create_notes_table;
  */
 LOCAL pitch pitch_table[NUMBER_NOTES+1][NUMBER_FINETUNES];
 
-LOCAL char *note_template = "C-C#D-D#E-F-F#G-G#A-A#B-";
+LOCAL const char *note_template = "C-C#D-D#E-F-F#G-G#A-A#B-";
 
 
 /* note = pitch2note(pitch): 
@@ -113,22 +113,22 @@ LOCAL void create_notes_table(void)
       }
     }
 
-char *note2name(note i)
-   {
-   static char name[4];
+const char *
+note2name(note i)
+{
+	static char name[4];
 
-	switch(i)
-		{
+	switch(i) {
 	case NO_NOTE:
 		return "   ";
 	default:
-      name[0] = note_template[(i+8)%12 * 2];
-      name[1] = note_template[(i+8)%12 * 2 +1];
-      name[2] = '0' + (i-4)/12;
+		name[0] = note_template[(i+8)%12 * 2];
+		name[1] = note_template[(i+8)%12 * 2 +1];
+		name[2] = '0' + (i-4)/12;
 		name[3] = 0;
-      return name;
-      }
-   }
+		return const_cast<const char *>(name);
+	}
+}
    
 pitch note2pitch(note note, finetune finetune)
 	{

@@ -21,8 +21,8 @@ typedef unsigned char  note;
 
 typedef unsigned char finetune;
 
-XT pitch note2pitch(note note, finetune finetune);
-XT note  pitch2note(pitch pitch);
-XT pitch round_pitch(pitch pitch, finetune finetune);
-XT char *note2name(note note);
+extern pitch note2pitch(note note, finetune finetune);
+extern note  pitch2note(pitch pitch);
+extern pitch round_pitch(pitch pitch, finetune finetune);
+extern const char *note2name(note note);
 

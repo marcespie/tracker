@@ -50,39 +50,29 @@ LOCAL void copy1(char *from)
    }
 */
    
-LOCAL void copy2(char *from)
+LOCAL void copy2(const char *from)
    {
    *base++ = *from++;
    *base++ = *from;
    }
 
-LOCAL void copy3(char *from)
+LOCAL void copy3(const char *from)
    {
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from;
    }
 
-LOCAL void copy4(char *from)
+LOCAL void copy4(const char *from)
    {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
-
-LOCAL void copy5(char *from)
-   {
-   *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from;
    }
 
-LOCAL void copy6(char *from)
+LOCAL void copy5(const char *from)
    {
-   *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
@@ -90,9 +80,8 @@ LOCAL void copy6(char *from)
    *base++ = *from;
    }
 
-LOCAL void copy7(char *from)
+LOCAL void copy6(const char *from)
    {
-   *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
@@ -101,9 +90,8 @@ LOCAL void copy7(char *from)
    *base++ = *from;
    }
 
-LOCAL void copy8(char *from)
+LOCAL void copy7(const char *from)
    {
-   *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
    *base++ = *from++;
@@ -113,7 +101,19 @@ LOCAL void copy8(char *from)
    *base++ = *from;
    }
 
-LOCAL void copy11(char *from)
+LOCAL void copy8(const char *from)
+   {
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from++;
+   *base++ = *from;
+   }
+
+LOCAL void copy11(const char *from)
 	{
    *base++ = *from++;
    *base++ = *from++;
@@ -128,7 +128,7 @@ LOCAL void copy11(char *from)
    *base++ = *from;
 	}
 
-LOCAL void stringcopy(char *from)
+LOCAL void stringcopy(const char *from)
    {
    while (*from)
       *base++ = *from++;
