@@ -36,11 +36,12 @@ char instname[] = { ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
-LOCAL void color(unsigned int c)
-	{
+LOCAL void 
+color(unsigned int c)
+{
 	if (get_pref_scalar(PREF_COLOR))
 		base = write_color(base, c);
-	}
+}
 
 /* utility functions to avoid the overhead of strncpy */
 /*
@@ -50,26 +51,29 @@ LOCAL void copy1(char *from)
    }
 */
    
-LOCAL void copy2(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from;
-   }
+LOCAL void 
+copy2(const char *from)
+{
+	*base++ = *from++;
+	*base++ = *from;
+}
 
-LOCAL void copy3(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
+LOCAL void 
+copy3(const char *from)
+{
+	*base++ = *from++;
+	*base++ = *from++;
+	*base++ = *from;
+}
 
-LOCAL void copy4(const char *from)
-   {
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from++;
-   *base++ = *from;
-   }
+LOCAL void 
+copy4(const char *from)
+{
+	*base++ = *from++;
+	*base++ = *from++;
+	*base++ = *from++;
+	*base++ = *from;
+}
 
 LOCAL void copy5(const char *from)
    {
