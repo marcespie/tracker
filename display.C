@@ -18,7 +18,7 @@ LOCAL void (*INIT)(void) = init_display;
 LOCAL char *base;
 
 /* lookup tables for speed */
-LOCAL char *num[] = {
+LOCAL const char *num[] = {
 " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9",
 "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -31,7 +31,7 @@ LOCAL char *num[] = {
 "90", "91", "92", "93", "94", "95", "96", "97", "98", "99",
 "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
 
-LOCAL char empty[]="                       ";
+LOCAL const char empty[]="                       ";
 char instname[] = { ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
@@ -128,37 +128,37 @@ LOCAL void copy11(const char *from)
    *base++ = *from;
 	}
 
-LOCAL void stringcopy(const char *from)
-   {
-   while (*from)
-      *base++ = *from++;
-   }
+LOCAL void 
+stringcopy(const char *from)
+{
+	while (*from)
+		*base++ = *from++;
+}
 
-LOCAL void num2(unsigned int n)
-   {
+LOCAL void 
+num2(unsigned int n)
+{
 	assert(n < 110);
-		{
-		char *v = num[n];
-		*base++ = *v++;
-		*base++ = *v;
-		}
-   }
 
-LOCAL void num3(unsigned int n)
-   {
-   char *v;
+	const char *v = num[n];
+	*base++ = *v++;
+	*base++ = *v;
+}
 
+LOCAL void 
+num3(unsigned int n)
+{
 	assert(n < 1000);
-   if (n >= 100)
-      *base++ = "0123456789"[n/100];
+	if (n >= 100)
+		*base++ = "0123456789"[n/100];
 	else
 		*base++ = ' ';
-   while (n > 109)
-      n -= 100;
-   v = num[n];
-   *base++ = *v++;
-   *base++ = *v;
-   }
+	while (n > 109)
+		n -= 100;
+	const char *v = num[n];
+	*base++ = *v++;
+	*base++ = *v;
+}
 
 typedef void (*disp_function)(unsigned samp, unsigned para, note note, 
 	struct channel *ch);
