@@ -1,0 +1,307 @@
+/* parse_options.c */
+
+/* stuff to put options into argc/argv form
+ * (and parse them in the future)
+ * not used yet...
+ */
+#include "defs.h"
+#include "parse_options.h"
+#include "extern.h"
+#include "autoinit.h"
+#include <ctype.h>
+
+
+#define LOOK_FOR_ARG 0			/* beginning of an argument, interspace */
+#define QUOTED_ARG 1				/* argument with quote, looking for corresponding
+                               * quote */
+#define IN_ARG 2              /* inside normal argument */
+
+int string2args(char *s, char *v[])
+	{
+	int j;
+	char c;
+	int mode;
+
+	mode = LOOK_FOR_ARG;
+	j = 0;
+
+	while (*s)
+		{
+		switch(mode)
+			{
+		case LOOK_FOR_ARG:
+			switch(*s)
+				{
+			case ' ': case '\t':
+				break;
+			case '\\':
+				if (v != NULL)
+					v[j] = s;
+				j++;
+				if (! *++s)			/* check for last char */
+					return j;
+				mode = IN_ARG;
+				break;
+			case '"': case '\'':
+				c = *s;
+				if (v != NULL)
+					v[j] = s+1;
+				j++;
+				mode = QUOTED_ARG;
+				break;
+			default:
+				if (v != NULL)
+					v[j] = s;
+				j++;
+				mode = IN_ARG;
+				break;
+				}
+			break;
+		case IN_ARG:
+			switch(*s)
+				{
+			case ' ': case '\t':
+				if (v != NULL)
+					*s = 0;
+				mode = LOOK_FOR_ARG;
+				break;
+			case '\\':
+				if (! *++s)
+					return j;
+				break;
+			default:
+				break;
+				}
+			break;
+		case QUOTED_ARG:
+			if (*s == '\\')
+				{
+				if (! *++s)
+					return j;
+				}
+			else if (*s == c)
+				{
+				if (v != NULL)
+					*s = 0;
+				mode = LOOK_FOR_ARG;
+				}
+			break;
+			}
+		s++;
+		}
+	return j;
+	}
+
+LOCAL struct option_set_list
+	{
+	struct option_set_list *next;
+	struct option_set set;
+	} *first, *current;
+
+LOCAL void set_up_args(struct option_set *set)
+	{
+	unsigned int i, j; 
+
+	for (i = 0; i < set->number; i++)
+		{
+		switch (set->options[i].type) 
+			{
+		case 's':
+		case 'n':
+			set->args[i].scalar = set->options[i].def_scalar;
+			break;
+		case 'a':
+			set->args[i].pointer = set->options[i].def_string;
+			break;
+		case 'm':
+			for (j = 0; j < i; j++)
+				{
+			  	if (strcmp(set->options[i].def_string, 
+						set->options[j].optiontext) == 0)
+					{
+					set->options[i].multi = j;
+					break;
+					}
+				}
+			break;
+		default:
+			notice("Internal problem with option:");
+			notice(set->options[i].optiontext);
+			break;
+			}
+		}
+	}
+
+void add_option_set(struct option_set *set)
+	{
+	struct option_set_list *n;
+
+	n = (struct option_set_list *)malloc(sizeof(struct option_set_list));
+	if (!n)
+		end_all("Error: out of memory");			
+	n->next = 0;
+	n->set.options = set->options;
+	n->set.number = set->number;
+	n->set.args = set->args;
+	set_up_args(set);
+	if (current)
+		current->next = n;
+	else
+		first = n;
+	current = n;
+	}
+
+LOCAL int do_option(char *text, char *arg)
+	{
+	struct option_set_list *sweep;
+	struct option_set *set;
+	unsigned int i, j;
+	char *check;
+	int argindex;
+	int type;
+
+	for (sweep = first; sweep; sweep = sweep->next)
+		{
+		set = &(sweep->set);
+		for (i = 0; i < set->number; i++)
+			{
+			check = set->options[i].optiontext;
+
+			for (j = 0; check[j] && (check[j] == tolower(text[j])); j++)
+						;
+			if (set->options[i].type == 'm')
+				argindex = set->options[i].multi;
+			else
+				argindex = i;
+			type = set->options[argindex].type;
+			if (text[j])
+				{
+					/* last chance for switches */
+				if (type == 's'
+					&& tolower(text[0]) == 'n'
+					&& tolower(text[1]) == 'o')
+					{
+					for (j = 0; check[j] && check[j] == tolower(text[j+2]); j++)
+						;
+					if (!text[j+2])
+						{
+						if (i == argindex)
+							set->args[i].scalar = 0;
+						else
+							set->args[argindex].scalar = 1; 
+						return 0;
+						}
+					}
+				}
+			else
+				{
+				/* found option */
+				switch(type)
+					{
+				case 's':
+				case 'm':
+					if (i == argindex)
+						set->args[argindex].scalar = 1;
+					else
+						set->args[argindex].scalar = 0;
+					return 0;
+				case 'n':
+						{
+						static int d;
+
+						if (arg && sscanf(arg, "%d", &d) == 1)
+							{
+							set->args[argindex].scalar = d;
+							return 1;
+							}
+						else
+							{
+							set->args[argindex].scalar = set->options[i].def_scalar;
+							return 0;
+							}
+						}
+				case 'a':
+					if (arg && (arg[0] != '-')) 
+						{
+						set->args[argindex].pointer = arg;
+						return 1;
+						}
+					else
+						{
+						set->args[argindex].pointer = set->options[i].def_string;
+						return 0;
+						}
+					}
+				}
+			}
+		}
+	fprintf(stderr, "Unknown option: %s\n", text);
+	return 0;
+	}
+					
+
+					
+void parse_options(int argc, char *argv[], void (*what_to_do)(char *arg))
+	{
+	unsigned int i;
+	char *arg;
+	for (i = 0; i < argc; i++)
+		{
+		if (argv[i][0] == '-' && argv[i][1] != 0)
+			{
+			if (i+1 < argc)
+				arg = argv[i+1];
+			else
+				arg = 0;
+			if (argv[i][1] == '-')
+				{
+				(*what_to_do)(argv[i]);
+				(*what_to_do)(arg);
+				i++;
+				}
+			else
+				i += do_option(argv[i]+1, arg);
+			}
+		else
+			(*what_to_do)(argv[i]);
+		}
+	}
+
+#if 0
+struct option opts[] =
+	{
+	{"coucou", 's', 0, 0},
+	{"randomize", 's', 0, 0}
+	};
+
+VALUE args[3];
+
+void pouet(char *s)
+char *s;
+	{
+	printf("??? %s\n", s);
+	}
+
+main()
+	{
+	char buffer[50];
+	int i, k, p;
+	char **v;
+
+	add_options(opts, sizeof(opts)/sizeof(struct option), args);
+	while(1)
+		{
+		gets(buffer);
+		k = do_string2args(buffer, 0);
+		v = malloc(sizeof(char *) * k);
+		(void)do_string2args(buffer, v);
+		for (i = 0; i < k; i++)
+			printf("%s\n", v[i]);
+		args[0].scalar = args[1].scalar = args[2].scalar = -1;
+		parse_options(k, v, pouet);
+		printf("%d %d %d\n", args[0].scalar, args[1].scalar, args[2].scalar);
+		free(v);
+		}
+	}
+			
+#endif
