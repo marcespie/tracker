@@ -7,15 +7,17 @@
 #include "autoinit.h"
 
 struct watcher {
-	watcher *next;
 	notify_function notify_change;
 	void *context;
+	watcher(notify_function f, void *c): notify_change(f), context(c)
+	{
+	}
 };
 
 LOCAL struct {
 	VALUE value;
 	bool set;
-	watcher *first;
+	std::list<watcher> l;
 } variable[NUMBER_WATCHED];
 
 LOCAL void 
@@ -23,11 +25,8 @@ notify_new(enum watched_var var)
 {
 	variable[var].set = true;
 
-	watcher *w = variable[var].first;
-	while (w) {
-		(w->notify_change)(var, variable[var].value, w->context);
-		w = w->next;
-	}
+	for (const auto& w: variable[var].l)
+		(w.notify_change)(var, variable[var].value, w.context);
 }
 
 void 
@@ -94,13 +93,7 @@ add_notify(notify_function f, enum watched_var var, void *context)
 {
 	assert(var < NUMBER_WATCHED);
 
-	watcher* n = new watcher;
-
-	n->next = variable[var].first;
-	variable[var].first = n;
-	n->notify_change = f;
-	n->context = context;
-
+	variable[var].l.emplace_back(f, context);
 	if (variable[var].set)
 		(*f)(var, variable[var].value, context);
 }
