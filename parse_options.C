@@ -100,7 +100,7 @@ LOCAL struct option_set_list
 
 LOCAL void set_up_args(struct option_set *set)
 	{
-	unsigned int i, j; 
+	int i, j; 
 
 	for (i = 0; i < set->number; i++)
 		{
@@ -111,7 +111,7 @@ LOCAL void set_up_args(struct option_set *set)
 			set->args[i].scalar = set->options[i].def_scalar;
 			break;
 		case 'a':
-			set->args[i].pointer = set->options[i].def_string;
+			set->args[i].pointer = (void *)(set->options[i].def_string);
 			break;
 		case 'm':
 			for (j = 0; j < i; j++)
@@ -155,8 +155,8 @@ LOCAL int do_option(char *text, char *arg)
 	{
 	struct option_set_list *sweep;
 	struct option_set *set;
-	unsigned int i, j;
-	char *check;
+	int i, j;
+	const char *check;
 	int argindex;
 	int type;
 
@@ -228,7 +228,7 @@ LOCAL int do_option(char *text, char *arg)
 						}
 					else
 						{
-						set->args[argindex].pointer = set->options[i].def_string;
+						set->args[argindex].pointer = (void *)set->options[i].def_string;
 						return 0;
 						}
 					}
@@ -243,7 +243,7 @@ LOCAL int do_option(char *text, char *arg)
 					
 void parse_options(int argc, char *argv[], void (*what_to_do)(char *arg))
 	{
-	unsigned int i;
+	int i;
 	char *arg;
 	for (i = 0; i < argc; i++)
 		{

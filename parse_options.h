@@ -20,17 +20,17 @@
 
 struct option
 	{
-	char *optiontext;
+	const char *optiontext;
 	char type;
 	unsigned long def_scalar;
-	char *def_string;
+	const char *def_string;
 	int multi;
 	};
 
 struct option_set
 	{
 	struct option *options;
-	unsigned int number;
+	int number;
 	VALUE *args;
 	};
 
