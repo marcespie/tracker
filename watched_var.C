@@ -3,21 +3,14 @@
 #include "defs.h"
 #include <assert.h>
 #include <list>
+#include <functional>
 #include "watched_var.h"
 #include "autoinit.h"
-
-struct watcher {
-	notify_function notify_change;
-	void *context;
-	watcher(notify_function f, void *c): notify_change(f), context(c)
-	{
-	}
-};
 
 LOCAL struct {
 	long value;
 	bool set;
-	std::list<watcher> l;
+	std::list<notify_function> l;
 } variable[NUMBER_WATCHED];
 
 LOCAL void 
@@ -25,8 +18,8 @@ notify_new(enum watched_var var)
 {
 	variable[var].set = true;
 
-	for (const auto& w: variable[var].l)
-		(w.notify_change)(var, variable[var].value, w.context);
+	for (const auto& f: variable[var].l)
+		f(var, variable[var].value);
 }
 
 void 
@@ -49,11 +42,11 @@ get_watched_scalar(enum watched_var var)
 
 
 void 
-add_notify(notify_function f, enum watched_var var, void *context)
+add_notify(notify_function f, enum watched_var var)
 {
 	assert(var < NUMBER_WATCHED);
 
-	variable[var].l.emplace_back(f, context);
+	variable[var].l.push_back(f);
 	if (variable[var].set)
-		(*f)(var, variable[var].value, context);
+		f(var, variable[var].value);
 }

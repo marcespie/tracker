@@ -43,15 +43,15 @@
  * same value.
  */
 
+#include <functional>
+
 enum watched_var {
 	OVERSAMPLE, 
 	FREQUENCY,
 	NUMBER_WATCHED
 };
 
-typedef void (*notify_function)(enum watched_var name, long new_value, 
-	void *context);
- 
+using notify_function = std::function<void(enum watched_var, long)>;
 /* set_watched_xxx(var, new_val):
  * set variable var to its new val, and notifies applicable clients
  */
@@ -67,6 +67,6 @@ extern long get_watched_scalar(enum watched_var var);
  * f(var, value, context) each time the variable is set to a new value.
  * The function f must be ready to be called at add_notify() time.
  */
-extern void add_notify(notify_function f, enum watched_var var, void *context);
+extern void add_notify(notify_function f, enum watched_var var);
 
 

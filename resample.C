@@ -155,10 +155,10 @@ LOCAL void readjust_beat(void)
 	number_samples = resampling_frequency * num / tempo / den;
 	}
 
-LOCAL void notify_resample(enum watched_var var, long n, void *nil)
-	{
-	switch(var)
-		{
+LOCAL void 
+notify_resample(enum watched_var var, long n)
+{
+	switch(var) {
 	case FREQUENCY:
 		resampling_frequency = n;
 		build_step_table(oversample, resampling_frequency);
@@ -167,20 +167,20 @@ LOCAL void notify_resample(enum watched_var var, long n, void *nil)
 		break;
 	case OVERSAMPLE:
 		oversample = n;
-		if (resampling_frequency)
-			{
+		if (resampling_frequency) {
 			build_step_table(oversample, resampling_frequency);
 			readjust_current_steps();
-			}
-		break;
 		}
+		break;
 	}
+}
 
-LOCAL void init_resample(void)
-	{
-	add_notify(notify_resample, FREQUENCY, NULL);
-	add_notify(notify_resample, OVERSAMPLE, NULL);
-	}
+LOCAL void 
+init_resample(void)
+{
+	add_notify(notify_resample, FREQUENCY);
+	add_notify(notify_resample, OVERSAMPLE);
+}
 
 void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
 	{
