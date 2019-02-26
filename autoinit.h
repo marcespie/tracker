@@ -21,4 +21,12 @@ extern void at_end(void (*cleanup)(void));
  */
 #define INIT_ONCE	if (INIT){void (*func)(void) = INIT; INIT = 0; (*func)();}
 
-
+// a template class that calls a function (object) on start
+template<class T>
+class init {
+public:
+	init(T f)
+	{
+		f();
+	}
+};

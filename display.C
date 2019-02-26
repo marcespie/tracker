@@ -7,14 +7,15 @@
 #include "extern.h"
 #include "tags.h"
 #include "prefs.h"
-#include "autoinit.h"
 #include "automaton.h"
 #include "empty.h"
+#include "autoinit.h"
 
 #include <assert.h>
 LOCAL void init_display(void);
-LOCAL void (*INIT)(void) = init_display;
-     
+
+static init z(init_display);
+
 LOCAL char *base;
 
 /* lookup tables for speed */
@@ -632,7 +633,6 @@ LOCAL void init_display(void)
 
 void dump_event(struct channel *ch, struct event *e)
    {
-   INIT_ONCE;
    
 	if (ch)	/* do we have a scroll line AND are we not finished */
 		{
@@ -660,7 +660,6 @@ void dump_event(struct channel *ch, struct event *e)
 
 void dump_delimiter(void)
 	{
-	INIT_ONCE;
 
 	if (base)
 #ifdef AMIGA
