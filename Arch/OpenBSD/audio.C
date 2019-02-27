@@ -1,5 +1,4 @@
 /* openbsd/audio.c 
-	vi:ts=3 sw=3:
  */
 /* sndio(7) interface */
 
@@ -24,7 +23,7 @@ struct options_set *port_options=0;
 /* this macro works with unsigned values !!! */
 template<typename S, typename T>
 inline auto
-absdiff(S x, T y) -> decltype(x-y)
+absdiff(S x, T y)
 {
 	return x<y ?  y-x : x-y;
 }
@@ -66,76 +65,6 @@ search(int val, short *table, int size)
 }
 
 #define	BIAS		(0x84)		/* Bias for linear code. */
-
-/*
- * linear2ulaw() - Convert a linear PCM value to u-law
- *
- * In order to simplify the encoding process, the original linear magnitude
- * is biased by adding 33 which shifts the encoding range from (0 - 8158) to
- * (33 - 8191). The result can be seen in the following encoding table:
- *
- *	Biased Linear Input Code	Compressed Code
- *	------------------------	---------------
- *	00000001wxyza			000wxyz
- *	0000001wxyzab			001wxyz
- *	000001wxyzabc			010wxyz
- *	00001wxyzabcd			011wxyz
- *	0001wxyzabcde			100wxyz
- *	001wxyzabcdef			101wxyz
- *	01wxyzabcdefg			110wxyz
- *	1wxyzabcdefgh			111wxyz
- *
- * Each biased linear code has a leading 1 which identifies the segment
- * number. The value of the segment number is equal to 7 minus the number
- * of leading 0's. The quantization interval is directly available as the
- * four bits wxyz.  * The trailing bits (a - h) are ignored.
- *
- * Ordinarily the complement of the resulting code word is used for
- * transmission, and so the code word is complemented before it is returned.
- *
- * For further information see John C. Bellamy's Digital Telephony, 1982,
- * John Wiley & Sons, pps 98-111 and 472-476.
- */
-LOCAL unsigned char linear2ulaw(int pcm_val)
-	/* 2's complement (16-bit range) */
-	{
-	int		mask;
-	int		seg;
-	unsigned char	uval;
-
-
-	/* Get the sign and the magnitude of the value. */
-	if (pcm_val < 0) 
-		{
-		pcm_val = BIAS - pcm_val;
-		mask = 0x7F;
-		}
-	else 
-		{
-		pcm_val += BIAS;
-		mask = 0xFF;
-		}
-
-	/* Convert the scaled magnitude to segment number. */
-	seg = search(pcm_val, seg_end, 8);
-
-	/*
-	 * Combine the sign, segment, quantization bits;
-	 * and complement the code word.
-	 */
-	if (seg >= 8)		/* out of range, return maximum value. */
-		return 0x7F ^ mask;
-	else {
-		uval = (seg << 4) | ((pcm_val >> (seg + 3)) & 0xF);
-		return uval ^ mask;
-	}
-
-}
-
-LOCAL unsigned int cvt(int ch)
-	{
-	return linear2ulaw(ch * 2);
-	}
 
 #ifdef DEFAULT_SET_MIX
 LOCAL int stereo;
@@ -376,14 +305,16 @@ void output_samples(long left, long right, int n)
 #endif
 
 #ifndef NEW_FUNCS
-void sync_audio(void (*function)(void *), void (*f2)(void *), void *parameter)
-	{
-	(*function)(parameter);
-	}
+void 
+sync_audio(void (*function)(void *), void (*f2)(void *), void *parameter)
+{
+		(*function)(parameter);
+}
 
-void audio_ui(char c)
-	{
-	}
+void 
+audio_ui(char)
+{
+}
 
 #endif
 
@@ -397,15 +328,14 @@ unsigned long total;
 LOCAL int dsp_samplesize = 0;
 
 static void
-movecb(void *arg, int delta)
+movecb(void *, int delta)
 {
-	realpos += delta * dsize * (stereo ? 2 : 1);
+		realpos += delta * dsize * (stereo ? 2 : 1);
 }
 
-unsigned long open_audio(unsigned long f, int s)
-   {
-	struct sio_par par;
-	int buf_max;
+unsigned long 
+open_audio(unsigned long f, int)
+{
 
 	hdl = sio_open(NULL, SIO_PLAY, 0);
 	if (hdl == NULL)
@@ -414,21 +344,23 @@ unsigned long open_audio(unsigned long f, int s)
 	realpos = 0;
 	sio_onmove(hdl, movecb, NULL);
 
+	struct sio_par par;
 	sio_initpar(&par);
 	if (f)
 		par.rate = f;
 	par.pchan = 2;
-	if (!sio_setpar(hdl, &par) || !sio_getpar(hdl, &par) || !sio_start(hdl) ||
-	    (par.bits != 8 && par.bits != 16) || par.pchan > 2)
+	if (!sio_setpar(hdl, &par) || !sio_getpar(hdl, &par) || 
+	    !sio_start(hdl) || (par.bits != 8 && par.bits != 16) || 
+	    par.pchan > 2)
 		end_all("Sorry, no audio format supported by this binary is available");
 
-	buf_max = par.appbufsz * par.bps * par.pchan;
+	int buf_max = par.appbufsz * par.bps * par.pchan;
 	current_freq = par.rate;
 	stereo = par.pchan == 2 ? 1 : 0;
 
 	dsp_samplesize = par.bits;
 	dsize = par.bps;
-	buffer = (unsigned char *)malloc(buf_max);
+	buffer = new unsigned char [buf_max];
 	buffer16 = (short *)buffer;
 
 	idx = 0;
@@ -436,104 +368,94 @@ unsigned long open_audio(unsigned long f, int s)
 	set_watched_scalar(FREQUENCY, current_freq);
 	total = 0;
 	return current_freq;
-   }
+}
 
 /* synchronize stuff with audio output */
-LOCAL struct tagged
-	{
+LOCAL struct tagged {
 	struct tagged *next;	/* simply linked list */
 	void (*f)(GENERIC p);	/* function to call */
 	void (*f2)(GENERIC p);	/* function to call  for flush */
 	GENERIC p;		/* and parameter */
 	unsigned long when;	/* number of bytes to let go before calling */
-	} 
-	*start,	/* what still to output */
+} 	*start,	/* what still to output */
 	*end;	/* where to add new tags */
 
 
 
 /* flush_tags: use tags that have gone by recently */
-LOCAL void flush_tags(void)
-	{
-	if (start)
-		{
-		while (start && start->when <= realpos + ADVANCE_TAGS)
-			{
-			struct tagged *tofree;
+LOCAL void 
+flush_tags(void)
+{
+	if (start) {
+		while (start && start->when <= realpos + ADVANCE_TAGS) {
 
 			(*start->f)(start->p);
-			tofree = start;
+			tagged *tofree = start;
 			start = start->next;
-			free(tofree);
-			}
+			delete tofree;
 		}
 	}
+}
 
 /* remove unused tags at end */
-LOCAL void remove_pending_tags(void)
-	{
-	while (start)
-		{
-		struct tagged *tofree;
-
+LOCAL void 
+remove_pending_tags(void)
+{
+	while (start) {
 		(*start->f2)(start->p);
-		tofree = start;
+		tagged *tofree = start;
 		start = start->next;
-		free(tofree);
-		}
+		delete tofree;
 	}
+}
 
-void sync_audio(void (*function)(void *p), void (*f2)(void *p), void *parameter)
-	{
+void 
+sync_audio(void (*function)(void *p), void (*f2)(void *p), void *parameter)
+{
 	struct tagged *t;
 
-	if (hdl)
-		{
-		t = (struct tagged *)malloc(sizeof(struct tagged));
-		if (!t)
-			{
+	if (hdl) {
+		tagged *t = new tagged;
+		if (!t) {
 			(*function)(parameter);
 			return;
-			}
-			/* build new tag */
-		t->next = 0;
+		}
+		/* build new tag */
+		t->next = nullptr;
 		t->f = function;
 		t->f2 = f2;
 		t->p = parameter;
 		t->when = total;
 
-			/* add it to list */
+		/* add it to list */
 		if (start) 
 			end->next = t;
 		else
 			start = t;
 		end = t;
 
-			/* set up for next tag */
-		}
-	else
+		/* set up for next tag */
+	} else
 		(*function)(parameter);
-	}
+}
 
-LOCAL void actually_flush_buffer(void)
-   {
-   int l,i;
-
-	if (idx)
-		{
+LOCAL void 
+actually_flush_buffer(void)
+{
+	if (idx) {
 		total += idx * dsize;
 		sio_write(hdl, buffer, dsize * idx);
-		}
-   idx = 0;
-   }
+	}
+	idx = 0;
+}
 
-void output_samples(long left, long right, int n)
-	{
+void 
+output_samples(long left, long right, int n)
+{
 	if (idx >= samples_max - 1)
 		actually_flush_buffer();
-	switch(dsp_samplesize)
-		{
-	case 16:				/*   Cool! 16 bits samples */
+	switch(dsp_samplesize) {
+	case 16:
 		add_samples16(left, right, n);
 		break;
 	case 8:
@@ -541,24 +463,26 @@ void output_samples(long left, long right, int n)
 		break;
 	default:	/* should not happen */
 		;
-	   }
-   }
+	}
+}
 
-void flush_buffer(void)
-    {	
-	 actually_flush_buffer();
-	 flush_tags();
-    }
+void 
+flush_buffer(void)
+{	
+	actually_flush_buffer();
+	flush_tags();
+}
 
 /*
- * Closing the Linux sound device waits for all pending samples to play.
+ * Closing the sound device waits for all pending samples to play.
  */
-void close_audio(void)
-    {
-    actually_flush_buffer();
-    sio_close(hdl);
-    free(buffer);
-    }
+void 
+close_audio(void)
+{
+	actually_flush_buffer();
+	sio_close(hdl);
+	delete [] buffer;
+}
 
 unsigned long update_frequency(void)
 	{
