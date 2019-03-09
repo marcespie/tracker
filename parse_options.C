@@ -241,7 +241,7 @@ LOCAL int do_option(char *text, char *arg)
 					
 
 					
-void parse_options(int argc, char *argv[], void (*what_to_do)(char *arg))
+void parse_options(int argc, char *argv[], void (*what_to_do)(const char *arg))
 	{
 	int i;
 	char *arg;

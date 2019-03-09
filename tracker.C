@@ -42,7 +42,7 @@ LOCAL struct song *load_song(ENTRY e)
    struct song *song;
    char *buffer;
 	struct exfile *file;
-	char *name;
+	const char *name;
    size_t i, j;
    
 	name = e->filename;

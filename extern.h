@@ -64,7 +64,7 @@ XT int error;
 
 /*--------------------------- play_list.c ------------------------*/
 XT struct play_entry **obtain_play_list(void);
-XT void add_play_list(char *name);
+XT void add_play_list(const char *name);
 
 XT int last_entry_index(void);
 XT void randomize(void);
@@ -302,7 +302,7 @@ XT void add_option_set(struct option_set *options);
  * parse options according to the currently known options. Call
  * (*what_to_do)(arg) on any real argument
  */
-XT void parse_options(int argc, char *argv[], void (*what_to_do) (char *arg));
+XT void parse_options(int argc, char *argv[], void (*what_to_do) (const char *arg));
 
 XT int string2args(char *s, char *v[]);
 /*--------------------------- ieee.c -----------------------------*/
