@@ -28,41 +28,5 @@ struct tag
 #define TAG_JUMP 4      /* jump to <taglist> */
 #endif
 
-unsigned long tag_length (struct tag *t);
-struct tag *tags_copy (struct tag *t);
-struct tag *alloc_tags (unsigned long l);
 struct tag *get_tag (struct tag *t);
 
-#ifdef KLUDGE_TAG
-
-/* in case the stack is right, we can do this */
-#define TAG(function)   \
-struct tag *function##taglist(struct tag *list); \
-struct tag *function(unsigned long arg1, ...) \
-   { \
-   return function##taglist(&arg1); \
-   }\
-struct tag *function##taglist
-#else
-
-/* in other cases, we have to copy the tags to a taglist... */
-#include <stdarg.h>
-#define TAG(function)   \
-struct tag *function##taglist(struct tag *list); \
-struct tag *function(unsigned long type, ...) \
-   {  \
-   va_list ap; \
-   struct tag big[50]; \
-   int i = 0; \
-   va_start(ap, type); \
-   while (type != TAG_END) \
-      { \
-      big[i].type = type; \
-      big[i].data = va_arg(ap, VALUE); \
-      i++; \
-      type = va_arg(ap, unsigned long); \
-      } \
-   return function##taglist(big); \
-   } \
-struct tag *function##taglist
-#endif
