@@ -24,85 +24,35 @@
 #endif
 #endif
 
+#include <vector>
 #ifndef S_ISDIR
 #define S_ISDIR(p) ((p) & S_IFDIR)
-#endif
-#ifdef AMIGA
-#include <proto/dos.h>
 #endif
 #include "defs.h"
 #include "extern.h"
 #include "play_list.h"
 #include "autoinit.h"
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <iostream>
+
+static std::random_device rd;
+std::mt19937 g(rd());
 
 
-/* n = random_range(max): output a number in the range 0:max - 1.
- * For our purpose, we don't have to get a very random number,
- * so the standard generator is alright.
- */
-LOCAL unsigned int random_range(unsigned int max)
+
+play_entry::play_entry(const char* dir, const char* f): 
+    filetype{UNKNOWN}
 {
-	static int init = 0;
-
-	/* initialize the generator to an appropriate seed eventually */
-	if (!init) {
-		srand(time(0));
-		init = 1;
-	}
-	return rand()%max;
+	if (dir)
+		name = std::string(dir) + '/' + f;
+	else
+		name = f;
+	filename = name.c_str();
 }
 
-LOCAL play_entry *
-new_entry(const char *dir, const char *name)
-{
-	size_t i;
-	struct play_entry *n;
-
-	if (dir) {
-		i = strlen(name) + strlen(dir)+1; 
-		if ( (n = (play_entry *)malloc(sizeof(play_entry) + i)) ) {
-			sprintf(n->name, "%s/%s", dir, name);
-			n->filename = n->name;
-			n->filetype = UNKNOWN;
-		}
-	} else if ( (n = (play_entry *)malloc(sizeof(play_entry))) ) {
-		n->filename = name;
-		n->filetype = UNKNOWN;
-	}
-	return n;
-}
-
-LOCAL ENTRY *table;
-LOCAL unsigned idx;
-LOCAL unsigned size;
-
-LOCAL void 
-free_play_list(void)
-{
-	unsigned i;
-
-	for (i = 0; i < idx; i++)
-		free(table[i]);
-	free(table);
-	size = idx = 0;
-}
-
-#define CHUNK 500
-
-LOCAL void 
-check_bounds(void)
-{
-	ENTRY *oldtable;
-	if (idx >= size) {
-		oldtable = table;
-		size += CHUNK;
-		table = (ENTRY *)malloc(sizeof(ENTRY) * size);
-		if (table)
-			memcpy(table, oldtable, sizeof(ENTRY) * (size - CHUNK));
-		if (oldtable)
-			free(oldtable);
-	}
-}
+std::vector<play_entry> table;
 
 LOCAL int 
 is_dir(const char *name)
@@ -119,79 +69,52 @@ expand_dir(const char *name)
 {
 	DIR *dir;
 	struct dirent *de;
-	ENTRY n;
-
 	if ( (dir = opendir(name)) ) {
 		while ( (de = readdir(dir)) ) {
 			if (strcmp(de->d_name, ".") == 0 || 
 			    strcmp(de->d_name, "..") == 0)
 				continue;
-			n = new_entry(name, de->d_name);
-			if (n) {
-				if (is_dir(n->filename)) {
-					expand_dir(n->filename);
-					free(n);
-				} else {
-					check_bounds();
-					table[idx++] = n;
-				}
-			}
+			play_entry n {name, de->d_name};
+			if (is_dir(n.filename))
+				expand_dir(n.filename);
+			else
+				table.push_back(n);
 		}
 		closedir(dir);
 	}
 }
 
-ENTRY *
+ENTRY
 obtain_play_list(void)
 {
-	at_end(free_play_list);
-
-	check_bounds();
-	table[idx] = 0;
-	printf("Total files: %u\n", idx);
-	return table;
+	std::cout << "Total files: " << table.size() << "\n"; 
+	return begin(table);
 }
 
 void 
 add_play_list(const char *name)
 {
-	check_bounds();
 	if (is_dir(name))
 		expand_dir(name);
 	else
-		table[idx++] = new_entry(0, name);
+		table.emplace_back(nullptr, name);
 }
 
 int 
 last_entry_index(void)
 {
-	return ((int)idx) - 1;
+	return table.size() - 1;
 }
 
 void 
-delete_entry(ENTRY *entry)
+delete_entry(ENTRY entry)
 {
-	int n;
-	ENTRY old;
-
-	old = *entry;
-	n = idx - (entry - table) - 1;
-
-	memmove(entry, entry+1, n * sizeof(ENTRY));
-	idx--;
-	free(old);
+	table.erase(entry);
 }
 
 void 
 randomize(void)
 {
-	if (idx == 0)
-		return;
-	for (unsigned i = idx-1; i > 0; i--) {
-		unsigned k = random_range(i+1);
-		ENTRY e = table[k];
-		table[k] = table[i];
-		table[i] = e;
-	}
+	shuffle(begin(table), end(table), g);
 }
 

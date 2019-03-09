@@ -63,12 +63,6 @@ XT int error;
 
 
 /*--------------------------- play_list.c ------------------------*/
-XT struct play_entry **obtain_play_list(void);
-XT void add_play_list(const char *name);
-
-XT int last_entry_index(void);
-XT void randomize(void);
-XT void delete_entry(struct play_entry **entry);
 
 
 /*--------------------------- st_read.c --------------------------*/
@@ -305,34 +299,5 @@ XT void add_option_set(struct option_set *options);
 XT void parse_options(int argc, char *argv[], void (*what_to_do) (const char *arg));
 
 XT int string2args(char *s, char *v[]);
-/*--------------------------- ieee.c -----------------------------*/
-XT void ConvertToIeeeExtended(double num, unsigned char *bytes);
-XT double ConvertFromIeeeExtended(unsigned char *bytes);
 
-/*--------------------------- iff.c ------------------------------*/
-
-XT int iff_error;
-XT struct iff *open_iff(char *fname, int mode);
-XT unsigned char get_byte(struct iff *iff);
-XT void seek_iff(struct iff *iff, unsigned long p, int mode);
-XT void put_byte(unsigned char c, struct iff *iff);
-XT void put_short(unsigned short s, struct iff *iff);
-XT void put_long(unsigned long l, struct iff *iff);
-XT unsigned short get_short(struct iff *iff);
-XT unsigned long get_long(struct iff *iff);
-XT void read_id(struct iff *iff, char *s);
-XT void write_id(struct iff *iff, char *s);
-XT void open_chunk(struct iff *iff, char *s);
-XT int close_chunk(struct iff *iff);
-XT void close_iff(struct iff *iff);
-XT void skip_chunk(struct iff *iff);
-XT void skip_bytes(struct iff *iff, unsigned long number);
-XT double get_ieee(struct iff *iff);
-XT void put_ieee(double n, struct iff *iff);
-XT long read_iff(char *buffer, unsigned long size, struct iff *iff);
-XT long write_iff(char *buffer, unsigned long size, struct iff *iff);
-XT unsigned long tell_iff(struct iff *iff);
-XT unsigned long handle_comm_chunk(struct iff *iff, struct comm_chunk *comm);
-XT void write_pstring(struct iff *iff, char *s);
-XT char *read_pstring(struct iff *iff);
-XT unsigned long tell_iff(struct iff *iff);
+extern void add_play_list(const char *);

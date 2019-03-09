@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
    {
 	int song_number, n;
    struct song *song;
-	ENTRY *play_list;
+	ENTRY play_list;
 
    struct tag *result;
 
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
 			else
 				end_all(0);
 			}
-		song = load_song(play_list[song_number]);
+		song = load_song(play_list+song_number);
 
 		if (song)
 			{
