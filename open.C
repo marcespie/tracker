@@ -14,25 +14,6 @@
 LOCAL struct exfile *do_open(struct exfile *file, const char *fname, 
     const char *path);
 
-
-
-/***
- *** 	Stuff for compression methods 
- ***/
-
-/* Max buffer length for reading compression methods */
-#define MAX_LENGTH 90
-
-
-/* automaton */
-#define END_OF_LINE 0
-#define BEGIN_OF_LINE 1
-#define IN_SPEC 2
-#define BEGIN_OF_COMMAND 3
-#define IN_COMMAND 4
-
-
-
 extern int error;
 
 
