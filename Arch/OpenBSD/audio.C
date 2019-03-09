@@ -25,42 +25,6 @@ absdiff(S x, T y)
 	return x<y ?  y-x : x-y;
 }
 
-/* f' = best_frequency(f, table, def):
- * return nearest frequency in sorted table,
- * unless f == 0 -> return def
- */
-LOCAL unsigned long 
-best_frequency(unsigned long f, int table[], int def)
-{
-	unsigned long best = table[0];
-	int i;
-
-	if (f == 0)
-		return def;
-	for (i = 0; i < table[i]; i++)
-		if (absdiff(table[i], f) < absdiff(best, f))
-			best = table[i];
-	return best;
-}	
-
-
-
-LOCAL short seg_end[8] = {
-	0xFF, 0x1FF, 0x3FF, 0x7FF, 0xFFF, 0x1FFF, 0x3FFF, 0x7FFF
-};
-
-LOCAL int 
-search(int val, short *table, int size)
-{
-	int i;
-
-	for (i = 0; i < size; i++) {
-		if (val <= *table++)
-			return i;
-	}
-	return size;
-}
-
 #define	BIAS		(0x84)		/* Bias for linear code. */
 
 LOCAL int stereo;
