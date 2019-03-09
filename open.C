@@ -32,10 +32,6 @@ LOCAL struct exfile *do_open(struct exfile *file, const char *fname,
 #define IN_COMMAND 4
 
 
-#ifndef NO_PIPES
-LOCAL void init_compression(void);
-LOCAL void (*INIT)(void) = init_compression;
-#endif
 
 extern int error;
 
@@ -128,13 +124,6 @@ do_tell(struct exfile *f)
 	return f->pos;
 }
 
-#ifndef NO_PIPES
-LOCAL void 
-do_pclose(struct exfile *f)
-{
-	pclose(f->handle);
-}
-#endif
 
 LOCAL void 
 do_fclose(struct exfile *f)
@@ -157,178 +146,6 @@ init_buffered(struct exfile *f)
 
 
 /* no need for compression_methods if no pipes !!! */
-#ifndef NO_PIPES
-/***
- ***	Compression methods database handling
- ***/
-
-/* compression methods we do know about.
- * Important restriction: for the time being, the output
- * must be a single module.
- */
-struct compression_method {
-   struct compression_method *next;
-   char *extension;
-   char *command;
-};
-
-LOCAL struct compression_method *
-read_method(FILE *f)
-{
-	static char buffer[MAX_LENGTH + 1];
-
-	while (fgets(buffer, MAX_LENGTH, f)) {
-		int state = BEGIN_OF_LINE;
-		size_t start, i;
-		char *spec = NULL, *command = NULL;
-
-		for (i = 0; state != END_OF_LINE; i++) {
-			switch(state) {
-			case BEGIN_OF_LINE:
-				switch(buffer[i]) {
-				case ' ':
-				case '\t':
-					break;
-				case 0:
-				case '\n':
-				case '#':
-					state = END_OF_LINE;
-					break;
-				default:
-					start = i;
-					state = IN_SPEC;
-				}
-				break;
-			case IN_SPEC:
-				switch(buffer[i]) {
-				case ' ':
-				case '\t':
-					spec = (char *)malloc(i - start + 1);
-					strncpy(spec, buffer + start, i - start);
-					spec[i - start] = 0;
-					state = BEGIN_OF_COMMAND;
-					break;
-				case 0:
-				case '\n':
-					state = END_OF_LINE;
-					break;
-				default:
-					break;
-				}
-				break;
-			case BEGIN_OF_COMMAND:
-				switch (buffer[i]) {
-				case ' ':
-				case '\t':
-					break;
-				case 0:
-				case '\n':
-					state = END_OF_LINE;
-					free(spec);
-					break;
-				default:
-					state = IN_COMMAND;
-					start = i;
-				}
-				break;
-			case IN_COMMAND:
-				switch (buffer[i]) {
-				case 0:
-				case '\n':
-					command = (char *)malloc(i - start + 1);
-					strncpy(command, buffer + start, i - start);
-					command[i-start] = 0;
-					state = END_OF_LINE;
-				default:
-					break;
-				}
-			}
-		}      
-		if (command && spec) {
-			struct compression_method *n = (struct compression_method *)
-			    malloc(sizeof(struct compression_method));
-			n->next = 0;
-			n->extension = spec;
-			n->command = command;
-			return n;
-		}
-	}
-	return 0;
-}
-      
-
-LOCAL struct compression_method **
-read_methods(struct compression_method **previous, FILE *f)
-{
-	struct compression_method *method;
-
-	if (f) {
-		while ( (method = read_method(f)) ) {
-			*previous = method;
-			previous = &(method->next);
-		}
-		fclose(f);
-	}
-	return previous;
-}
-      
-
-LOCAL struct compression_method *comp_list;
-
-LOCAL void 
-free_compression(void)
-{
-	struct compression_method *temp;
-
-	while (comp_list) {
-		free(comp_list->extension);
-		free(comp_list->command);
-		temp = comp_list;
-		comp_list = comp_list->next;
-		free(temp);
-	}
-}
-
-LOCAL void 
-init_compression(void)
-{
-	const char *fname;
-	FILE *f;
-	struct compression_method **previous;
-
-	at_end(free_compression);
-	f = nullptr;
-	fname = getenv("TRACKER_COMPRESSION");
-	if (fname)
-		f = fopen(fname, "r");
-	if (!f) {
-		fname = COMPRESSION_FILE;
-		f = fopen(fname, "r");
-	}
-	if (!f)
-		notice(fname);
-	previous = read_methods(&comp_list, f);
-}
-      
-/* Handling extensions.
- */
-LOCAL int 
-check_ext(const char *s, const char *ext)
-{
-	size_t ext_len, s_len;
-	const char *c;
-
-	ext_len = strlen(ext);
-	s_len = strlen(s);
-	if (s_len < ext_len)
-		return false;
-	for (c = s + s_len - ext_len; *c; c++, ext++)
-	    if (tolower(*c) != tolower(*ext))
-		    return false;
-	return true;
-}
-
-#endif
 
 LOCAL int 
 exist_file(const char *fname)
@@ -387,11 +204,6 @@ find_file(const char *fname, const char *path)
 LOCAL struct exfile *
 do_open(struct exfile *file, const char *fname, const char *path)
 {
-#ifndef NO_PIPES
-	struct compression_method *comp;
-
-	INIT_ONCE;
-#endif
 
 	file->name = fname;
 	file->path = path;
@@ -399,25 +211,6 @@ do_open(struct exfile *file, const char *fname, const char *path)
 	fname = find_file(fname, path);
 	if (!fname)
 		goto not_opened;
-#ifndef NO_PIPES
-	/* check for extension */
-	for (comp = comp_list; comp; comp = comp->next)
-		if (check_ext(fname, comp->extension)) {
-			char *pipe = (char *)malloc(strlen(comp->command) + 
-			    strlen(fname) + 25);
-			if (!pipe)
-				goto not_opened;
-
-			sprintf(pipe, comp->command, fname);
-			file->close = do_pclose;
-			file->handle = popen(pipe, READ_ONLY);
-			free(pipe);
-			if (file->handle)
-				return init_buffered(file);
-			else
-				goto not_opened;
-		}
-#endif
 	file->close = do_fclose;
 	if ( (file->handle = fopen(fname, READ_ONLY)) )
 		return init_buffered(file);
