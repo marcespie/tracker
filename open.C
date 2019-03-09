@@ -197,8 +197,8 @@ do_open(struct exfile *file, const char *fname, const char *path)
 		return init_buffered(file);
 
 not_opened:
-	free(file);
-	return NULL;
+	delete file;
+	return nullptr;
 }
 
 
@@ -233,15 +233,12 @@ struct exfile *
 open_file(const char *fname, const char *mode, const char *path)
 /* right now, only mode "r" is supported */
 {
-	struct exfile *n;
 
 	if (mode[0] != 'r' || mode[1] != 0)
 		return nullptr;
-	n = (struct exfile *)malloc(sizeof(struct exfile));
-	if (n)
-		return do_open(n, fname, path);
-	else
-		return nullptr;
+
+	exfile *n = new exfile;
+	return do_open(n, fname, path);
 }
 
 
@@ -250,7 +247,7 @@ close_file(struct exfile *file)
 {
     if (file) {
 	    (*file->close)(file);
-	    free(file);
+	    delete file;
     }
 }
 
