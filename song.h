@@ -1,68 +1,8 @@
-/* song.h 
-	vi:ts=3 sw=3:
- */
+/* song.h */
 
-/* internal data structures for the soundtracker player routine....
- */
+/* internal data structures for the soundtracker player routine....  */
 
-/* $Id: song.h,v 5.6 1996/05/06 22:48:31 espie Exp espie $
- * $Log: song.h,v $
- * Revision 5.6  1996/05/06 22:48:31  espie
- * *** empty log message ***
- *
- * Revision 5.5  1996/05/06 14:29:11  espie
- * *** empty log message ***
- *
- * Revision 5.4  1996/04/09 21:22:37  espie
- * *** empty log message ***
- *
- * Revision 5.3  1996/04/09 21:14:03  espie
- * *** empty log message ***
- *
- * Revision 5.2  1996/03/14 18:04:03  espie
- * *** empty log message ***
- *
- * Revision 5.1  1995/12/24 03:13:08  espie
- * *** empty log message ***
- *
- * Revision 5.0  1995/10/21 14:57:00  espie
- * New
- *
- * Revision 4.27  1995/10/13 18:08:56  espie
- * Mixed up effects.
- *
- * Revision 4.21  1995/09/02 22:20:44  espie
- * Added song duration.
- *
- * Revision 4.15  1995/06/26 10:11:17  espie
- * Patterns now allocated as one big chunk.
- *
- * Revision 4.12  1995/03/01  15:24:51  espie
- * Minor changes.
- *
- * Revision 4.11  1995/02/21  17:54:32  espie
- * Internal problem: buggy RCS. Fixed logs.
- *
- * Revision 4.8  1995/02/20  16:49:58  espie
- * Added song type (protracker or old st) for further checks.
- *
- * Revision 4.6  1995/02/06  14:50:47  espie
- * Changed sample_info.
- *
- * Revision 4.5  1995/02/01  17:14:54  espie
- * Scaled volume.
- *
- * Revision 4.0  1994/01/11  17:55:59  espie
- * REAL_MAX_PITCH for better player.
- * REAL_MAX_PITCH != MAX_PITCH.
- * Added samples_start.
- *
- * Revision 2.5  1992/10/31  11:18:00  espie
- * New fields for optimized resampling.
- * Exchanged __ANSI__ to SIGNED #define.
- */
-
-typedef signed char SAMPLE8;
+using SAMPLE8 = signed char;
 
 #define MAX_NUMBER_SAMPLES 32
 #define LAST_SAMPLE 31

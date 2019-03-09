@@ -52,5 +52,7 @@ automaton.o timing.o Arch/Unix/ui.o Modules/Pro/virt.o :  timing.h
 handle_options.o resample.o setup_audio.o watched_var.o Arch/OpenBSD/audio.o :  watched_var.h
 
 Modules/Pro/effects.o Modules/Pro/play.o: Modules/Pro/effects.h
+
+Modules/Pro/play.o tracker.o: Modules/Pro/play.h
 clean:
 	rm -f ${OBJS}
