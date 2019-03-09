@@ -74,7 +74,6 @@ LOCAL unsigned long idx;
 LOCAL int dsize;			/* current data size */
 LOCAL unsigned long samples_max;	/* number of samples in buffer */
 
-LOCAL int tsync = false;
 #endif	/* DEFAULT_BUFFERS */
 
 #ifdef SEPARATE_BUFFERS
@@ -85,82 +84,75 @@ LOCAL unsigned long idx;
 
 
 
-LOCAL void add_samples16_stereo(long left, long right, int n)
-	{
-	if (pms[n] == pps[n])	/* no mixing */
-		{
-		if (n<16)
-			{
+LOCAL void 
+add_samples16_stereo(long left, long right, int n)
+{
+	if (pms[n] == pps[n]) {	/* no mixing */
+		if (n<16) {
 			buffer16[idx++] = VALUE16(left << (16-n) );
 			buffer16[idx++] = VALUE16(right << (16-n) );
-		   }
-		else
-		   {
+		} else {
 			buffer16[idx++] = VALUE16(left >> (n-16) );
 			buffer16[idx++] = VALUE16(right >> (n-16) );
-		   }
 		}
-	else
-		{
-		long s1, s2;
-
-		s1 = (left+right)*pps[n];
-		s2 = (left-right)*pms[n];
+	} else {
+		long s1 = (left+right)*pps[n];
+		long s2 = (left-right)*pms[n];
 
 		buffer16[idx++] = VALUE16( (s1 + s2) >> 16);
 		buffer16[idx++] = VALUE16( (s1 - s2) >> 16);
-		}
 	}
+}
 
-LOCAL void add_samples16_mono(long left, long right, int n)
-	{
+LOCAL void 
+add_samples16_mono(long left, long right, int n)
+{
 	if (n<15)		/* is this possible? */
 		buffer16[idx++] = VALUE16( (left + right) << (15-n) );
 	else
 		buffer16[idx++] = VALUE16( (left + right) >> (n-15) );
-	}
+}
 
-LOCAL void add_samples16(long left, long right, int n)
-	{
+LOCAL void 
+add_samples16(long left, long right, int n)
+{
 	if (stereo)
 		add_samples16_stereo(left, right, n);
 	else
 		add_samples16_mono(left, right, n);
-	}
+}
 
-LOCAL void add_samples8_stereo(long left, long right, int n)
-	{
-	if (pms[n] == pps[n])	/* no mixing */
-		{
-		    /* if n<8 -> same problem as above,
-		       but that won't happen, right? */
+LOCAL void 
+add_samples8_stereo(long left, long right, int n)
+{
+	if (pms[n] == pps[n]) {	/* no mixing */
+		/* if n<8 -> same problem as above,
+		but that won't happen, right? */
 		buffer[idx++] = VALUE8(left >> (n-8) );
 		buffer[idx++] = VALUE8(right >> (n-8) );
-		}
-	else
-		{
-		long s1, s2;
-
-		s1 = (left+right)*pps[n];
-		s2 = (left-right)*pms[n];
+	} else {
+		long s1 = (left+right)*pps[n];
+		long s2 = (left-right)*pms[n];
 
 		buffer[idx++] = VALUE8( (s1 + s2) >> 24);
 		buffer[idx++] = VALUE8( (s1 - s2) >> 24);
-		}
 	}
+}
 
-LOCAL void add_samples8_mono(long left, long right, int n)
-	{
+LOCAL void 
+add_samples8_mono(long left, long right, int n)
+{
 	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
-	}
+}
 
-LOCAL void add_samples8(long left, long right, int n)
-	{
+LOCAL void 
+add_samples8(long left, long right, int n)
+{
 	if (stereo)
 		add_samples8_stereo(left, right, n);
 	else
 		add_samples8_mono(left, right, n);
-	}
+}
 
 
 
@@ -177,7 +169,7 @@ LOCAL int dsp_samplesize = 0;
 static void
 movecb(void *, int delta)
 {
-		realpos += delta * dsize * (stereo ? 2 : 1);
+	realpos += delta * dsize * (stereo ? 2 : 1);
 }
 
 unsigned long 
@@ -259,8 +251,6 @@ remove_pending_tags(void)
 void 
 sync_audio(void (*function)(void *p), void (*f2)(void *p), void *parameter)
 {
-	struct tagged *t;
-
 	if (hdl) {
 		tagged *t = new tagged;
 		if (!t) {
