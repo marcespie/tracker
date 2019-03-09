@@ -12,7 +12,7 @@ XT void dump_song(struct song *song);
  * (some events need the current channel state for a correct dump)
  * special case: ch == 0 means current set of events done
  */
-XT void dump_event(struct channel *ch, struct event *e);
+XT void dump_event(const channel *ch, struct event *e);
 
 /* dump_delimiter(): add a delimiter to the current dump, to 
  * separate left channels from right channels, for instance
