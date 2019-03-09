@@ -50,5 +50,7 @@ analyzer.o automaton.o display.o dump_song.o empty.o notes.o resample.o split.o 
 analyzer.o display.o handle_options.o prefs.o resample.o setup_audio.o tags.o tracker.o Arch/Unix/ui.o Modules/Pro/play.o :  tags.h
 automaton.o timing.o Arch/Unix/ui.o Modules/Pro/virt.o :  timing.h
 handle_options.o resample.o setup_audio.o watched_var.o Arch/OpenBSD/audio.o :  watched_var.h
+
+Modules/Pro/effects.o Modules/Pro/play.o: Modules/Pro/effects.h
 clean:
 	rm -f ${OBJS}
