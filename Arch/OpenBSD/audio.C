@@ -13,9 +13,6 @@ struct options_set *port_options=0;
 
 #define DEFAULT_BUFFERS
 #define UNSIGNED8
-#define DEFAULT_SET_MIX
-#define NEW_OUTPUT_SAMPLES_AWARE
-#define NEW_FUNCS
 
 /* fine-tune to get the scrolling display in sync with the music */
 #define ADVANCE_TAGS 20000 
@@ -66,10 +63,8 @@ search(int val, short *table, int size)
 
 #define	BIAS		(0x84)		/* Bias for linear code. */
 
-#ifdef DEFAULT_SET_MIX
 LOCAL int stereo;
 
-#ifdef NEW_OUTPUT_SAMPLES_AWARE
 
 LOCAL unsigned long pps[32], pms[32];
 
@@ -87,25 +82,7 @@ void set_mix(int percent)
 		}
 	}
 
-#else /* NEW_OUTPUT_SAMPLES_AWARE */
-/* old code: optimized away */
-/* LOCAL int primary, secondary;	*/
-LOCAL unsigned long pps, pms;	/* 1/2 primary+secondary, 1/2 primary-secondary */
 
-void set_mix(int percent)
-   {
-	percent *= 256;
-	percent /= 100;
-/*
-	secondary = percent;
-	primary = 512 - percent;
- */
-	pps = 256;
-	pms = 256 - percent;
-   }
-#endif /* NEW_OUTPUT_SAMPLES_AWARE */
-
-#endif /* DEFAULT_SET_MIX */
 
 #ifdef UNSIGNED_BUFFERS
 #define UNSIGNED8
@@ -143,7 +120,6 @@ LOCAL unsigned long idx;
 
 
 
-#ifdef NEW_OUTPUT_SAMPLES_AWARE
 
 LOCAL void add_samples16_stereo(long left, long right, int n)
 	{
@@ -222,101 +198,8 @@ LOCAL void add_samples8(long left, long right, int n)
 		add_samples8_mono(left, right, n);
 	}
 
-#else
 
-/* don't ask me if this code is correct then (I guess it is) ...
-   anyone still using it? */
-LOCAL void add_samples16_stereo(long left, long right)
-	{
-	if (pms == pps)	/* no mixing */
-		{
-		buffer16[idx++] = VALUE16(left/256);
-		buffer16[idx++] = VALUE16(right/256);
-		}
-	else
-		{
-		long s1, s2;
 
-		s1 = (left+right)*pps;
-		s2 = (left-right)*pms;
-
-		buffer16[idx++] = VALUE16( (s1 + s2)/65536 );
-		buffer16[idx++] = VALUE16( (s1 - s2)/65536 );
-		}
-	}
-
-LOCAL void add_samples16_mono(long left, long right)
-	{
-	buffer16[idx++] = VALUE16( (left + right)/256);
-	}
-
-LOCAL void add_samples16(long left, long right)
-	{
-	if (stereo)
-		add_samples16_stereo(left, right);
-	else
-		add_samples16_mono(left, right);
-	}
-
-LOCAL void add_samples8_stereo(long left, long right)
-	{
-	if (pms == pps)	/* no mixing */
-		{
-		buffer[idx++] = VALUE8(left/65536);
-		buffer[idx++] = VALUE8(right/65536);
-		}
-	else
-		{
-		long s1, s2;
-
-		s1 = (left+right)*pps;
-		s2 = (left-right)*pms;
-
-		buffer[idx++] = VALUE8( (s1 + s2) >> 24);
-		buffer[idx++] = VALUE8( (s1 + s2) >> 24);
-		}
-	}
-
-LOCAL void add_samples8_mono(long left, long right)
-	{
-	buffer[idx++] = VALUE8( (left+right) >> 16);
-	}
-
-LOCAL void add_samples8(long left, long right)
-	{
-	if (stereo)
-		add_samples8_stereo(left, right);
-	else
-		add_samples8_mono(left, right);
-	}
-
-#endif
-
-#ifndef NEW_OUTPUT_SAMPLES_AWARE
-
-XT void output_samples(long left, long right, int n);
-
-void output_samples(long left, long right, int n)
-	{
-	old_output_samples(left >> (n-23), right >> (n-23));
-	}
-#define output_samples	old_output_samples
-
-#endif
-
-#ifndef NEW_FUNCS
-void 
-sync_audio(void (*function)(void *), void (*f2)(void *), void *parameter)
-{
-		(*function)(parameter);
-}
-
-void 
-audio_ui(char)
-{
-}
-
-#endif
 
 
 LOCAL long long realpos;

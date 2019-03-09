@@ -10,5 +10,3 @@
 typedef void *GENERIC;
 
 #define stricmp	strcasecmp
-
-#define COMPRESSION_FILE "/usr/local/lib/compression_methods"
