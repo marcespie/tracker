@@ -618,7 +618,7 @@ init_display(void)
 }
 
 void 
-dump_event(const channel *ch, struct event *e)
+dump_event(const channel *ch, const event *e)
 {
 	if (ch)	{ /* do we have a scroll line AND are we not finished */
 		if (!base)
