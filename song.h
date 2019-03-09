@@ -78,7 +78,7 @@ typedef signed char SAMPLE8;
 #define NUMBER_TRACKS 4
 #define NUMBER_PATTERNS 128
 
-#define NUMBER_EFFECTS 40
+const inline unsigned int NUMBER_EFFECTS=40;
 
 /* some effects names */
 #define EFF_ARPEGGIO    0

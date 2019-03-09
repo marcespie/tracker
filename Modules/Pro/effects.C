@@ -60,7 +60,7 @@ void set_nothing(void)
 
 /* slide pitch (up or down) */
 LOCAL void 
-do_slide(struct channel *ch)
+do_slide(channel *ch)
 {
 	ch->pitch += ch->slide;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
@@ -69,7 +69,7 @@ do_slide(struct channel *ch)
 }
 
 LOCAL void 
-set_upslide(struct channel *ch, struct event *e)
+set_upslide(channel *ch, const event *e)
 {
 	ch->adjust = do_slide;
 	if (e->parameters)
@@ -77,7 +77,7 @@ set_upslide(struct channel *ch, struct event *e)
 }
 
 LOCAL void 
-set_downslide(struct channel *ch, struct event *e)
+set_downslide(channel *ch, const event *e)
 {
 	ch->adjust = do_slide;
 	if (e->parameters)
@@ -85,7 +85,7 @@ set_downslide(struct channel *ch, struct event *e)
 }
 
 LOCAL int 
-sinusoid_value(struct sinusoid *s)
+sinusoid_value(sinusoid *s)
 {
 	s->offset += s->rate;
 	s->offset &= 63;
@@ -93,7 +93,7 @@ sinusoid_value(struct sinusoid *s)
 }
 
 LOCAL void 
-set_sinusoid(struct event *e, struct sinusoid *s)
+set_sinusoid(const event *e, sinusoid *s)
 {
 	if (HI(e->parameters))
 		s->rate = HI(e->parameters);
@@ -105,7 +105,7 @@ set_sinusoid(struct event *e, struct sinusoid *s)
 
 /* modulate the pitch with vibrato */
 LOCAL void 
-do_vibrato(struct channel *ch)
+do_vibrato(channel *ch)
 {
 	/* temporary update of only the step value,
 	* note that we do not change the saved pitch.
@@ -115,20 +115,20 @@ do_vibrato(struct channel *ch)
 }
 
 LOCAL void 
-set_vibrato(struct channel *ch, struct event *e)
+set_vibrato(channel *ch, const event *e)
 {
 	ch->adjust = do_vibrato;
 		set_sinusoid(e, &(ch->vib));
 }
 
 LOCAL void 
-do_tremolo(struct channel *ch)
+do_tremolo(channel *ch)
 {
 	set_temp_volume(ch, ch->volume + sinusoid_value(&(ch->trem))/128);
 }
 
 LOCAL void 
-set_tremolo(struct channel *ch, struct event *e)
+set_tremolo(channel *ch, const event *e)
 {
 	ch->adjust = do_tremolo;
 	set_sinusoid(e, &(ch->trem));
@@ -138,7 +138,7 @@ set_tremolo(struct channel *ch, struct event *e)
  * or three notes very fast.
  */
 LOCAL void 
-do_arpeggio(struct channel *ch)
+do_arpeggio(channel *ch)
 {
 	if (++ch->arpindex >= MAX_ARP)
 		ch->arpindex =0;
@@ -146,7 +146,7 @@ do_arpeggio(struct channel *ch)
 }
 
 LOCAL void 
-set_arpeggio(struct channel *ch, struct event *e)
+set_arpeggio(channel *ch, const event *e)
 {
 	/* arpeggio can be installed relative to the
 	* previous note, so we have to check that there
@@ -180,7 +180,7 @@ set_arpeggio(struct channel *ch, struct event *e)
  * (attack/decay/sustain).
  */
 LOCAL void 
-do_slidevol(struct channel *ch)
+do_slidevol(channel *ch)
 {
 	set_current_volume(ch, ch->volume + ch->volumerate);
 }
@@ -192,7 +192,7 @@ do_slidevol(struct channel *ch)
  * DON'T GET the test order wrong!!! or ghouls will sound strange
  */
 LOCAL void 
-parse_slidevol(struct channel *ch, int para)
+parse_slidevol(channel *ch, int para)
 {
 	if (HI(para))
 		ch->volumerate = HI(para);
@@ -201,7 +201,7 @@ parse_slidevol(struct channel *ch, int para)
 }
 
 LOCAL void 
-set_slidevol(struct channel *ch, struct event *e)
+set_slidevol(channel *ch, const event *e)
 {
 	ch->adjust = do_slidevol;
 	parse_slidevol(ch, e->parameters);
@@ -212,7 +212,7 @@ set_slidevol(struct channel *ch, struct event *e)
  * part while setting up the effect.
  */
 LOCAL void 
-do_portamento(struct channel *ch)
+do_portamento(channel *ch)
 {
 	if (ch->pitchgoal) {
 		if (ch->pitch < ch->pitchgoal) {
@@ -249,7 +249,7 @@ do_portamento(struct channel *ch)
  * of the previous portamento.
  */
 LOCAL void 
-set_portamento(struct channel *ch, pitch pitch, struct event *e)
+set_portamento(channel *ch, pitch pitch, const event *e)
 {
 	if (e->parameters)
 		ch->pitchrate = e->parameters;
@@ -267,14 +267,14 @@ set_portamento(struct channel *ch, pitch pitch, struct event *e)
  ***/
 
 LOCAL void 
-do_portaslide(struct channel *ch)
+do_portaslide(channel *ch)
 {
 	do_portamento(ch);
 	do_slidevol(ch);
 }
 
 LOCAL void 
-set_portaslide(struct channel *ch, pitch pitch, struct event *e)
+set_portaslide(channel *ch, pitch pitch, const event *e)
 {
 	if (pitch)
 		ch->pitchgoal = pitch;
@@ -286,14 +286,14 @@ set_portaslide(struct channel *ch, pitch pitch, struct event *e)
 }
 
 LOCAL void 
-do_vibratoslide(struct channel *ch)
+do_vibratoslide(channel *ch)
 {
 	do_vibrato(ch);
 	do_slidevol(ch);
 }
 
 LOCAL void 
-set_vibratoslide(struct channel *ch, struct event *e)
+set_vibratoslide(channel *ch, const event *e)
 {
 	ch->adjust = do_vibratoslide;
 	parse_slidevol(ch, e->parameters);
@@ -314,7 +314,7 @@ set_vibratoslide(struct channel *ch, struct event *e)
  * there can be several speed change in the same note.
  */
 LOCAL void 
-set_speed(struct automaton *a, struct event *e)
+set_speed(automaton *a, const event *e)
 {
 	if (e->parameters >= 32 && 
 	    get_pref_scalar(PREF_SPEEDMODE) != OLD_SPEEDMODE) {
@@ -328,14 +328,14 @@ set_speed(struct automaton *a, struct event *e)
 
 /* older soundtracker speed change effect */
 LOCAL void 
-set_st_speed(struct automaton *a, struct event *e)
+set_st_speed(automaton *a, const event *e)
 {
 	a->new_speed = e->parameters;
 	a->do_stuff |= SET_SPEED;
 }
 
 LOCAL void 
-set_skip(struct automaton *a, struct event *e)
+set_skip(automaton *a, const event *e)
 {
 	/* BCD decoding in read.c */
 	a->new_note = e->parameters;
@@ -343,7 +343,7 @@ set_skip(struct automaton *a, struct event *e)
 }
 
 LOCAL void 
-set_fastskip(struct automaton *a, struct event *e)
+set_fastskip(automaton *a, const event *e)
 {
 	a->new_pattern = e->parameters;
 	a->do_stuff |= SET_FASTSKIP;
@@ -353,7 +353,7 @@ set_fastskip(struct automaton *a, struct event *e)
  * off the start.
  */
 LOCAL void 
-set_offset(struct channel *ch, struct event *e)
+set_offset(channel *ch, const event *e)
 {
 	if (e->parameters)
 		ch->start_offset = e->parameters * 256;
@@ -367,7 +367,7 @@ set_offset(struct channel *ch, struct event *e)
  * and do a set_volume in the same note, the set_volume will take precedence.
  */
 LOCAL void 
-set_volume(struct channel *ch, struct event *e)
+set_volume(channel *ch, const event *e)
 {
 	set_current_volume(ch, e->parameters);
 }
@@ -382,7 +382,7 @@ set_volume(struct channel *ch, struct event *e)
 /* retrig note at a fast pace
  */
 LOCAL void 
-do_retrig(struct channel *ch)
+do_retrig(channel *ch)
 {
 	if (--ch->current <= 0) {
 		start_note(ch);
@@ -391,7 +391,7 @@ do_retrig(struct channel *ch)
 }
 
 LOCAL void 
-set_retrig(struct channel *ch, struct event *e)
+set_retrig(channel *ch, const event *e)
 {
 	ch->retrig = e->parameters;
 	ch->current = ch->retrig;
@@ -401,7 +401,7 @@ set_retrig(struct channel *ch, struct event *e)
 /* start note after a small delay
  */
 LOCAL void 
-do_latestart(struct channel *ch)
+do_latestart(channel *ch)
 {
 	if (--ch->current <= 0) {
 		set_current_note(ch, ch->note, ch->pitch);
@@ -411,7 +411,7 @@ do_latestart(struct channel *ch)
 }
 
 LOCAL void 
-set_late_start(struct channel *ch, struct event *e)
+set_late_start(channel *ch, const event *e)
 {
 	/* stop previous note if necessary */
 	stop_note(ch);
@@ -423,7 +423,7 @@ set_late_start(struct channel *ch, struct event *e)
  * as protracker does (compatibility...)
  */
 LOCAL void 
-do_cut(struct channel *ch)
+do_cut(channel *ch)
 {
 	if (ch->retrig) {
 		if (--ch->retrig == 0)
@@ -432,7 +432,7 @@ do_cut(struct channel *ch)
 }
 
 LOCAL void 
-set_note_cut(struct channel *ch, struct event *e)
+set_note_cut(channel *ch, const event *e)
 {
 	ch->retrig = e->parameters;
 	ch->adjust = do_cut;
@@ -440,7 +440,7 @@ set_note_cut(struct channel *ch, struct event *e)
 
 
 LOCAL void 
-set_smooth_up(struct channel *ch, struct event *e)
+set_smooth_up(channel *ch, const event *e)
 {
 	ch->pitch += e->parameters;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
@@ -449,7 +449,7 @@ set_smooth_up(struct channel *ch, struct event *e)
 }
 
 LOCAL void 
-set_smooth_down(struct channel *ch, struct event *e)
+set_smooth_down(channel *ch, const event *e)
 {
 	ch->pitch -= e->parameters;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
@@ -458,7 +458,7 @@ set_smooth_down(struct channel *ch, struct event *e)
 }
 
 LOCAL void 
-set_change_finetune(struct channel *ch, struct event *e)
+set_change_finetune(channel *ch, const event *e)
 {
 	ch->finetune = e->parameters;
 	if (e->note != NO_NOTE) {
@@ -470,7 +470,7 @@ set_change_finetune(struct channel *ch, struct event *e)
 
 
 LOCAL void 
-set_loop(struct channel *ch, struct automaton *a, struct event *e)
+set_loop(channel *ch, automaton *a, const event *e)
 {
 	/* Note: the current implementation of protracker
 	* does not allow for a jump from pattern to pattern,
@@ -497,20 +497,20 @@ set_loop(struct channel *ch, struct automaton *a, struct event *e)
 }
 
 LOCAL void 
-set_smooth_upvolume(struct channel *ch, struct event *e)
+set_smooth_upvolume(channel *ch, const event *e)
 {
 	set_current_volume(ch, ch->volume + e->parameters);
 }
 
 LOCAL void 
-set_smooth_downvolume(struct channel *ch, struct event *e)
+set_smooth_downvolume(channel *ch, const event *e)
 {
 	set_current_volume(ch, ch->volume - e->parameters);
 }
 
 
 LOCAL void 
-set_delay_pattern(struct automaton *a, struct event *e)
+set_delay_pattern(automaton *a, const event *e)
 {
 	a->delay_counter = (e->parameters + 1);
 }
@@ -518,7 +518,7 @@ set_delay_pattern(struct automaton *a, struct event *e)
 
 
 LOCAL void 
-set_gliss_ctrl(struct channel *ch, struct event *e)
+set_gliss_ctrl(channel *ch, const event *e)
 {
 	if (e->parameters)
 		ch->funk_glissando = true;
@@ -527,7 +527,7 @@ set_gliss_ctrl(struct channel *ch, struct event *e)
 }
 
 LOCAL void 
-set_sine_wave(struct event *e, struct sinusoid *s)
+set_sine_wave(const event *e, sinusoid *s)
 {
 	s->table = vibrato_table[e->parameters & 3];
 	if (e->parameters & 4)
@@ -537,19 +537,19 @@ set_sine_wave(struct event *e, struct sinusoid *s)
 }
 
 LOCAL void 
-set_vibrato_wave(struct channel *ch, struct event *e)
+set_vibrato_wave(channel *ch, const event *e)
 {
 	set_sine_wave(e, &(ch->vib));
 }
 
 LOCAL void 
-set_tremolo_wave(struct channel *ch, struct event *e)
+set_tremolo_wave(channel *ch, const event *e)
 {
 	set_sine_wave(e, &(ch->trem));
 }
 
 LOCAL void 
-do_invert(struct channel *ch)
+do_invert(channel *ch)
 {
 	ch->invert_offset += ch->invert_speed;
 	if (ch->invert_offset >= 128) {
@@ -564,7 +564,7 @@ do_invert(struct channel *ch)
 }
 
 LOCAL void 
-set_invert_loop(struct channel *ch, struct event *e)
+set_invert_loop(channel *ch, const event *e)
 {
 	LOCAL unsigned char funk_table[] =
 	    {0, 5, 6, 7, 8, 10, 11, 13, 16, 19, 22, 26, 32, 43, 64, 128};
@@ -578,9 +578,9 @@ set_invert_loop(struct channel *ch, struct event *e)
 
 /* initialize the whole effect table */
 void 
-init_effects(struct st_effect table[])
+init_effects(st_effect table[])
 {
-	for (int i = 0; i < NUMBER_EFFECTS; i++)
+	for (unsigned int i = 0; i < NUMBER_EFFECTS; i++)
 		table[i].type = NOTHING;
 	table[EFF_ARPEGGIO].f.CH_E = set_arpeggio;
 	table[EFF_SPEED].f.A_E = set_speed;
