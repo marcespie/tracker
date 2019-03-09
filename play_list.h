@@ -10,10 +10,13 @@
  *
  */
 
-#define UNKNOWN 42
+const int UNKNOWN=42;
 
-typedef struct play_entry {
+struct play_entry {
 		const char *filename;
 		int filetype;
 		char name[1];
-} *ENTRY;
+};
+
+
+using ENTRY = play_entry *;
