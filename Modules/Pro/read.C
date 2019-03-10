@@ -23,8 +23,9 @@ LOCAL unsigned int patsize;
 LOCAL unsigned char *buffer;		/* Buffer to read everything */
 LOCAL unsigned int bufsize;
 
-LOCAL void setup_buffer(unsigned int size)
-	{
+LOCAL void 
+setup_buffer(unsigned int size)
+{
 	bufsize = size;
 	if (!buffer)
 		buffer = (unsigned char *)malloc(bufsize);
@@ -32,7 +33,7 @@ LOCAL void setup_buffer(unsigned int size)
 		buffer = (unsigned char *)realloc(buffer, bufsize);
 	if (!buffer)
 		end_all("Memory allocation");
-	}
+}
 
 /***
  ***	Low level st-file access routines 
@@ -43,44 +44,42 @@ LOCAL void setup_buffer(unsigned int size)
  * I.e, it is a fixed length string terminated
  * by a 0 if too short. 
  */
-LOCAL char *getstring(struct exfile *f, unsigned int len)
-   {
-   char *n;
-        
-   assert(len < bufsize);
+LOCAL char *
+getstring(exfile *f, unsigned int len)
+{
+	assert(len < bufsize);
 	read_file(buffer, len, 1, f);
-   buffer[len] = '\0';
-   n = (char *)malloc(strlen((const char *)buffer)+1);
-   if (!n) 
-      return NULL;
+	buffer[len] = '\0';
+	char *n = (char *)malloc(strlen((const char *)buffer)+1);
+	if (!n) 
+		return NULL;
 
-   return strcpy(n, (char *)buffer);
-   }
+	return strcpy(n, (char *)buffer);
+}
 
 /* byteskip(f, len)
  * same as fseek, except it works on stdin
  */
-LOCAL void byteskip(struct exfile *f, unsigned long int len)
-   {
-	while (len > bufsize)
-		{
+LOCAL void 
+byteskip(exfile *f, unsigned long int len)
+{
+	while (len > bufsize) {
 		read_file(buffer, bufsize, 1, f);
 		len -= bufsize;
-		}
+	}
 	read_file(buffer, len, 1, f);
-   }
+}
 
 /* v = getushort(f)
  * reads an unsigned short from f
  */
-LOCAL unsigned int getushort(struct exfile *f)
-   {
-   unsigned int i;
-
-      /* order dependent !!! */
-   i = getc_file(f) << 8;
-   return i | getc_file(f);
-   }
+LOCAL unsigned int 
+getushort(exfile *f)
+{
+	/* order dependent !!! */
+	unsigned int i = getc_file(f) << 8;
+	return i | getc_file(f);
+}
 
 /***
  ***  Sample handling
@@ -94,241 +93,218 @@ LOCAL unsigned int getushort(struct exfile *f)
  * fix_rp_length will have the values you can expect if part of the sample 
  * is missing.
  */
-LOCAL struct sample_info *fill_sample_info(struct exfile *f)
-   {
-      /* New method: instead of allocating/freeing sample infos,
-       * we keep one in reserve */
-	static struct sample_info *info = NULL;
+LOCAL sample_info *
+fill_sample_info(exfile *f)
+{
+	/* New method: instead of allocating/freeing sample infos,
+	* we keep one in reserve */
+	static struct sample_info *info = nullptr;
 	struct sample_info *result;
 
-   if (!info)
-      {
-      info = (struct sample_info *)malloc(sizeof(struct sample_info));
-   	if (!info)
-	   	{
-		   error = OUT_OF_MEM;
-   		return NULL;
-	   	}
-      }
+	if (!info) {
+		info = (struct sample_info *)malloc(sizeof(struct sample_info));
+		if (!info) {
+			error = OUT_OF_MEM;
+			return nullptr;
+		}
+	}
 	info->finetune = 0;
-	info->name = NULL;
+	info->name = nullptr;
 	info->length = 0;
-	info->start = NULL;
+	info->start = nullptr;
 	info->sample_size = 8;
-	info->rp_start = NULL;
+	info->rp_start = nullptr;
 
-   info->name = getstring(f, SAMPLENAME_MAXLENGTH);
-   if (!info->name)
-      {
-      error = OUT_OF_MEM;
-      return NULL;
-      }
-   info->length = getushort(f);
-   info->finetune = getc_file(f);
-   if (info->finetune > 15)
-      info->finetune = 0;
-   info->volume = getc_file(f);
-   info->volume = MIN(info->volume, MAX_VOLUME);
-   info->rp_offset = getushort(f);
-   info->rp_length = getushort(f);
+	info->name = getstring(f, SAMPLENAME_MAXLENGTH);
+	if (!info->name) {
+		error = OUT_OF_MEM;
+		return nullptr;
+	}
+	info->length = getushort(f);
+	info->finetune = getc_file(f);
+	if (info->finetune > 15)
+		info->finetune = 0;
+	info->volume = getc_file(f);
+	info->volume = MIN(info->volume, MAX_VOLUME);
+	info->rp_offset = getushort(f);
+	info->rp_length = getushort(f);
 
-   /* the next check is for old modules for which
-    * the sample data types are a bit confused, so
-    * that what we were expecting to be #words is #bytes.
-    */
-      /* not sure I understand the -1 myself, though it's
-       * necessary to play kawai-k1 correctly 
-       */
-   if (info->rp_length + info->rp_offset - 1 > info->length)
-      info->rp_offset /= 2;
-    
-   if (info->rp_length + info->rp_offset > info->length)
-      info->rp_length = info->length - info->rp_offset;
+	/* the next check is for old modules for which
+	 * the sample data types are a bit confused, so
+	 * that what we were expecting to be #words is #bytes.
+	 */
+	/* not sure I understand the -1 myself, though it's
+	 * necessary to play kawai-k1 correctly 
+	 */
+	if (info->rp_length + info->rp_offset - 1 > info->length)
+		info->rp_offset /= 2;
 
-   info->length *= 2;
-   info->rp_offset *= 2;
-   info->rp_length *= 2;
-      /* in all logic, a 2-sized sample could exist, but this is 
-		 * not the case, and even so, some flavors of soundtracker 
-		 * output empty instruments as being 2-sized.
-       */
+	if (info->rp_length + info->rp_offset > info->length)
+		info->rp_length = info->length - info->rp_offset;
+
+	info->length *= 2;
+	info->rp_offset *= 2;
+	info->rp_length *= 2;
+	/* in all logic, a 2-sized sample could exist, but this is 
+	 * not the case, and even so, some flavors of soundtracker 
+	 * output empty instruments as being 2-sized.
+	*/
 	if (info->rp_length <= 2)
 		info->rp_length = 0;
 
-   if (info->length <= 2)
-      {
+	if (info->length <= 2) {
 		if (info->name)
 			free(info->name);
-		return NULL;
-      }
-   if (info->length > MAX_SAMPLE_LENGTH)
-      error = CORRUPT_FILE;
-   result = info;
-   info = NULL;
-   return result;
-   }
+		return nullptr;
+	}
+	if (info->length > MAX_SAMPLE_LENGTH)
+		error = CORRUPT_FILE;
+	result = info;
+	info = nullptr;
+	return result;
+}
 
 	
-LOCAL void fill_sample_infos(struct song *song, struct exfile *f)
-	{
-	unsigned int i;
-
-   for (i = 1; i <= song->ninstr; i++)
-      {
+LOCAL void 
+fill_sample_infos(song *song, exfile *f)
+{
+	for (unsigned int i = 1; i <= song->ninstr; i++) {
 		song->samples[i] = fill_sample_info(f);
 		if (error != NONE)
-         return;
-      }
+			return;
 	}
+}
 
-LOCAL void free_sample_info(struct sample_info *sample)
-	{
-	if (sample)
-		{
+LOCAL void 
+free_sample_info(sample_info *sample)
+{
+	if (sample) {
 		if (sample->start)
 			free_sample(sample->start);
 		if (sample->name)
 			free(sample->name);
 		free(sample);
-		}
 	}
+}
 
-LOCAL void setup_used_samples(struct song *song, unsigned char used[])
-	{
-	unsigned int i;
-
-	for (i = 1; i <= song->ninstr; i++)
+LOCAL void 
+setup_used_samples(song *song, unsigned char used[])
+{
+	for (unsigned int i = 1; i <= song->ninstr; i++)
 		used[i] = false;
-	for (i = 0; i < song->info.plength * song->ntracks * song->info.npat; i++)
-			{
-			assert(song->info.data[i].sample_number < MAX_NUMBER_SAMPLES);
-			used[song->info.data[i].sample_number] = true;
-			}
+	for (unsigned int i = 0; 
+	    i < song->info.plength * song->ntracks * song->info.npat; i++) {
+		assert(song->info.data[i].sample_number < MAX_NUMBER_SAMPLES);
+		used[song->info.data[i].sample_number] = true;
 	}
+}
 	
-LOCAL unsigned long compress_samples(struct song *song, unsigned char used[])
-	{
+LOCAL unsigned long 
+compress_samples(song *song, unsigned char used[])
+{
 	unsigned char map_sample[MAX_NUMBER_SAMPLES];
 	unsigned int i, j;
-	unsigned long winned;
+	unsigned long won = 0;
 
-	winned = 0;
 	j = 0;
-	for (i = 1; i <= song->ninstr; i++)
-		{
-		if (used[i])
-			{
-			if (song->samples[i])
-			   {
-			   map_sample[i] = ++j;
-			   song->samples[j] = song->samples[i];
-			   song->samples[j]->color = j%15+1;
-			   }
-			else
-			   /* empty samples are remapped to the last sample.
-			    * If there are empty samples, then the last sample is free,
-             * after the remapping.
-             */
-			   map_sample[i] = LAST_SAMPLE;
-         }
-		else
-			{
+	for (i = 1; i <= song->ninstr; i++) {
+		if (used[i]) {
+		if (song->samples[i]) {
+			map_sample[i] = ++j;
+			song->samples[j] = song->samples[i];
+			song->samples[j]->color = j%15+1;
+		} else
+			/* empty samples are remapped to the last sample.
+			 * If there are empty samples, then the last sample 
+			 * is free, after the remapping.
+			 */
+			map_sample[i] = LAST_SAMPLE;
+		} else {
 			map_sample[i] = 0;
-			winned += sizeof(struct sample_info);
-			if (song->samples[i])
-			   {
-			   winned += song->samples[i]->length;
-			   }
+			won += sizeof(struct sample_info);
+			if (song->samples[i]) {
+				won += song->samples[i]->length;
+			}
 			free_sample_info(song->samples[i]);
 			song->samples[i] = NULL;
-			}
 		}
-		/* don't forget to map `no sample' to `no sample' */
-	map_sample[0] = 0;
-      /* don't bother removing stuff after song->ninstr */
-	song->ninstr = j;
-      /* set the last sample to be the empty sample, see above */
-	if (j < LAST_SAMPLE)
-      song->samples[LAST_SAMPLE] = empty_sample();
-
-		/* effectively remap samples around */
-
-	for (i = 0; i < song->info.plength * song->ntracks * song->info.npat; i++)
-			song->info.data[i].sample_number = 
-				map_sample[song->info.data[i].sample_number];
-
-	return winned;
 	}
+	/* don't forget to map `no sample' to `no sample' */
+	map_sample[0] = 0;
+	/* don't bother removing stuff after song->ninstr */
+	song->ninstr = j;
+	/* set the last sample to be the empty sample, see above */
+	if (j < LAST_SAMPLE)
+		song->samples[LAST_SAMPLE] = empty_sample();
+
+	/* effectively remap samples around */
+
+	for (i = 0; 
+	    i < song->info.plength * song->ntracks * song->info.npat; i++)
+		song->info.data[i].sample_number = 
+		    map_sample[song->info.data[i].sample_number];
+
+	return won;
+}
 
 
-LOCAL void read_sample(struct sample_info *info, struct exfile *f)
-	{
-		/* add one byte for resampling */
+LOCAL void 
+read_sample(sample_info *info, exfile *f)
+{
+	/* add one byte for resampling */
 	info->start = (SAMPLE8 *)alloc_sample(info->length + 1);
-	if (!info->start)
-		{
+	if (!info->start) {
 		error = OUT_OF_MEM;
 		return;
-		}
+	}
 
 	if (info->rp_length)
 		info->rp_start = info->start + info->rp_offset;
 
 	obtain_sample(info->start, info->length, f);
-	}
+}
 
 
-LOCAL void read_samples(struct song *song, struct exfile *f, char used[])
-	{
-	unsigned int i;
-
-#if 0
-   if (feof(f))
-      for (i = 1; i <= song->ninstr; i++)
-         find_sample(song->samples[i]);
-   else
-#endif
-      /* read samples from the file if they are needed */
-	for (i = 1; i <= song->ninstr; i++)
-		if (song->samples[i])	/* does the sample exist ? */
-			{
-			if (used[i]) 			/* do we need it ? */
+LOCAL void 
+read_samples(song *song, exfile *f, char used[])
+{
+	/* read samples from the file if they are needed */
+	for (unsigned int i = 1; i <= song->ninstr; i++)
+		if (song->samples[i]) {	/* does the sample exist ? */
+			if (used[i]) 	/* do we need it ? */
 				read_sample(song->samples[i], f);
 			else
 				byteskip(f, song->samples[i]->length);
-			}
-	}
-	
+		}
+}
+
 /***
- *** Pattern information handling
- ***/
+*** Pattern information handling
+***/
 
-LOCAL void fill_pattern_numbers(struct song_info *info, struct exfile *f)
-	{
-	unsigned int i;
-	unsigned int p;
-
-	for (i = 0; i < NUMBER_PATTERNS; i++)
-		{
-		p = getc_file(f);
+LOCAL void 
+fill_pattern_numbers(song_info *info, exfile *f)
+{
+	for (unsigned int i = 0; i < NUMBER_PATTERNS; i++) {
+		unsigned int p = getc_file(f);
 		if (p >= NUMBER_PATTERNS)
 			p = 0;
 		if (p+1 > info->npat)
 			info->npat = p+1;
 		info->patnumber[i] = p;
-		}
 	}
+}
 
-LOCAL void mark_used_pattern_numbers(struct song_info *info, 
-		unsigned char used[])
-	{
+LOCAL void 
+mark_used_pattern_numbers(song_info *info, unsigned char used[])
+{
 	unsigned int i;
 
 	for (i = 0; i < NUMBER_PATTERNS; i++)
 		used[i] = 0;
 	for (i = 0; i < info->length; i++)
 		used[info->patnumber[i]] = 1;
-	}
+}
 
 /* n = compress_patterns(info, used):
  * -> n:      number of actually used patterns
