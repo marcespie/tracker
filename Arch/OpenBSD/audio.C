@@ -11,7 +11,6 @@
 #include <sndio.h>
 struct options_set *port_options=0;
 
-#define DEFAULT_BUFFERS
 #define UNSIGNED8
 
 /* fine-tune to get the scrolling display in sync with the music */
@@ -48,13 +47,6 @@ void set_mix(int percent)
 
 
 
-#ifdef UNSIGNED_BUFFERS
-#define UNSIGNED8
-#define UNSIGNED16
-#endif
-
-#ifdef DEFAULT_BUFFERS
-
 #ifdef UNSIGNED16
 LOCAL unsigned short *buffer16;
 #define VALUE16(x)	((x)+32768)
@@ -73,15 +65,6 @@ LOCAL char *buffer;
 LOCAL unsigned long idx;
 LOCAL int dsize;			/* current data size */
 LOCAL unsigned long samples_max;	/* number of samples in buffer */
-
-#endif	/* DEFAULT_BUFFERS */
-
-#ifdef SEPARATE_BUFFERS
-LOCAL char *buffer, *buffer_l, *buffer_r;
-LOCAL unsigned long idx;
-#endif
-
-
 
 
 LOCAL void 
@@ -175,7 +158,6 @@ movecb(void *, int delta)
 unsigned long 
 open_audio(unsigned long f, int)
 {
-
 	hdl = sio_open(NULL, SIO_PLAY, 0);
 	if (hdl == NULL)
 		end_all("Error opening audio device");
@@ -321,18 +303,21 @@ close_audio(void)
 	delete [] buffer;
 }
 
-unsigned long update_frequency(void)
-	{
+unsigned long 
+update_frequency(void)
+{
 	return 0;
-	}
+}
 
-void discard_buffer(void)
-	{
+void 
+discard_buffer(void)
+{
 	remove_pending_tags();
 	total = 0;
-	}
+}
 
-void audio_ui(char c)
-	{
-	}
+void 
+audio_ui(char)
+{
+}
 
