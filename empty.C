@@ -16,17 +16,15 @@ LOCAL struct sample_info dummy;
 LOCAL void 
 init_empty(void)
 {
-	unsigned int i;
-
-	dummy.name = NULL;
+	dummy.name = nullptr;
 	dummy.length = dummy.rp_offset = dummy.rp_length = 0;
 	dummy.fix_length = dummy.fix_rp_length = 0;
 	dummy.volume = 0;
 	dummy.finetune = 0;
 	dummy.start = dummy.rp_start = NULL;
 	dummy.color = 1;
-	for (i = 0; i <= MAX_VOLUME; i++)
-		dummy.volume_lookup[i] = 0;
+	for (auto& x: dummy.volume_lookup)
+		x = 0;
 }
 
 struct sample_info *
@@ -36,4 +34,3 @@ empty_sample(void)
 
 	return &dummy;
 }
-
