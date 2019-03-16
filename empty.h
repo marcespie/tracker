@@ -1,6 +1,4 @@
-/* empty.h
-   vi:ts=3 sw=3:
- */
+/* empty.h */
 
 /* empty = empty_sample():
  * return a suitable empty sample

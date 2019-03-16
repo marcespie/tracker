@@ -1,6 +1,4 @@
-/* tags.h 
-	vi:ts=3 sw=3:
- */
+/* tags.h */
 
 #define forever for(;;)
 

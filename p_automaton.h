@@ -1,20 +1,4 @@
-/* pautomaton.h 
-	vi:ts=3 sw=3:
- */
-
-/* $Id: p_automaton.h,v 1.2 1996/05/06 07:36:26 espie Exp espie $
- * $Log: p_automaton.h,v $
- * Revision 1.2  1996/05/06 07:36:26  espie
- * *** empty log message ***
- *
- * Revision 1.1  1996/04/12 16:30:49  espie
- * Initial revision
- *
- * Revision 1.1  1996/04/09 21:13:28  espie
- * Initial revision
- *
- */
-
+/* p_automaton.h */
 
 #define DO_SET_NOTHING 0 
 #define SET_SPEED 1
@@ -27,8 +11,7 @@
 
 #define NORMAL_SPEED 6
                                                                                
-struct automaton
-   {
+struct automaton {
    unsigned int pattern_num;           /* the pattern in the song */
    unsigned int note_num;              /* the note in the pattern */
    struct pattern *pattern;     /* the physical pattern */
@@ -55,4 +38,4 @@ struct automaton
 										/* =0 -> no delay, next pattern immediately
 										 * >0 -> count down */
 	unsigned long time_spent;
-   };
+};

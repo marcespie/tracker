@@ -8,11 +8,7 @@
 
 #include "defs.h"
 #include <sys/types.h>
-#ifdef IS_POSIX
 #include <time.h>
-#else
-#include <sys/time.h>
-#endif
 
 /* n = random_range(max): output a number in the range 0:max - 1.
  * For our purpose, we don't have to get a very random number,

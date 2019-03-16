@@ -1,36 +1,4 @@
-/* options.h 
-	vi:ts=3 sw=3:
- */
-/* $Id: options.h,v 5.0 1995/10/21 14:56:55 espie Exp espie $ */
-/* $Log: options.h,v $
- * Revision 5.0  1995/10/21 14:56:55  espie
- * New
- *
- * Revision 4.16  1995/07/02 17:52:46  espie
- * *** empty log message ***
- *
- * Revision 4.15  1995/03/17 00:32:38  espie
- * *** empty log message ***
- *
- * Revision 4.14  1995/03/06  22:35:47  espie
- * Colour can be default.
- *
- * Revision 4.13  1995/03/01  15:24:51  espie
- * options half/double.
- *
- * Revision 4.12  1995/02/21  17:54:32  espie
- * Internal problem: buggy RCS. Fixed logs.
- *
- * Revision 4.7  1995/02/01  20:41:45  espie
- * Added color.
- *
- * Revision 4.6  1995/02/01  16:39:04  espie
- * Moved includes.
- *
- * Revision 4.3  1994/08/23  18:19:46  espie
- * Added speedmode option.
- * */
-
+/* options.h */
 #define BAD_OPTION (-1)
 #define OPT_HELP 0
 #define OPT_QUIET 1

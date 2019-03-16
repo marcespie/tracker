@@ -7,9 +7,6 @@
 #include <time.h>
 
 #include <vector>
-#ifndef S_ISDIR
-#define S_ISDIR(p) ((p) & S_IFDIR)
-#endif
 #include "defs.h"
 #include "extern.h"
 #include "play_list.h"
