@@ -21,13 +21,13 @@ extern void dump_delimiter(void);
 
 
 /*--------------------------- main.c -----------------------------*/
-#define OLD 0
-#define NEW 1
+const auto OLD=0;
+const auto NEW=1;
 /* special new type: for when we try to read it as both types.
  */
-#define BOTH 2
+const auto BOTH=2;
 /* special type: does not check the signature */
-#define NEW_NO_CHECK 3
+const auto NEW_NO_CHECK=3;
 
 
 /* error types. Everything is centralized,
@@ -37,28 +37,28 @@ extern void dump_delimiter(void);
  */
  
 /* normal state */
-#define NONE 0  
+const auto NONE=0;
 /* read error */
-#define FILE_TOO_SHORT 1
-#define CORRUPT_FILE 2
+const auto FILE_TOO_SHORT=1;
+const auto CORRUPT_FILE=2;
 /* trap error: goto next song right now */
-#define NEXT_SONG 3
+const auto NEXT_SONG=3;
 /* run time problem */
-#define FAULT 4
+const auto FAULT=4;
 /* the song has ended */
-#define ENDED 5
+const auto ENDED=5;
 /* unrecoverable problem: typically, trying to 
  * jump to nowhere land.
  */
-#define UNRECOVERABLE 6
+const auto UNRECOVERABLE=6;
 /* Missing sample. Very common error, not too serious. */
-#define SAMPLE_FAULT 7
+const auto SAMPLE_FAULT=7;
 /* New */
-#define PREVIOUS_SONG 8
-#define OUT_OF_MEM 9
+const auto PREVIOUS_SONG=8;
+const auto OUT_OF_MEM=9;
 
 /* all soundtracker feature */
-#define NOT_SUPPORTED 10
+const auto NOT_SUPPORTED=10;
 extern int error;
 
 
@@ -177,31 +177,30 @@ extern int obtain_sample(GENERIC start, unsigned long l, struct exfile *f);
  *   values) will ONLY get freed when you ask for it !
  */
 extern struct tag *get_ui(void);
-#define BASE_UI 10
-#define UI_NEXT_SONG	(BASE_UI)            /* load next song */
-#define UI_PREVIOUS_SONG (BASE_UI + 1)    /* load previous song */
-#define UI_LOAD_SONG (BASE_UI + 2)        /* load song. Name as value */
-#define UI_SET_BPM (BASE_UI + 3)          /* set beat per minute to value */
-#define UI_JUMP_TO_PATTERN (BASE_UI + 4)  /* jump to pattern #value.  Use 
-       												 * display_pattern to keep in 
-														 * sync with the player */
-#define UI_RESTART (BASE_UI + 5)          /* restart current song. Not 
-														 * quite jump to 0 */
-#define UI_QUIT (BASE_UI + 6)             /* need I say more ? */
-#define UI_DISPLAY (BASE_UI + 7)          /* status of scrolling window: 
-														 * true or false */
-
+const auto BASE_UI=10;
+const auto UI_NEXT_SONG=BASE_UI;	/* load next song */
+const auto UI_PREVIOUS_SONG=BASE_UI+1;	/* load previous song */
+const auto UI_LOAD_SONG=BASE_UI+2;	/* load song. Name as value */
+const auto UI_SET_BPM=BASE_UI+3;	/* set beat per minute to value */
+const auto UI_JUMP_TO_PATTERN=BASE_UI+4;/* jump to pattern #value.  Use
+       					 * display_pattern to keep in 
+					 * sync with the player */
+const auto UI_RESTART=BASE_UI+5; 	/* restart current song. Not 
+					 * quite jump to 0 */
+const auto UI_QUIT=BASE_UI+6;
+const auto UI_DISPLAY=BASE_UI+7; 	/* status of scrolling window: 
+					 * true or false */ 
 
 /* st_play.c translates the get_ui() tags in a standard way.
  * Actually it doesn't translate anything right now...
  */
-#define BASE_PLAY 20
-#define PLAY_NEXT_SONG UI_NEXT_SONG
-#define PLAY_PREVIOUS_SONG UI_PREVIOUS_SONG
-#define PLAY_LOAD_SONG UI_LOAD_SONG
+const auto BASE_PLAY=20;
+const auto PLAY_NEXT_SONG=UI_NEXT_SONG;
+const auto PLAY_PREVIOUS_SONG=UI_PREVIOUS_SONG;
+const auto PLAY_LOAD_SONG=UI_LOAD_SONG;
 
-#define PLAY_ERROR BASE_PLAY
-#define PLAY_ENDED (BASE_PLAY+1)
+const auto PLAY_ERROR=BASE_PLAY;
+const auto PLAY_ENDED=BASE_PLAY+1;
 
 /* Most of these functions are information display function.
  * A correct implementation should heed run_in_fg() if needed

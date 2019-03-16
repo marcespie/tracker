@@ -16,7 +16,7 @@ using SAMPLE8 = signed char;
 
 #define BLOCK_LENGTH 64
 #define NUMBER_TRACKS 4
-#define NUMBER_PATTERNS 128
+const auto NUMBER_PATTERNS=128;
 
 const inline unsigned int NUMBER_EFFECTS=40;
 
