@@ -52,7 +52,7 @@ getstring(exfile *f, unsigned int len)
 	buffer[len] = '\0';
 	char *n = (char *)malloc(strlen((const char *)buffer)+1);
 	if (!n) 
-		return NULL;
+		return nullptr;
 
 	return strcpy(n, (char *)buffer);
 }
@@ -101,13 +101,8 @@ fill_sample_info(exfile *f)
 	static struct sample_info *info = nullptr;
 	struct sample_info *result;
 
-	if (!info) {
-		info = (struct sample_info *)malloc(sizeof(struct sample_info));
-		if (!info) {
-			error = OUT_OF_MEM;
-			return nullptr;
-		}
-	}
+	if (!info)
+		info = new sample_info;
 	info->finetune = 0;
 	info->name = nullptr;
 	info->length = 0;
@@ -183,7 +178,7 @@ free_sample_info(sample_info *sample)
 			free_sample(sample->start);
 		if (sample->name)
 			free(sample->name);
-		free(sample);
+		delete sample;
 	}
 }
 

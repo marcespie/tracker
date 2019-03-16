@@ -11,7 +11,7 @@ static void init_empty (void);
 
 static void (*INIT)(void) = init_empty;
 
-static struct sample_info dummy;
+static sample_info dummy;
 
 static void 
 init_empty(void)
@@ -27,7 +27,7 @@ init_empty(void)
 		x = 0;
 }
 
-struct sample_info *
+sample_info *
 empty_sample(void)
 {
 	INIT_ONCE;

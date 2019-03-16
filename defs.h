@@ -38,14 +38,3 @@ struct option_set;
 struct iff;
 struct comm_chunk;
 struct exfile;
-
-
-/* memory test */
-#ifdef MUNG
-#define malloc(n) do_malloc(n, __FILE__, __LINE__)
-#define free(n) do_free(n, __FILE__, __LINE__)
-#define calloc(n, s) do_calloc(n, s, __FILE__, __LINE__)
-#define realloc(p, n) do_realloc(p, n, __FILE__, __LINE__)
-#else
-#define mung_message(p)
-#endif

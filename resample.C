@@ -68,7 +68,8 @@ new_channel_tag_list(tag *prop)
 	return n;
 }
 
-void release_audio_channels(void)
+void 
+release_audio_channels(void)
 {
 	for (unsigned int i = 0; i < NUMBER_SIDES; i++)
 		total[i] = 0;
