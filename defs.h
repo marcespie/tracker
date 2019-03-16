@@ -6,10 +6,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-#ifndef EXPAND_WILDCARDS
-#define EXPAND_WILDCARDS(x,y)
-#endif
-
 const auto READ_ONLY="rb";
 const auto WRITE_ONLY="wb";
 

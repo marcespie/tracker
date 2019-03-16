@@ -3,7 +3,6 @@
 //inline const auto NUMBER_PATTERNS=128;
 
 const auto MAX_ARP=3;
-#define MAX_ARP 3
      
 /* there is no note in each channel initially.
  * This is defensive programming, because some
