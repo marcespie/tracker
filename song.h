@@ -70,69 +70,64 @@ const inline unsigned int NUMBER_EFFECTS=40;
 /* we refuse to allocate more than 500000 bytes for one sample */
 #define MAX_SAMPLE_LENGTH 500000
 
-struct sample_info
-   {
-   SAMPLE8 *start, *rp_start;
-   unsigned long  fix_length, fix_rp_length;
+struct sample_info {
+	SAMPLE8 *start, *rp_start;
+	unsigned long  fix_length, fix_rp_length;
 
-   unsigned int volume;
+	unsigned int volume;
 	unsigned short volume_lookup[MAX_VOLUME+1];
-   short finetune;
+	short finetune;
 	unsigned short color;
 	unsigned short sample_size;			/* 8 or 16 */
 
-   char *name;
-   unsigned long  length, rp_offset, rp_length;
-   };
+	char *name;
+	unsigned long  length, rp_offset, rp_length;
+};
 
 /* the actual parameters may be split in two halves occasionally */
 
 #define LOW(para) ((para) & 15)
 #define HI(para) ((para) >> 4)
 
-struct event
-   {
-   unsigned char sample_number;
-   unsigned char effect;
-   unsigned char parameters;
-   unsigned char note;
-   };
+struct event {
+	unsigned char sample_number;
+	unsigned char effect;
+	unsigned char parameters;
+	unsigned char note;
+};
 
-struct pattern
-	{
-	struct event *e;
+struct pattern {
+	event *e;
 	unsigned long duration;
 	unsigned long total;
 	unsigned int number;
-	};
+};
 
         
-struct song_info
-   {
-   unsigned int length;
-   unsigned int npat;
+struct song_info {
+	unsigned int length;
+	unsigned int npat;
 	unsigned int plength;
 	unsigned long duration;
-   unsigned char patnumber[NUMBER_PATTERNS];
-	struct pattern *patterns;
-	struct event *data;
-   };
+	unsigned char patnumber[NUMBER_PATTERNS];
+	pattern *patterns;
+	event *data;
+};
 
 #define OLD_ST 0
 #define PROTRACKER 1
 
-struct song
-   {
-   char *title;
-      /* sample 0 is always a dummy sample */
-   struct sample_info *samples[MAX_NUMBER_SAMPLES];
+struct song {
+	char *title;
+	/* sample 0 is always a dummy sample */
+	sample_info *samples[MAX_NUMBER_SAMPLES];
 	int type;
 	unsigned int ntracks;
 	unsigned int ninstr;
 	int side_width;
 	int max_sample_width;			
-   struct song_info info;
-   long samples_start;
-   };
+	song_info info;
+	long samples_start;
+};
 
 #define AMIGA_CLOCKFREQ 3575872

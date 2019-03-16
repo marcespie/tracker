@@ -274,7 +274,7 @@ XT void song_title(const char *s);
  * check whether a break occured and we should end right now.
  * Call it often enough (like when loading songs and stuff)
  */
-XT int checkbrk(void);
+XT bool checkbrk(void);
 
 
 /*--------------------------- color.c ----------------------------*/
