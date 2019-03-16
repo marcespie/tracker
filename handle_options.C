@@ -69,105 +69,104 @@ static struct option_set set =
 	{ opts, sizeof(opts)/sizeof(struct option), args};
 
 
-#if 0
-/* Command-line options. */
-static struct long_option long_options[] =
-{
-#ifdef VOLUME_CONTROL
-	{"speaker",					0, '#', OPT_SPEAKER},
-	{"volume",					1, 'u', OPT_VOLUME},
-#endif
-};
-
-int start;			/* parameters for st_play */
-
-      case OPT_START:
-         start = optvalue(0);
-         break;
-#ifdef VOLUME_CONTROL
-		case OPT_VOLUME:
-			volume = optvalue(-20);
-			break;
-		case OPT_SPEAKER:
-			use_speaker = 1;
-			break;
-#endif
-
-#endif /* 0 */
-
 /* initialize all options to default values */
-void set_default_prefs(void)
-	{
+void 
+set_default_prefs(void)
+{
 	char *s;
 
-   set_pref_scalar(PREF_IMASK, 0);
-   set_pref_scalar(PREF_BCDVOL, 0);
+	set_pref_scalar(PREF_IMASK, 0);
+	set_pref_scalar(PREF_BCDVOL, 0);
 
 	/* XXX */
 	s = getenv("TERM");
 	if (s && (strncmp(s, "xterm", 5) == 0 || strncmp(s, "kterm", 5) == 0 
-		|| strncmp(s, "cxterm", 6) == 0) )
+	    || strncmp(s, "cxterm", 6) == 0) )
 		opts[13].def_scalar = 1;
 	else
 		opts[13].def_scalar = 0;
-	}
+}
 
-static unsigned long get_mask(char *s)
-	{
+static unsigned long 
+get_mask(char *s)
+{
 	char c;
 	unsigned long mask = 0;
 
-	while ((c = *s++))
-		{			
-			/* this is not ANSI and depends on the char set being
-			 * ASCII-like contiguous
-			 */
-		 if (c >= '1' && c <= '9')
-		 	mask |= 1 << (c-'0');
+	while ((c = *s++)) {			
+		/* this is not ANSI and depends on the char set being
+		 * ASCII-like contiguous
+		 */
+		if (c >= '1' && c <= '9')
+			mask |= 1 << (c-'0');
 		else if (c >= 'a' && c <= 'z')
 			mask |= 1 << (c-'a'+10);
 		else if (c >= 'A' && c <= 'Z')
 			mask |= 1 << (c-'A'+10);
-		}
-	return mask;
 	}
-			
-#define MAXLINELENGTH 200
+	return mask;
+}
+
+const auto MAXLINELENGTH=200;
 static char linebuf[MAXLINELENGTH+1];
 
-static char *read_line(struct exfile *f)
-	{
+static char *
+read_line(exfile *f)
+{
 	size_t i;
 	int c;
 
 	i = 0;
-	while (((c = getc_file(f)) != EOF) && (c != '\n'))
-		{
+	while (((c = getc_file(f)) != EOF) && (c != '\n')) {
 		if (i < MAXLINELENGTH)
 			linebuf[i++] = c;
-		}
+	}
 	if (c == EOF)
 		return 0;
-	else
-		{
+	else {
 		char *s;
 
 		s = (char *)malloc(i+1);
 		strncpy(s, linebuf, i);
 		s[i] = 0;
 		return s;
-		}
 	}
+}
 
-void handle_options(int argc, char *argv[])
-	{
+static void
+set_speed_mode(void *p)
+{
+	char *check;
+	int mode;
+
+	check = reinterpret_cast<char *>(p);
+	if (stricmp(check, "normal") == 0)
+		mode = NORMAL_SPEEDMODE;
+	else if (stricmp(check, "finespeed") == 0)
+		mode = FINESPEED_ONLY;
+	else if (stricmp(check, "speed") == 0)
+		mode = SPEED_ONLY;
+	else if (stricmp(check, "old") == 0)
+		mode = OLD_SPEEDMODE;
+	else if (stricmp(check, "vblank") == 0)
+		mode = OLD_SPEEDMODE;
+	else if (stricmp(check, "alter") == 0)
+		mode = ALTER_PROTRACKER;
+	else
+		end_all("Unknwon speedmode");
+		/* NOTREACHED */
+	set_pref_scalar(PREF_SPEEDMODE, mode);
+}
+
+void 
+handle_options(int argc, char *argv[])
+{
 	char *s;
 
 	add_option_set(&set);
 	if (port_options)
 		add_option_set(port_options);
-	if ((s = getenv("TRACKER_DEFAULTS")) != NULL)
-		{
+	if ((s = getenv("TRACKER_DEFAULTS")) != NULL) {
 		int t;
 		char **v;
 
@@ -176,14 +175,13 @@ void handle_options(int argc, char *argv[])
 		string2args(s, v);
 		parse_options(t, v, add_play_list);
 		free(v);
-		}
+	}
 
 	parse_options(argc, argv, add_play_list);
-	if (args[0].scalar)
-		{
+	if (args[0].scalar) {
 		print_usage();
 		end_all(0);
-		}
+	}
 	ask_freq = args[1].scalar;
 	if (ask_freq < 1000)
 		ask_freq *= 1000;
@@ -199,27 +197,9 @@ void handle_options(int argc, char *argv[])
 	set_mix(args[11].scalar);
 	set_pref_scalar(PREF_COLOR, args[12].scalar);
 	set_pref_scalar(PREF_XTERM, args[13].scalar);
-		{
-		char *check;
-		int mode;
 
-		check = (char *)args[14].pointer;
-		if (stricmp(check, "normal") == 0)
-			mode = NORMAL_SPEEDMODE;
-		else if (stricmp(check, "finespeed") == 0)
-			mode = FINESPEED_ONLY;
-		else if (stricmp(check, "speed") == 0)
-			mode = SPEED_ONLY;
-		else if (stricmp(check, "old") == 0)
-			mode = OLD_SPEEDMODE;
-		else if (stricmp(check, "vblank") == 0)
-			mode = OLD_SPEEDMODE;
-		else if (stricmp(check, "alter") == 0)
-			mode = ALTER_PROTRACKER;
-		else
-			end_all("Unknwon speedmode");
-		set_pref_scalar(PREF_SPEEDMODE, mode);
-		}
+	set_speed_mode(args[14].pointer);
+
 	set_pref_scalar(PREF_TRANSPOSE, args[15].scalar);
 	if (args[16].pointer)
 		set_pref_scalar(PREF_IMASK, get_mask((char*)args[16].pointer));
@@ -231,18 +211,16 @@ void handle_options(int argc, char *argv[])
 		half_mask = ~get_mask((char*)args[19].pointer);
 	set_pref_scalar(PREF_DUMP, args[20].scalar);
 	start = args[21].scalar;
-	if (args[22].pointer)
-		{
-		struct exfile *file;
+	if (args[22].pointer) {
 		char *s;
-		
-		file = open_file((char*)args[22].pointer, "r", 0);
+
+		exfile *file = open_file((char*)args[22].pointer, "r", 0);
 		if (!file)
 			end_all("List file does not exist");
 		else
 			while ((s = read_line(file)))
 				add_play_list(s);
 		close_file(file);
-		}
-	set_pref_scalar(PREF_OUTPUT, args[23].scalar);
 	}
+	set_pref_scalar(PREF_OUTPUT, args[23].scalar);
+}
