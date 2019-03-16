@@ -1,47 +1,28 @@
 /* presample.h --- definitions private to the resampling engine
-	vi:ts=3 sw=3:
  */
 
-/* $Id: p_resample.h,v 1.1 1996/04/12 16:31:39 espie Exp espie $
- * $Log: p_resample.h,v $
- * Revision 1.1  1996/04/12 16:31:39  espie
- * Initial revision
- *
- * Revision 1.1  1996/04/09 21:14:20  espie
- * Initial revision
- *
- * Revision 1.2  1996/03/14 18:04:22  espie
- * *** empty log message ***
- *
- * Revision 1.1  1996/03/12 22:56:12  espie
- * Initial revision
- *
- */
-
-#define MAX_CHANNELS 8
+const auto MAX_CHANNELS=8;
 
 enum audio_state { DO_NOTHING, PLAY, REPLAY};
 
-LOCAL struct audio_channel
-   {
-   struct sample_info *samp;
-   enum audio_state mode;
-   unsigned long pointer;
-   unsigned long step;
-   unsigned int volume;
+LOCAL struct audio_channel {
+	struct sample_info *samp;
+	enum audio_state mode;
+	unsigned long pointer;
+	unsigned long step;
+	unsigned int volume;
 	unsigned int scaled_volume;
-   pitch pitch;
+	pitch pitch;
 	int side;
-   } chan[MAX_CHANNELS];
+} chan[MAX_CHANNELS];
 
 /* define NO_SIDE for errors (no side specified) */
-#define NO_SIDE (-1)
+const auto NO_SIDE=-1;
 
 /* Have to get some leeway for vibrato (since we don't bound pitch with
  * vibrato). This is conservative.
  */
-#define LEEWAY 150
-
+const auto LEEWAY=150;
 
 
 /* macros for fixed point arithmetic */
