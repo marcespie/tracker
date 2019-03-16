@@ -310,209 +310,184 @@ mark_used_pattern_numbers(song_info *info, unsigned char used[])
  * -> n:      number of actually used patterns
  *    used[]: boolean array: for each pattern number, is it used ?
  */
-static unsigned int compress_patterns(struct song_info *info, 
-	unsigned char used[])
-	{
+static unsigned int 
+compress_patterns(song_info *info, unsigned char used[])
+{
 	unsigned char remap[NUMBER_PATTERNS];
 	unsigned int i, j;
 
 	mark_used_pattern_numbers(info, used);
 
-		/* build correspondence table */
+	/* build correspondence table */
 	j = 0;
-	for (i = 0; i < info->npat; i++)
-		{
+	for (i = 0; i < info->npat; i++) {
 		remap[i] = j;
 		if (used[i])
 			j++;
-		}
+	}
 
-		/* compress unused pattern numbers out */
+	/* compress unused pattern numbers out */
 	for (i = 0; i < NUMBER_PATTERNS; i++)
 		info->patnumber[i] = remap[info->patnumber[i]];
 
 	return j;
-	}
+}
 
 /* pattern_size = setup_patterns(info, ntracks, number)
  */
-static unsigned int setup_patterns(struct song_info *info, 
-	unsigned int ntracks, unsigned int used)
-	{
-	unsigned int i;
-
-		/* allocate the memory */
-	info->patterns = (struct pattern *)
-		malloc(sizeof(struct pattern) * info->length);
-	info->data = (struct event *)
-		malloc(sizeof(struct event) * info->plength * ntracks * used);
-   if (!info->patterns ||!info->data)
-      {
-      error = OUT_OF_MEM;
-      return 0;
-      }
-		/* setup the pointers to various patterns. Note we allocate
-		 * all the patterns as one data block:
-		 * - to prevent memory fragmentation
-		 * - to allow uniform pointer access to all events in the 
-		 *   virtual player */
-	for (i = 0; i < info->length; i++)
-		{
+static unsigned int 
+setup_patterns(song_info *info, unsigned int ntracks, unsigned int used)
+{
+	/* allocate the memory */
+	info->patterns = (pattern *)malloc(sizeof(pattern) * info->length);
+	info->data = (event *)malloc(sizeof(event) * info->plength * 
+	    ntracks * used);
+	if (!info->patterns ||!info->data) {
+		error = OUT_OF_MEM;
+		return 0;
+	}
+	/* setup the pointers to various patterns. Note we allocate
+	* all the patterns as one data block:
+	* - to prevent memory fragmentation
+	* - to allow uniform pointer access to all events in the 
+	*   virtual player */
+	for (unsigned i = 0; i < info->length; i++) {
 		info->patterns[i].e = info->data 
-			+ info->patnumber[i] * info->plength * ntracks;
+		    + info->patnumber[i] * info->plength * ntracks;
 		info->patterns[i].number = info->patnumber[i];
-		}
-	
-	return info->plength * ntracks * 4;
 	}
 
-static void fill_event(struct event *e, unsigned char *p, 
-	int *current_instrument, struct song *song)
-   {
+	return info->plength * ntracks * 4;
+}
+
+static void 
+fill_event(event *e, unsigned char *p, int *current_instrument, song *song)
+{
 	pitch pitch;
 
-   e->sample_number = (p[0] & 0x10) | (p[2] >> 4);
+	e->sample_number = (p[0] & 0x10) | (p[2] >> 4);
 	assert(e->sample_number < MAX_NUMBER_SAMPLES);
 	if (e->sample_number)
 		*current_instrument = e->sample_number;
-   e->effect = p[2] & 0xf;
-   e->parameters = p[3];
-		/* remove some weirdness from protracker events */
-   switch(e->effect)
-      {
-   case EFF_EXTENDED:
-      e->effect = EXT_BASE + HI(e->parameters);
-      e->parameters = LOW(e->parameters);
-      break;
-   case 0:
-      e->effect = e->parameters ? EFF_ARPEGGIO : EFF_NONE;
-      break;
-   case EFF_SKIP:
-      e->parameters = HI(e->parameters) * 10 + LOW(e->parameters);
-      break;
+	e->effect = p[2] & 0xf;
+	e->parameters = p[3];
+	/* remove some weirdness from protracker events */
+	switch(e->effect) {
+	case EFF_EXTENDED:
+		e->effect = EXT_BASE + HI(e->parameters);
+		e->parameters = LOW(e->parameters);
+		break;
+	case 0:
+		e->effect = e->parameters ? EFF_ARPEGGIO : EFF_NONE;
+		break;
+	case EFF_SKIP:
+		e->parameters = HI(e->parameters) * 10 + LOW(e->parameters);
+		break;
 	case EFF_SPEED:
 		if (song->type == OLD_ST)
 			e->effect = EFF_OLD_SPEED;
 		break;
-      }
-   pitch = ( (p[0] & 15) << 8 ) | p[1];
-   e->note = pitch2note(pitch);
-   }
+	}
+	pitch = ( (p[0] & 15) << 8 ) | p[1];
+	e->note = pitch2note(pitch);
+}
 
 
-static struct event *fill_pattern(struct exfile *f, struct song *song, 
-	struct event *e)
-   {
-   unsigned int i, j;
-	int current_instrument;
-
+static event *
+fill_pattern(exfile *f, song *song, event *e)
+{
 	read_file(buffer, patsize, 1, f);
 
-	for (j = 0; j < song->ntracks; j++)
-		{
-		current_instrument = NOT_YET;
-		for (i = 0; i < song->info.plength; i++)
-         fill_event(e+i, buffer+4*(i*song->ntracks+j), &current_instrument, 
-				song);
+	for (unsigned j = 0; j < song->ntracks; j++) {
+		int current_instrument = NOT_YET;
+		for (unsigned i = 0; i < song->info.plength; i++)
+			fill_event(e+i, buffer+4*(i*song->ntracks+j), 
+			    &current_instrument, song);
 		e += song->info.plength;
-		}
+	}
 	return e;
-   }
+}
 
 
 /* winned = fill_patterns(song, f, used):
  * read patterns from file f into song, keeping only patterns tagged by
  * used, return memory gain.
  */
-static unsigned fill_patterns(struct song *song, struct exfile *f, 
-	unsigned char used[])
-	{
-	unsigned int i;
-	struct event *e;
-	unsigned int winned = 0;
+static unsigned 
+fill_patterns(song *song, exfile *f, unsigned char used[])
+{
+	unsigned int won = 0;
 
-	e = song->info.data;
-   for (i = 0; i < song->info.npat; i++)
-      {
-		if (used[i])
-			{
+	event *e = song->info.data;
+	for (unsigned i = 0; i < song->info.npat; i++) {
+		if (used[i]) {
 			e = fill_pattern(f, song, e);
 			if (error != NONE)
 				return 0;
-			}
-		else
-			{
+		} else {
 			byteskip(f, patsize);
-			winned += patsize;
-			}
-      }
-   return winned;
+			won += patsize;
+		}
 	}
+	return won;
+}
 
 
 /***
  *** End song setup
  ***/
 
-static void adjust_volumes(struct song *song)
-	{
-	unsigned int i, j;
+static void 
+adjust_volumes(song *song)
+{
+	for (unsigned i = 1; i <= song->ninstr; i++)
+	for (unsigned j = 0; j <= MAX_VOLUME; j++)	/* note <= not a bug */
+		song->samples[i]->volume_lookup[j] = 
+		    (song->ntracks == 6) ? (4 * j) / 3 : j;
+}
 
-	for (i = 1; i <= song->ninstr; i++)
-		for (j = 0; j <= MAX_VOLUME; j++)		/* note <= not a bug */
-			song->samples[i]->volume_lookup[j] = 
-				(song->ntracks == 6) ? (4 * j) / 3 : j;
-	}
-
-void setup_song(struct song *song)
-	{
-	struct automaton *a;
-	unsigned int i;
-
-	for (i = 1; i <= song->ninstr; i++)
+void 
+setup_song(song *song)
+{
+	for (unsigned i = 1; i <= song->ninstr; i++)
 		prep_sample_info(song->samples[i]);
- 	adjust_volumes(song);
+	adjust_volumes(song);
 
-   a = setup_automaton(song, 0);
+	auto a = setup_automaton(song, 0);
 
 	compute_duration(a, song);
-	}
+}
 
 /***
  *** Actual song loading
  ***/
 
-static void fill_song_info(struct song_info *info, struct exfile *f)
-   {
-   info->length = getc_file(f);
-   getc_file(f);
-   info->npat = 0;
+static void 
+fill_song_info(song_info *info, exfile *f)
+{
+	info->length = getc_file(f);
+	getc_file(f);
+	info->npat = 0;
 	fill_pattern_numbers(info, f);
-   if (info->npat == 0 || 
-		info->length == 0 || info->length >= NUMBER_PATTERNS)
-      error = CORRUPT_FILE;
-   }
+	if (info->npat == 0 || 
+	    info->length == 0 || info->length >= NUMBER_PATTERNS)
+		error = CORRUPT_FILE;
+}
 
 /* new_song: allocate a new structure for a song.
  *  clear each and every field as appropriate.
  */
-static struct song *new_song(void)
+static song *
+new_song(void)
 {
-	struct song *n;
-	unsigned int i;
-
-	n = (struct song *)malloc(sizeof(struct song));
-	if (!n) {
-		error = OUT_OF_MEM;
-		return NULL;
-	}
-	n->title = NULL;
+	song *n = new song;
+	n->title = nullptr;
 	n->info.length = 0;
 	n->info.npat = 0;
-	n->info.patterns = NULL;
-	n->info.data = NULL;
-	for (i = 1; i < MAX_NUMBER_SAMPLES; i++)
-		n->samples[i] = NULL;
+	n->info.patterns = nullptr;
+	n->info.data = nullptr;
+	for (unsigned i = 1; i < MAX_NUMBER_SAMPLES; i++)
+		n->samples[i] = nullptr;
 	return n;
 }
 
@@ -520,140 +495,128 @@ static struct song *new_song(void)
  * that each structure has been correctly allocated by a call to the
  * corresponding new_XXX function.
  */
-void release_song(struct song *song)
-   {
-   unsigned int i;
-
-	mung_message("freeing song");
-   if (!song)
-      return;
-      /* Since sample compression, structure is INVALID after song->ninstr */
-   for (i = 1; i <= song->ninstr; i++)
+void 
+release_song(song *song)
+{
+	if (!song)
+		return;
+	/* Since sample compression, structure is INVALID after song->ninstr */
+	for (unsigned i = 1; i <= song->ninstr; i++)
 		free_sample_info(song->samples[i]);
 	if (song->info.patterns)
 		free(song->info.patterns);
 	if (song->info.data)
 		free(song->info.data);
-   if (song->title)
-      free(song->title);
-   free(song);
-	mung_message("freeed song");
-   }
+	if (song->title)
+		free(song->title);
+	delete song;
+}
 
 /* error_song(song): what we should return if there was an error. 
  * Actually, is mostly useful for its side effects.
  */
-static struct song *error_song(struct song *song)
-   {
-   release_song(song);
-   return NULL;
-   }
+static song *
+error_song(song *song)
+{
+	release_song(song);
+	return nullptr;
+}
 
 /* bad_sig(f, song): read the signature on file f and returns true if 
  * it is not a known sig. Set some parameters of song as a side effect
  */
-static int bad_sig(struct exfile *f, struct song *song)
-   {
-   char a, b, c, d;
-
-   a = getc_file(f);
-   b = getc_file(f);
-   c = getc_file(f);
-   d = getc_file(f);
-   if (a == 'M' && b == '.' && c == 'K' && d == '.')
-      return false;
-   if (a == 'M' && b == '&' && c == 'K' && d == '!')
-      return false;
-   if (a == 'F' && b == 'L' && c == 'T' && d == '4')
-      return false;
-	if (a == '6' && b == 'C' && c == 'H' && d == 'N')
-		{
+static bool 
+bad_sig(exfile *f, song *song)
+{
+	char a = getc_file(f);
+	char b = getc_file(f);
+	char c = getc_file(f);
+	char d = getc_file(f);
+	if (a == 'M' && b == '.' && c == 'K' && d == '.')
+		return false;
+	if (a == 'M' && b == '&' && c == 'K' && d == '!')
+		return false;
+	if (a == 'F' && b == 'L' && c == 'T' && d == '4')
+		return false;
+	if (a == '6' && b == 'C' && c == 'H' && d == 'N') {
 		song->ntracks = 6;
 		return false;
-		}
-	if (a == '8' && b == 'C' && c == 'H' && d == 'N')
-		{
+	}
+	if (a == '8' && b == 'C' && c == 'H' && d == 'N') {
 		song->ntracks= 8;
 		return false;
-		}
-   return true;
-   }
+	}
+	return true;
+}
 
 /* s = read_song(f, type): try to read a song s of type NEW/OLD/NEW_NOCHECK
  * from file f. Might fail, i.e., return NULL if file is not a mod file of 
  * the correct type.
  */
-struct song *read_song(struct exfile *f, int type)
-   {
-   struct song *song;
+song *
+read_song(exfile *f, int type)
+{
 	unsigned char pattern_used[NUMBER_PATTERNS];
 	unsigned char sample_used[MAX_NUMBER_SAMPLES];
-	unsigned int used_patterns;
-	unsigned long winned;
 
-   error = NONE;
+	error = NONE;
 
-	mung_message("loading song");
 	if (!buffer)
 		setup_buffer(1024);
 
-   song = new_song();
-   if (!song)
-      return error_song(song);
+	auto song = new_song();
+	if (!song)
+		return error_song(song);
 
 	song->ntracks = 4;
-   if (type == NEW || type == NEW_NO_CHECK)
-		{
+	if (type == NEW || type == NEW_NO_CHECK) {
 		song->type = PROTRACKER;
-      song->ninstr = PRO_NUMBER_SAMPLES;
-		}
-   else
-		{
+		song->ninstr = PRO_NUMBER_SAMPLES;
+	} else {
 		song->type = OLD_ST;
-      song->ninstr = ST_NUMBER_SAMPLES;
-		}
+		song->ninstr = ST_NUMBER_SAMPLES;
+	}
 
 	song->ntracks = NORMAL_NTRACKS;
 	song->info.plength = NORMAL_PLENGTH;
 
-   song->title = getstring(f, TITLE_MAXLENGTH);
-   if (error != NONE)
-      return error_song(song);
+	song->title = getstring(f, TITLE_MAXLENGTH);
+	if (error != NONE)
+		return error_song(song);
 
 	fill_sample_infos(song, f);
 
-   fill_song_info(&song->info, f);
+	fill_song_info(&song->info, f);
 
-   if (error != NONE)
-      return error_song(song);
+	if (error != NONE)
+		return error_song(song);
 
-   if (type == NEW && bad_sig(f, song))
-      return error_song(song);
+	if (type == NEW && bad_sig(f, song))
+		return error_song(song);
 
-   if (type == NEW_NO_CHECK)
-      byteskip(f, 4);
-        
-  	song->max_sample_width = 8;			/* temporary */
+	if (type == NEW_NO_CHECK)
+		byteskip(f, 4);
 
-  	if (song->ntracks == 4)
-  		song->side_width = song->max_sample_width + 6 + 1;
+	song->max_sample_width = 8;			/* temporary */
+
+	if (song->ntracks == 4)
+		song->side_width = song->max_sample_width + 6 + 1;
 	else
 		song->side_width = song->max_sample_width + 6 + 2;
 
-	used_patterns = compress_patterns(&song->info, pattern_used);
+	auto used_patterns = compress_patterns(&song->info, pattern_used);
 
 	patsize = setup_patterns(&song->info, song->ntracks, used_patterns);
 	if (error != NONE)
 		return error_song(song);
 
 	setup_buffer(patsize);
-	if (!buffer)
-		{
+	if (!buffer) {
 		error = OUT_OF_MEM;
 		return error_song(song);
-		}
+	}
 
-	winned = fill_patterns(song, f, pattern_used);
+	auto won = fill_patterns(song, f, pattern_used);
 	if (error != NONE)
 		return error_song(song);
 
@@ -661,17 +624,16 @@ struct song *read_song(struct exfile *f, int type)
 
 	setup_used_samples(song, sample_used);
 
-   song->samples_start = tell_file(f);
+	song->samples_start = tell_file(f);
 
 	read_samples(song, f, (char *)sample_used);
-   if (error != NONE)
-      return error_song(song);
+	if (error != NONE)
+		return error_song(song);
 
-      /* remap samples around */
-	winned += compress_samples(song, sample_used);
+	/* remap samples around */
+	won += compress_samples(song, sample_used);
 
 	setup_song(song);
-	mung_message("Song loaded");
-   return song;
-   }
+	return song;
+}
 
