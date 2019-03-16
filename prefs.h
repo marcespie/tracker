@@ -1,39 +1,4 @@
-/* prefs.h 
-	vi:ts=3 sw=3:
- */
-
-/* $Id: prefs.h,v 5.0 1995/10/21 14:56:57 espie Exp espie $
- * $Log: prefs.h,v $
- * Revision 5.0  1995/10/21 14:56:57  espie
- * New
- *
- * Revision 4.17  1995/09/17 23:27:24  espie
- * *** empty log message ***
- *
- * Revision 4.16  1995/09/16 15:33:54  espie
- * *** empty log message ***
- *
- * Revision 4.15  1995/08/31 13:31:09  espie
- * NO_OUTPUT option.
- *
- * Revision 4.14  1995/05/11 12:26:15  espie
- * Corrected types.
- *
- * Revision 4.13  1995/03/17  00:32:41  espie
- * PREF_XTERM.
- *
- * Revision 4.12  1995/02/21  21:13:16  espie
- * Cleaned up source. Moved minor pieces of code around.
- *
- * Revision 4.11  1995/02/21  17:54:32  espie
- * Internal problem: buggy RCS. Fixed logs.
- *
- * Revision 4.6  1995/02/01  20:41:45  espie
- * Added color.
- *
- * Revision 4.2  1994/08/23  18:19:46  espie
- * Added speedmode option.
- */
+/* prefs.h */
 
 #define BASE_PREFS      50
 #define PREF_TYPE       BASE_PREFS
@@ -60,8 +25,8 @@
 
 #define NUMBER_PREFS    (PREF_TRANSPOSE - BASE_PREFS + 1)
 
-XT VALUE get_pref (int index);
-XT void set_pref (int index, VALUE value);
-XT long get_pref_scalar (int index);
-XT void set_pref_scalar (int index, long value);
-XT struct tag *get_prefs (void);
+extern VALUE get_pref (int index);
+extern void set_pref (int index, VALUE value);
+extern long get_pref_scalar (int index);
+extern void set_pref_scalar (int index, long value);
+extern struct tag *get_prefs (void);

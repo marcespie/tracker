@@ -84,12 +84,12 @@ string2args(char *s, char *v[])
 	return j;
 }
 
-LOCAL struct option_set_list {
+static struct option_set_list {
 	struct option_set_list *next;
 	struct option_set set;
 } *first, *current;
 
-LOCAL void 
+static void 
 set_up_args(struct option_set *set)
 {
 	for (int i = 0; i < set->number; i++) {
@@ -138,7 +138,7 @@ add_option_set(struct option_set *set)
 	current = n;
 }
 
-LOCAL int 
+static int 
 do_option(char *text, char *arg)
 {
 	struct option_set_list *sweep;

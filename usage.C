@@ -4,7 +4,7 @@
 #include "defs.h"
 #include "extern.h"
 
-XT char *VERSION;
+extern char *VERSION;
 
 const char *usage[] =
 	{

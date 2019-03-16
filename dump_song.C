@@ -11,8 +11,8 @@
 #include "channel.h"
 #include "prefs.h"
 
-LOCAL void *handle = 0;
-LOCAL char buffer[80];
+static void *handle = 0;
+static char buffer[80];
 
 extern char instname[];	/* from display.c */
 
@@ -25,7 +25,7 @@ extern char instname[];	/* from display.c */
 
 #if 0
 /* THIS NEED SOME UPDATING (FIXED VALUE BLOCK_LENGTH/NUMBER_TRACKS) */
-LOCAL void dump_block(b)
+static void dump_block(b)
 struct block *b;
    {
    int i, j;
@@ -47,7 +47,7 @@ struct block *b;
 /* make_readable(s):
  * transform s into a readable string 
  */
-LOCAL void make_readable(char *s)
+static void make_readable(char *s)
    {
    char *t, *orig;
 

@@ -1,42 +1,17 @@
 /* defs.h */
 
-#define LOCAL static
-/* X is too short */
-#define XT extern
-
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#ifdef MALLOC_NOT_IN_STDLIB
-#include <malloc.h>
-#endif
-#ifdef ONLY_BCOPY
-#define memmove(a, b, n)		bcopy(b, a, n)
-#endif
 
 #ifndef EXPAND_WILDCARDS
 #define EXPAND_WILDCARDS(x,y)
 #endif
 
-#ifdef BINARY_HEEDED
-#define READ_ONLY    "rb"
-#define WRITE_ONLY   "wb"
-#else
-#define READ_ONLY    "r"
-#define WRITE_ONLY   "w"
-#endif
-
-
-/* broken ANSI compilers */
-#ifndef EXIT_FAILURE
-#define EXIT_FAILURE 1
-#endif
-
-#ifndef EXIT_SUCCESS
-#define EXIT_SUCCESS 0
-#endif
+const auto READ_ONLY="rb";
+const auto WRITE_ONLY="wb";
 
 #ifndef MIN
 #define MIN(A,B) ((A)<(B) ? (A) : (B))
@@ -47,12 +22,11 @@
      
 #define D fprintf(stderr, "%d\n", __LINE__);
 
-typedef union
-   {
-   long scalar;
-   float real;
-   GENERIC pointer;
-   } VALUE;
+typedef union {
+	long scalar;
+	float real;
+	GENERIC pointer;
+} VALUE;
 
 /* predefinitions for relevant structures */
 struct tag;

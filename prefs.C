@@ -5,13 +5,13 @@
 #include "tags.h"
 #include "autoinit.h"
 
-LOCAL void init_prefs (void);
+static void init_prefs (void);
 
-LOCAL void (*INIT)(void) = init_prefs;
+static void (*INIT)(void) = init_prefs;
 
-LOCAL struct tag preferences[NUMBER_PREFS];
+static struct tag preferences[NUMBER_PREFS];
 
-LOCAL void init_prefs(void)
+static void init_prefs(void)
    {
    int i;
    

@@ -13,7 +13,7 @@
 /* set up the automaton so that I haven't got through patterns 
  * #from to #to
  */
-LOCAL void clear_repeats(struct automaton *a, unsigned int from, 
+static void clear_repeats(struct automaton *a, unsigned int from, 
 	unsigned int upto)
    {
    unsigned int i;
@@ -24,7 +24,7 @@ LOCAL void clear_repeats(struct automaton *a, unsigned int from,
 
 /* set up the automaton so that I haven't got through any patterns
  */
-LOCAL void reset_repeats(struct automaton *a)
+static void reset_repeats(struct automaton *a)
    {
    clear_repeats(a, 0, a->info->length);
    a->gonethrough[a->info->length] = true;
@@ -33,7 +33,7 @@ LOCAL void reset_repeats(struct automaton *a)
 /* update the pattern to play in the automaton. Checks that the pattern 
  * actually exists. Handle repetitions as well.
  */
-LOCAL void set_pattern(struct automaton *a)
+static void set_pattern(struct automaton *a)
    {
    if (a->pattern_num >= a->info->length)
       {
@@ -64,7 +64,7 @@ LOCAL void set_pattern(struct automaton *a)
 /* initialize all the fields of the automaton necessary
  * to play a given song.
  */
-LOCAL void init_automaton(struct automaton *a, struct song *song, 
+static void init_automaton(struct automaton *a, struct song *song, 
 	unsigned int start)
    {
    a->info = &song->info;
@@ -97,7 +97,7 @@ struct automaton *setup_automaton(struct song *s, unsigned int start)
 
 /* get to the next pattern, and display stuff 
  */
-LOCAL void advance_pattern(struct automaton *a)
+static void advance_pattern(struct automaton *a)
    {
    if (++a->pattern_num >= a->info->length)
 		{

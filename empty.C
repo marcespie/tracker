@@ -7,13 +7,13 @@
 #include "autoinit.h"
 #include "empty.h"
      
-LOCAL void init_empty (void);
+static void init_empty (void);
 
-LOCAL void (*INIT)(void) = init_empty;
+static void (*INIT)(void) = init_empty;
 
-LOCAL struct sample_info dummy;
+static struct sample_info dummy;
 
-LOCAL void 
+static void 
 init_empty(void)
 {
 	dummy.name = nullptr;

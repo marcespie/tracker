@@ -15,7 +15,7 @@ extern void end_all(const char *fmt, ...);
 extern void at_end(void (*cleanup)(void));
 
 /* INIT_ONCE: macro for autoinitialization of routines.
- * modules that need an init routine should LOCAL void INIT = init_routine,
+ * modules that need an init routine should static void INIT = init_routine,
  * and add INIT_ONCE; at EVERY possible first entry point for their routine.
  * (I mean every, don't try to second-guess me !)
  */

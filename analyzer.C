@@ -12,12 +12,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef __NeXT__
-#include <sys/dir.h>
-#include <sys/dirent.h>
-#else
 #include <dirent.h>
-#endif
 
 int error;
 

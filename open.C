@@ -11,7 +11,7 @@
 #include "open.h"
 
 /* forward declarations */
-LOCAL struct exfile *do_open(struct exfile *file, const char *fname, 
+static struct exfile *do_open(struct exfile *file, const char *fname, 
     const char *path);
 
 extern int error;
@@ -44,7 +44,7 @@ struct exfile {
 /***
  *** 	 the methods for buffered files 
  ***/
-LOCAL int 
+static int 
 do_getchar(struct exfile *f)
 {
 	int c;
@@ -63,7 +63,7 @@ do_getchar(struct exfile *f)
 	return c;
 }
 
-LOCAL unsigned long 
+static unsigned long 
 do_read(void *p, size_t s, unsigned long n, struct exfile *f)
 {
 	size_t total = s * n;
@@ -88,7 +88,7 @@ do_read(void *p, size_t s, unsigned long n, struct exfile *f)
 }
 
 
-LOCAL void 
+static void 
 do_rewind(struct exfile *f)
 {
 	if (f->pos <= f->length)
@@ -99,20 +99,20 @@ do_rewind(struct exfile *f)
 	}
 }
 
-LOCAL size_t 
+static size_t 
 do_tell(struct exfile *f)
 {
 	return f->pos;
 }
 
 
-LOCAL void 
+static void 
 do_fclose(struct exfile *f)
 {
 	fclose(f->handle);
 }
 
-LOCAL struct exfile *
+static struct exfile *
 init_buffered(struct exfile *f)
 {
 	f->length = fread(f->buffer, 1, BUFSIZE, f->handle);
@@ -128,7 +128,7 @@ init_buffered(struct exfile *f)
 
 /* no need for compression_methods if no pipes !!! */
 
-LOCAL int 
+static int 
 exist_file(const char *fname)
 {
 	FILE *temp;
@@ -147,7 +147,7 @@ exist_file(const char *fname)
 #endif
 
 /* note that find_file returns a STATIC value */
-LOCAL char *
+static char *
 find_file(const char *fname, const char *path)
 {
 	const char *sep;
@@ -182,7 +182,7 @@ find_file(const char *fname, const char *path)
 }
 
 /* opening a file is bigger than it seems (much bigger) */
-LOCAL struct exfile *
+static struct exfile *
 do_open(struct exfile *file, const char *fname, const char *path)
 {
 

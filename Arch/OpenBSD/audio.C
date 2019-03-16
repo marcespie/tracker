@@ -26,10 +26,10 @@ absdiff(S x, T y)
 
 #define	BIAS		(0x84)		/* Bias for linear code. */
 
-LOCAL int stereo;
+static int stereo;
 
 
-LOCAL unsigned long pps[32], pms[32];
+static unsigned long pps[32], pms[32];
 
 void set_mix(int percent)
 	{
@@ -48,26 +48,26 @@ void set_mix(int percent)
 
 
 #ifdef UNSIGNED16
-LOCAL unsigned short *buffer16;
+static unsigned short *buffer16;
 #define VALUE16(x)	((x)+32768)
 #else
-LOCAL short *buffer16;
+static short *buffer16;
 #define VALUE16(x)	(x)
 #endif
 
 #ifdef UNSIGNED8
-LOCAL unsigned char *buffer;
+static unsigned char *buffer;
 #define VALUE8(x)		((x)+128)
 #else
-LOCAL char *buffer;
+static char *buffer;
 #define VALUE8(x)		(x)
 #endif
-LOCAL unsigned long idx;
-LOCAL int dsize;			/* current data size */
-LOCAL unsigned long samples_max;	/* number of samples in buffer */
+static unsigned long idx;
+static int dsize;			/* current data size */
+static unsigned long samples_max;	/* number of samples in buffer */
 
 
-LOCAL void 
+static void 
 add_samples16_stereo(long left, long right, int n)
 {
 	if (pms[n] == pps[n]) {	/* no mixing */
@@ -87,7 +87,7 @@ add_samples16_stereo(long left, long right, int n)
 	}
 }
 
-LOCAL void 
+static void 
 add_samples16_mono(long left, long right, int n)
 {
 	if (n<15)		/* is this possible? */
@@ -96,7 +96,7 @@ add_samples16_mono(long left, long right, int n)
 		buffer16[idx++] = VALUE16( (left + right) >> (n-15) );
 }
 
-LOCAL void 
+static void 
 add_samples16(long left, long right, int n)
 {
 	if (stereo)
@@ -105,7 +105,7 @@ add_samples16(long left, long right, int n)
 		add_samples16_mono(left, right, n);
 }
 
-LOCAL void 
+static void 
 add_samples8_stereo(long left, long right, int n)
 {
 	if (pms[n] == pps[n]) {	/* no mixing */
@@ -122,13 +122,13 @@ add_samples8_stereo(long left, long right, int n)
 	}
 }
 
-LOCAL void 
+static void 
 add_samples8_mono(long left, long right, int n)
 {
 	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
 }
 
-LOCAL void 
+static void 
 add_samples8(long left, long right, int n)
 {
 	if (stereo)
@@ -141,13 +141,13 @@ add_samples8(long left, long right, int n)
 
 
 
-LOCAL long long realpos;
-LOCAL struct sio_hdl *hdl;           	
-LOCAL unsigned long current_freq;
+static long long realpos;
+static struct sio_hdl *hdl;           	
+static unsigned long current_freq;
 
 unsigned long total;
 
-LOCAL int dsp_samplesize = 0;
+static int dsp_samplesize = 0;
 
 static void
 movecb(void *, int delta)
@@ -192,7 +192,7 @@ open_audio(unsigned long f, int)
 }
 
 /* synchronize stuff with audio output */
-LOCAL struct tagged {
+static struct tagged {
 	struct tagged *next;	/* simply linked list */
 	void (*f)(GENERIC p);	/* function to call */
 	void (*f2)(GENERIC p);	/* function to call  for flush */
@@ -204,7 +204,7 @@ LOCAL struct tagged {
 
 
 /* flush_tags: use tags that have gone by recently */
-LOCAL void 
+static void 
 flush_tags(void)
 {
 	if (start) {
@@ -219,7 +219,7 @@ flush_tags(void)
 }
 
 /* remove unused tags at end */
-LOCAL void 
+static void 
 remove_pending_tags(void)
 {
 	while (start) {
@@ -258,7 +258,7 @@ sync_audio(void (*function)(void *p), void (*f2)(void *p), void *parameter)
 		(*function)(parameter);
 }
 
-LOCAL void 
+static void 
 actually_flush_buffer(void)
 {
 	if (idx) {

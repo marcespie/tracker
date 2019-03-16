@@ -23,25 +23,25 @@ using TERM_SETUP=termios;
 
 #include <unistd.h>
 
-LOCAL void nonblocking_io(void);
-LOCAL void sane_tty(void);
+static void nonblocking_io(void);
+static void sane_tty(void);
 
-LOCAL void (*INIT)(void) = nonblocking_io;
+static void (*INIT)(void) = nonblocking_io;
 
 
 /* poor man's timer */
-LOCAL unsigned int current_pattern;
-LOCAL int count_pattern, count_song;
+static unsigned int current_pattern;
+static int count_pattern, count_song;
 #define SMALL_DELAY 75
 
-LOCAL TERM_SETUP sanity;
-LOCAL TERM_SETUP *psanity = nullptr;
+static TERM_SETUP sanity;
+static TERM_SETUP *psanity = nullptr;
 
-LOCAL bool is_fg;
+static bool is_fg;
 
 /* signal handler */
 
-LOCAL void 
+static void 
 goodbye(int sig)
 {
 	static char buffer[25];
@@ -53,14 +53,14 @@ goodbye(int sig)
 	end_all(pter);
 }
 
-LOCAL void 
+static void 
 abort_this(int)
 {
 	end_all("Abort");
 }
 
 #ifdef SIGTSTP
-LOCAL void 
+static void 
 suspend(int)
 {
 	static char buffer[25];
@@ -102,7 +102,7 @@ run_in_fg(void)
 /* if_fg_sane_tty():
  * restore tty modes, _only_ if running in foreground
  */
-LOCAL void 
+static void 
 if_fg_sane_tty(void)
 {
 	if (run_in_fg())
@@ -110,7 +110,7 @@ if_fg_sane_tty(void)
 }
 
 
-LOCAL void switch_mode(int)
+static void switch_mode(int)
 {
 	TERM_SETUP zap;
 
@@ -138,7 +138,7 @@ LOCAL void switch_mode(int)
 /* nonblocking_io():
  * try to setup the keyboard to non blocking io
  */
-LOCAL void 
+static void 
 nonblocking_io(void)
 {
 	if (!psanity) {
@@ -152,13 +152,13 @@ nonblocking_io(void)
 
 /* sane_tty():
  * restores everything to a sane state before returning to shell */
-LOCAL void 
+static void 
 sane_tty(void)
 {
 	tcsetattr(0, TCSADRAIN, psanity);
 }
 
-LOCAL int 
+static int 
 may_getchar(void)
 {
 	char buffer;
@@ -172,7 +172,7 @@ may_getchar(void)
 	return EOF;
 }
 
-LOCAL tag result[2];
+static tag result[2];
 
 tag *
 get_ui(void)
@@ -270,7 +270,7 @@ status(const char *s)
 	}
 }
 
-LOCAL char title[25];
+static char title[25];
 void 
 song_title(const char *s)
 {
@@ -285,7 +285,7 @@ song_title(const char *s)
 
 
 
-LOCAL char scroll_buffer[200];
+static char scroll_buffer[200];
 
 GENERIC 
 begin_info(const char *)
@@ -316,7 +316,7 @@ end_info(void *handle)
 		fflush(stdout);
 }
 
-LOCAL int ntracks;
+static int ntracks;
 
 void 
 set_number_tracks(int n)
@@ -324,7 +324,7 @@ set_number_tracks(int n)
 	ntracks = n;
 }
 
-LOCAL char scroll_line[2000];
+static char scroll_line[2000];
 
 char *
 new_scroll(void)
@@ -333,7 +333,7 @@ new_scroll(void)
 	return scroll_line;
 }
    
-LOCAL void 
+static void 
 do_scroll(void *line)
 {
 	if (run_in_fg()) {
@@ -343,7 +343,7 @@ do_scroll(void *line)
 	free(line);
 }
 
-LOCAL void free_p(void *line)
+static void free_p(void *line)
 {
 	free(line);
 }
@@ -370,7 +370,7 @@ struct Thingy {
 	unsigned long u0, u1;
 };
 
-LOCAL void 
+static void 
 do_display_pattern(void *param)
 {
 	Thingy *thingy = (Thingy *)param;
@@ -427,14 +427,14 @@ display_pattern(unsigned int current, unsigned int total,
 	sync_audio(do_display_pattern, free_p, thingy);
 }
 
-LOCAL void 
+static void 
 do_display_time(void *param)
 {
 	char buffer[50];
 	printf("%s\n", time2string(buffer, (unsigned long)param));
 }
 
-LOCAL void 
+static void 
 do_nuts(void *)
 {
 }

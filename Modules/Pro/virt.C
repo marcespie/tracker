@@ -14,9 +14,9 @@
 #include "p_automaton.h"
 #include "timing.h"
 
-LOCAL unsigned long *loop_start;
+static unsigned long *loop_start;
 
-LOCAL unsigned long compute_pattern_duration(struct event *base, 
+static unsigned long compute_pattern_duration(struct event *base, 
 	unsigned int plength, unsigned int ntracks, struct automaton *a)
 	{
 	unsigned int i, j;
@@ -90,7 +90,7 @@ LOCAL unsigned long compute_pattern_duration(struct event *base,
 	return d;
 	}
 			
-LOCAL void set_pattern(struct automaton *a)
+static void set_pattern(struct automaton *a)
 	{
 	if ((a->pattern_num >= a->info->length) ||
 		a->gonethrough[a->pattern_num])

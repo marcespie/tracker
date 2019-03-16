@@ -16,14 +16,14 @@
 #include "resample.h"
 #include "open.h"
 
-LOCAL unsigned int patsize;
+static unsigned int patsize;
 
 #define NOT_YET (-1)
 
-LOCAL unsigned char *buffer;		/* Buffer to read everything */
-LOCAL unsigned int bufsize;
+static unsigned char *buffer;		/* Buffer to read everything */
+static unsigned int bufsize;
 
-LOCAL void 
+static void 
 setup_buffer(unsigned int size)
 {
 	bufsize = size;
@@ -44,7 +44,7 @@ setup_buffer(unsigned int size)
  * I.e, it is a fixed length string terminated
  * by a 0 if too short. 
  */
-LOCAL char *
+static char *
 getstring(exfile *f, unsigned int len)
 {
 	assert(len < bufsize);
@@ -60,7 +60,7 @@ getstring(exfile *f, unsigned int len)
 /* byteskip(f, len)
  * same as fseek, except it works on stdin
  */
-LOCAL void 
+static void 
 byteskip(exfile *f, unsigned long int len)
 {
 	while (len > bufsize) {
@@ -73,7 +73,7 @@ byteskip(exfile *f, unsigned long int len)
 /* v = getushort(f)
  * reads an unsigned short from f
  */
-LOCAL unsigned int 
+static unsigned int 
 getushort(exfile *f)
 {
 	/* order dependent !!! */
@@ -93,7 +93,7 @@ getushort(exfile *f)
  * fix_rp_length will have the values you can expect if part of the sample 
  * is missing.
  */
-LOCAL sample_info *
+static sample_info *
 fill_sample_info(exfile *f)
 {
 	/* New method: instead of allocating/freeing sample infos,
@@ -165,7 +165,7 @@ fill_sample_info(exfile *f)
 }
 
 	
-LOCAL void 
+static void 
 fill_sample_infos(song *song, exfile *f)
 {
 	for (unsigned int i = 1; i <= song->ninstr; i++) {
@@ -175,7 +175,7 @@ fill_sample_infos(song *song, exfile *f)
 	}
 }
 
-LOCAL void 
+static void 
 free_sample_info(sample_info *sample)
 {
 	if (sample) {
@@ -187,7 +187,7 @@ free_sample_info(sample_info *sample)
 	}
 }
 
-LOCAL void 
+static void 
 setup_used_samples(song *song, unsigned char used[])
 {
 	for (unsigned int i = 1; i <= song->ninstr; i++)
@@ -199,7 +199,7 @@ setup_used_samples(song *song, unsigned char used[])
 	}
 }
 	
-LOCAL unsigned long 
+static unsigned long 
 compress_samples(song *song, unsigned char used[])
 {
 	unsigned char map_sample[MAX_NUMBER_SAMPLES];
@@ -248,7 +248,7 @@ compress_samples(song *song, unsigned char used[])
 }
 
 
-LOCAL void 
+static void 
 read_sample(sample_info *info, exfile *f)
 {
 	/* add one byte for resampling */
@@ -265,7 +265,7 @@ read_sample(sample_info *info, exfile *f)
 }
 
 
-LOCAL void 
+static void 
 read_samples(song *song, exfile *f, char used[])
 {
 	/* read samples from the file if they are needed */
@@ -282,7 +282,7 @@ read_samples(song *song, exfile *f, char used[])
 *** Pattern information handling
 ***/
 
-LOCAL void 
+static void 
 fill_pattern_numbers(song_info *info, exfile *f)
 {
 	for (unsigned int i = 0; i < NUMBER_PATTERNS; i++) {
@@ -295,7 +295,7 @@ fill_pattern_numbers(song_info *info, exfile *f)
 	}
 }
 
-LOCAL void 
+static void 
 mark_used_pattern_numbers(song_info *info, unsigned char used[])
 {
 	unsigned int i;
@@ -310,7 +310,7 @@ mark_used_pattern_numbers(song_info *info, unsigned char used[])
  * -> n:      number of actually used patterns
  *    used[]: boolean array: for each pattern number, is it used ?
  */
-LOCAL unsigned int compress_patterns(struct song_info *info, 
+static unsigned int compress_patterns(struct song_info *info, 
 	unsigned char used[])
 	{
 	unsigned char remap[NUMBER_PATTERNS];
@@ -336,7 +336,7 @@ LOCAL unsigned int compress_patterns(struct song_info *info,
 
 /* pattern_size = setup_patterns(info, ntracks, number)
  */
-LOCAL unsigned int setup_patterns(struct song_info *info, 
+static unsigned int setup_patterns(struct song_info *info, 
 	unsigned int ntracks, unsigned int used)
 	{
 	unsigned int i;
@@ -366,7 +366,7 @@ LOCAL unsigned int setup_patterns(struct song_info *info,
 	return info->plength * ntracks * 4;
 	}
 
-LOCAL void fill_event(struct event *e, unsigned char *p, 
+static void fill_event(struct event *e, unsigned char *p, 
 	int *current_instrument, struct song *song)
    {
 	pitch pitch;
@@ -400,7 +400,7 @@ LOCAL void fill_event(struct event *e, unsigned char *p,
    }
 
 
-LOCAL struct event *fill_pattern(struct exfile *f, struct song *song, 
+static struct event *fill_pattern(struct exfile *f, struct song *song, 
 	struct event *e)
    {
    unsigned int i, j;
@@ -424,7 +424,7 @@ LOCAL struct event *fill_pattern(struct exfile *f, struct song *song,
  * read patterns from file f into song, keeping only patterns tagged by
  * used, return memory gain.
  */
-LOCAL unsigned fill_patterns(struct song *song, struct exfile *f, 
+static unsigned fill_patterns(struct song *song, struct exfile *f, 
 	unsigned char used[])
 	{
 	unsigned int i;
@@ -454,7 +454,7 @@ LOCAL unsigned fill_patterns(struct song *song, struct exfile *f,
  *** End song setup
  ***/
 
-LOCAL void adjust_volumes(struct song *song)
+static void adjust_volumes(struct song *song)
 	{
 	unsigned int i, j;
 
@@ -482,7 +482,7 @@ void setup_song(struct song *song)
  *** Actual song loading
  ***/
 
-LOCAL void fill_song_info(struct song_info *info, struct exfile *f)
+static void fill_song_info(struct song_info *info, struct exfile *f)
    {
    info->length = getc_file(f);
    getc_file(f);
@@ -496,7 +496,7 @@ LOCAL void fill_song_info(struct song_info *info, struct exfile *f)
 /* new_song: allocate a new structure for a song.
  *  clear each and every field as appropriate.
  */
-LOCAL struct song *new_song(void)
+static struct song *new_song(void)
 {
 	struct song *n;
 	unsigned int i;
@@ -543,7 +543,7 @@ void release_song(struct song *song)
 /* error_song(song): what we should return if there was an error. 
  * Actually, is mostly useful for its side effects.
  */
-LOCAL struct song *error_song(struct song *song)
+static struct song *error_song(struct song *song)
    {
    release_song(song);
    return NULL;
@@ -552,7 +552,7 @@ LOCAL struct song *error_song(struct song *song)
 /* bad_sig(f, song): read the signature on file f and returns true if 
  * it is not a known sig. Set some parameters of song as a side effect
  */
-LOCAL int bad_sig(struct exfile *f, struct song *song)
+static int bad_sig(struct exfile *f, struct song *song)
    {
    char a, b, c, d;
 

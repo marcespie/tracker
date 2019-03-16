@@ -2,27 +2,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef OSK
-#include <dir.h>
-#define dirent direct
-#else
-#ifdef __NeXT__
-#include <sys/dir.h>
-#include <sys/dirent.h>
-#else
 #include <dirent.h>
-#endif
-#endif
 
-#ifdef IS_POSIX
 #include <time.h>
-#else
-#ifdef AMIGA
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-#endif
 
 #include <vector>
 #ifndef S_ISDIR
@@ -54,7 +36,7 @@ play_entry::play_entry(const char* dir, const char* f):
 
 std::vector<play_entry> table;
 
-LOCAL int 
+static int 
 is_dir(const char *name)
 {
 	struct stat buf;
@@ -64,7 +46,7 @@ is_dir(const char *name)
 	return S_ISDIR(buf.st_mode);
 }
 
-LOCAL void 
+static void 
 expand_dir(const char *name)
 {
 	DIR *dir;

@@ -5,7 +5,7 @@ const auto MAX_CHANNELS=8;
 
 enum audio_state { DO_NOTHING, PLAY, REPLAY};
 
-LOCAL struct audio_channel {
+static struct audio_channel {
 	struct sample_info *samp;
 	enum audio_state mode;
 	unsigned long pointer;

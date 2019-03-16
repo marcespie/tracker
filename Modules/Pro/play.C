@@ -17,31 +17,31 @@
 #include "empty.h"
      
 
-XT short vibrato_table[3][64];
+extern short vibrato_table[3][64];
 
-LOCAL void init_st_play(void);
-LOCAL void (*INIT)(void) = init_st_play;
+static void init_st_play(void);
+static void (*INIT)(void) = init_st_play;
 
 /**************
  **************
  **************/
 
 
-LOCAL struct st_effect eval[NUMBER_EFFECTS];
+static struct st_effect eval[NUMBER_EFFECTS];
                     		/* the effect table */
 
-LOCAL struct channel chan[MAX_TRACKS];
+static struct channel chan[MAX_TRACKS];
                     /* every channel */
 
-LOCAL unsigned int ntracks;		/* number of tracks of the current song */
-LOCAL struct sample_info **voices;
+static unsigned int ntracks;		/* number of tracks of the current song */
+static struct sample_info **voices;
 
 
 
 /* init_channel(ch, dummy):
  * setup channel, with initially a dummy sample ready to play, and no note.
  */
-LOCAL void init_channel(struct channel *ch, int side)
+static void init_channel(struct channel *ch, int side)
    {
 	struct tag tags[2];
 	tags[0].type = AUDIO_SIDE;
@@ -90,7 +90,7 @@ LOCAL void init_channel(struct channel *ch, int side)
    }
 
 
-LOCAL void init_channels(void)
+static void init_channels(void)
 	{
    release_audio_channels();
 
@@ -117,7 +117,7 @@ void init_st_play(void)
    }
 
 
-LOCAL void dump_events(struct automaton *a)
+static void dump_events(struct automaton *a)
 	{
 		/* display the output in a reasonable order:
 		 * LEFT1 LEFT2 || RIGHT1 RIGHT 2
@@ -153,7 +153,7 @@ LOCAL void dump_events(struct automaton *a)
 	dump_event(0, 0);
 	}
 
-LOCAL void setup_effect(struct channel *ch, 
+static void setup_effect(struct channel *ch, 
 	struct automaton *a, struct event *e)
    {
    int samp, cmd;
@@ -234,7 +234,7 @@ LOCAL void setup_effect(struct channel *ch,
    }
 
 
-LOCAL void play_one_tick(struct automaton *a)
+static void play_one_tick(struct automaton *a)
    {
    int channel;
 
@@ -263,7 +263,7 @@ LOCAL void play_one_tick(struct automaton *a)
 		resample();
    }
 
-LOCAL struct tag pres[2];
+static struct tag pres[2];
 
 struct tag *play_song(struct song *song, unsigned int start)
    {

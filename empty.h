@@ -5,4 +5,4 @@
 /* empty = empty_sample():
  * return a suitable empty sample
  */
-XT struct sample_info *empty_sample(void);
+extern struct sample_info *empty_sample(void);

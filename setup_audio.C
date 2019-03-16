@@ -10,19 +10,19 @@
 #include "resample.h"
 #include "watched_var.h"
 
-LOCAL void init_audio(void);
+static void init_audio(void);
 
-LOCAL void (*INIT)(void) = init_audio;
+static void (*INIT)(void) = init_audio;
 
-LOCAL bool opened = false;
-LOCAL unsigned long ask_freq, real_freq;
-LOCAL int stereo;
+static bool opened = false;
+static unsigned long ask_freq, real_freq;
+static int stereo;
 
 
 /* forward declaration */
-LOCAL void do_close_audio(void);
+static void do_close_audio(void);
 
-LOCAL void init_audio(void)
+static void init_audio(void)
    {
    at_end(do_close_audio);
    }
@@ -70,7 +70,7 @@ void setup_audio(unsigned long f, int s)
       }
    }
 
-LOCAL void do_close_audio(void)
+static void do_close_audio(void)
    {
    if (opened && get_pref_scalar(PREF_OUTPUT))
       {

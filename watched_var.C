@@ -7,13 +7,13 @@
 #include "watched_var.h"
 #include "autoinit.h"
 
-LOCAL struct {
+static struct {
 	long value;
 	bool set;
 	std::list<notify_function> l;
 } variable[NUMBER_WATCHED];
 
-LOCAL void 
+static void 
 notify_new(enum watched_var var)
 {
 	variable[var].set = true;

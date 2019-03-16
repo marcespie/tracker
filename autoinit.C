@@ -4,12 +4,6 @@
 #include "extern.h"
 #include "autoinit.h"
 
-LOCAL struct clist {
-	struct clist *next;
-	void (*func)(void);
-} *list = nullptr;
-	
-
 void 
 at_end(void (*cleanup)(void))
 {

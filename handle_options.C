@@ -12,8 +12,8 @@
 #include "open.h"
 
 
-XT void print_usage(void);
-XT struct option_set *port_options;
+extern void print_usage(void);
+extern struct option_set *port_options;
 
 unsigned long half_mask = 0;
 int ask_freq;		/* parameters for setup audio */
@@ -24,7 +24,7 @@ int trandom;
 
 int loop = false;	/* main automaton looping at end of argv ? */
 
-LOCAL struct option opts[] =
+static struct option opts[] =
 	{
 	{"help", 's', 0},					/* 0 */
 	{"frequency", 'n', 0},			/* 1 */
@@ -65,13 +65,13 @@ LOCAL struct option opts[] =
 
 VALUE args[24];
 
-LOCAL struct option_set set =
+static struct option_set set =
 	{ opts, sizeof(opts)/sizeof(struct option), args};
 
 
 #if 0
 /* Command-line options. */
-LOCAL struct long_option long_options[] =
+static struct long_option long_options[] =
 {
 #ifdef VOLUME_CONTROL
 	{"speaker",					0, '#', OPT_SPEAKER},
@@ -112,7 +112,7 @@ void set_default_prefs(void)
 		opts[13].def_scalar = 0;
 	}
 
-LOCAL unsigned long get_mask(char *s)
+static unsigned long get_mask(char *s)
 	{
 	char c;
 	unsigned long mask = 0;
@@ -133,9 +133,9 @@ LOCAL unsigned long get_mask(char *s)
 	}
 			
 #define MAXLINELENGTH 200
-LOCAL char linebuf[MAXLINELENGTH+1];
+static char linebuf[MAXLINELENGTH+1];
 
-LOCAL char *read_line(struct exfile *f)
+static char *read_line(struct exfile *f)
 	{
 	size_t i;
 	int c;

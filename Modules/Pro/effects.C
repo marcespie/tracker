@@ -59,7 +59,7 @@ void set_nothing(void)
 }
 
 /* slide pitch (up or down) */
-LOCAL void 
+static void 
 do_slide(channel *ch)
 {
 	ch->pitch += ch->slide;
@@ -68,7 +68,7 @@ do_slide(channel *ch)
 	set_temp_pitch(ch, ch->pitch);
 }
 
-LOCAL void 
+static void 
 set_upslide(channel *ch, const event *e)
 {
 	ch->adjust = do_slide;
@@ -76,7 +76,7 @@ set_upslide(channel *ch, const event *e)
 		ch->slide = e->parameters;
 }
 
-LOCAL void 
+static void 
 set_downslide(channel *ch, const event *e)
 {
 	ch->adjust = do_slide;
@@ -84,7 +84,7 @@ set_downslide(channel *ch, const event *e)
 		ch->slide = -e->parameters;
 }
 
-LOCAL int 
+static int 
 sinusoid_value(sinusoid *s)
 {
 	s->offset += s->rate;
@@ -92,7 +92,7 @@ sinusoid_value(sinusoid *s)
 	return s->table[s->offset] * s->depth;
 }
 
-LOCAL void 
+static void 
 set_sinusoid(const event *e, sinusoid *s)
 {
 	if (HI(e->parameters))
@@ -104,7 +104,7 @@ set_sinusoid(const event *e, sinusoid *s)
 }
 
 /* modulate the pitch with vibrato */
-LOCAL void 
+static void 
 do_vibrato(channel *ch)
 {
 	/* temporary update of only the step value,
@@ -114,20 +114,20 @@ do_vibrato(channel *ch)
 		set_temp_pitch(ch, ch->pitch + sinusoid_value(&(ch->vib))/256);
 }
 
-LOCAL void 
+static void 
 set_vibrato(channel *ch, const event *e)
 {
 	ch->adjust = do_vibrato;
 		set_sinusoid(e, &(ch->vib));
 }
 
-LOCAL void 
+static void 
 do_tremolo(channel *ch)
 {
 	set_temp_volume(ch, ch->volume + sinusoid_value(&(ch->trem))/128);
 }
 
-LOCAL void 
+static void 
 set_tremolo(channel *ch, const event *e)
 {
 	ch->adjust = do_tremolo;
@@ -137,7 +137,7 @@ set_tremolo(channel *ch, const event *e)
 /* arpeggio looks a bit like chords: we alternate between two
  * or three notes very fast.
  */
-LOCAL void 
+static void 
 do_arpeggio(channel *ch)
 {
 	if (++ch->arpindex >= MAX_ARP)
@@ -145,7 +145,7 @@ do_arpeggio(channel *ch)
 	set_temp_pitch(ch, ch->arp[ch->arpindex]);
 }
 
-LOCAL void 
+static void 
 set_arpeggio(channel *ch, const event *e)
 {
 	/* arpeggio can be installed relative to the
@@ -179,7 +179,7 @@ set_arpeggio(channel *ch, const event *e)
 /* volume slide. Mostly used to simulate waveform control.
  * (attack/decay/sustain).
  */
-LOCAL void 
+static void 
 do_slidevol(channel *ch)
 {
 	set_current_volume(ch, ch->volume + ch->volumerate);
@@ -191,7 +191,7 @@ do_slidevol(channel *ch)
  * a HI(para) - LOW(para). Answer: protracker does not.
  * DON'T GET the test order wrong!!! or ghouls will sound strange
  */
-LOCAL void 
+static void 
 parse_slidevol(channel *ch, int para)
 {
 	if (HI(para))
@@ -200,7 +200,7 @@ parse_slidevol(channel *ch, int para)
 		ch->volumerate = -LOW(para);
 }
 
-LOCAL void 
+static void 
 set_slidevol(channel *ch, const event *e)
 {
 	ch->adjust = do_slidevol;
@@ -211,7 +211,7 @@ set_slidevol(channel *ch, const event *e)
  * that effect by splitting the routine into a pitch up/pitch down 
  * part while setting up the effect.
  */
-LOCAL void 
+static void 
 do_portamento(channel *ch)
 {
 	if (ch->pitchgoal) {
@@ -248,7 +248,7 @@ do_portamento(channel *ch)
 /* if para and pitch are 0, this is obviously a continuation
  * of the previous portamento.
  */
-LOCAL void 
+static void 
 set_portamento(channel *ch, pitch pitch, const event *e)
 {
 	if (e->parameters)
@@ -266,14 +266,14 @@ set_portamento(channel *ch, pitch pitch, const event *e)
  ***	combined commands
  ***/
 
-LOCAL void 
+static void 
 do_portaslide(channel *ch)
 {
 	do_portamento(ch);
 	do_slidevol(ch);
 }
 
-LOCAL void 
+static void 
 set_portaslide(channel *ch, pitch pitch, const event *e)
 {
 	if (pitch)
@@ -285,14 +285,14 @@ set_portaslide(channel *ch, pitch pitch, const event *e)
 		ch->adjust = do_slidevol;
 }
 
-LOCAL void 
+static void 
 do_vibratoslide(channel *ch)
 {
 	do_vibrato(ch);
 	do_slidevol(ch);
 }
 
-LOCAL void 
+static void 
 set_vibratoslide(channel *ch, const event *e)
 {
 	ch->adjust = do_vibratoslide;
@@ -313,7 +313,7 @@ set_vibratoslide(channel *ch, const event *e)
  * the four channel before doing anything about it. For instance, 
  * there can be several speed change in the same note.
  */
-LOCAL void 
+static void 
 set_speed(automaton *a, const event *e)
 {
 	if (e->parameters >= 32 && 
@@ -327,14 +327,14 @@ set_speed(automaton *a, const event *e)
 }
 
 /* older soundtracker speed change effect */
-LOCAL void 
+static void 
 set_st_speed(automaton *a, const event *e)
 {
 	a->new_speed = e->parameters;
 	a->do_stuff |= SET_SPEED;
 }
 
-LOCAL void 
+static void 
 set_skip(automaton *a, const event *e)
 {
 	/* BCD decoding in read.c */
@@ -342,7 +342,7 @@ set_skip(automaton *a, const event *e)
 	a->do_stuff |= SET_SKIP;
 }
 
-LOCAL void 
+static void 
 set_fastskip(automaton *a, const event *e)
 {
 	a->new_pattern = e->parameters;
@@ -352,7 +352,7 @@ set_fastskip(automaton *a, const event *e)
 /* immediate effect: starts the sample somewhere
  * off the start.
  */
-LOCAL void 
+static void 
 set_offset(channel *ch, const event *e)
 {
 	if (e->parameters)
@@ -366,7 +366,7 @@ set_offset(channel *ch, const event *e)
  * explicitly by giving its number. Obviously, if you load an instrument 
  * and do a set_volume in the same note, the set_volume will take precedence.
  */
-LOCAL void 
+static void 
 set_volume(channel *ch, const event *e)
 {
 	set_current_volume(ch, e->parameters);
@@ -381,7 +381,7 @@ set_volume(channel *ch, const event *e)
 
 /* retrig note at a fast pace
  */
-LOCAL void 
+static void 
 do_retrig(channel *ch)
 {
 	if (--ch->current <= 0) {
@@ -390,7 +390,7 @@ do_retrig(channel *ch)
 	}
 }
 
-LOCAL void 
+static void 
 set_retrig(channel *ch, const event *e)
 {
 	ch->retrig = e->parameters;
@@ -400,7 +400,7 @@ set_retrig(channel *ch, const event *e)
 
 /* start note after a small delay
  */
-LOCAL void 
+static void 
 do_latestart(channel *ch)
 {
 	if (--ch->current <= 0) {
@@ -410,7 +410,7 @@ do_latestart(channel *ch)
 	}
 }
 
-LOCAL void 
+static void 
 set_late_start(channel *ch, const event *e)
 {
 	/* stop previous note if necessary */
@@ -422,7 +422,7 @@ set_late_start(channel *ch, const event *e)
 /* cut note after some time. Note we only kill the volume, 
  * as protracker does (compatibility...)
  */
-LOCAL void 
+static void 
 do_cut(channel *ch)
 {
 	if (ch->retrig) {
@@ -431,7 +431,7 @@ do_cut(channel *ch)
 	}
 }
 
-LOCAL void 
+static void 
 set_note_cut(channel *ch, const event *e)
 {
 	ch->retrig = e->parameters;
@@ -439,7 +439,7 @@ set_note_cut(channel *ch, const event *e)
 }
 
 
-LOCAL void 
+static void 
 set_smooth_up(channel *ch, const event *e)
 {
 	ch->pitch += e->parameters;
@@ -448,7 +448,7 @@ set_smooth_up(channel *ch, const event *e)
 	set_temp_pitch(ch, ch->pitch);
 }
 
-LOCAL void 
+static void 
 set_smooth_down(channel *ch, const event *e)
 {
 	ch->pitch -= e->parameters;
@@ -457,7 +457,7 @@ set_smooth_down(channel *ch, const event *e)
 	set_temp_pitch(ch, ch->pitch);
 }
 
-LOCAL void 
+static void 
 set_change_finetune(channel *ch, const event *e)
 {
 	ch->finetune = e->parameters;
@@ -469,7 +469,7 @@ set_change_finetune(channel *ch, const event *e)
 }
 
 
-LOCAL void 
+static void 
 set_loop(channel *ch, automaton *a, const event *e)
 {
 	/* Note: the current implementation of protracker
@@ -496,20 +496,20 @@ set_loop(channel *ch, automaton *a, const event *e)
 		}
 }
 
-LOCAL void 
+static void 
 set_smooth_upvolume(channel *ch, const event *e)
 {
 	set_current_volume(ch, ch->volume + e->parameters);
 }
 
-LOCAL void 
+static void 
 set_smooth_downvolume(channel *ch, const event *e)
 {
 	set_current_volume(ch, ch->volume - e->parameters);
 }
 
 
-LOCAL void 
+static void 
 set_delay_pattern(automaton *a, const event *e)
 {
 	a->delay_counter = (e->parameters + 1);
@@ -517,7 +517,7 @@ set_delay_pattern(automaton *a, const event *e)
 
 
 
-LOCAL void 
+static void 
 set_gliss_ctrl(channel *ch, const event *e)
 {
 	if (e->parameters)
@@ -526,7 +526,7 @@ set_gliss_ctrl(channel *ch, const event *e)
 		ch->funk_glissando = false;
 }
 
-LOCAL void 
+static void 
 set_sine_wave(const event *e, sinusoid *s)
 {
 	s->table = vibrato_table[e->parameters & 3];
@@ -536,19 +536,19 @@ set_sine_wave(const event *e, sinusoid *s)
 		s->reset = true;
 }
 
-LOCAL void 
+static void 
 set_vibrato_wave(channel *ch, const event *e)
 {
 	set_sine_wave(e, &(ch->vib));
 }
 
-LOCAL void 
+static void 
 set_tremolo_wave(channel *ch, const event *e)
 {
 	set_sine_wave(e, &(ch->trem));
 }
 
-LOCAL void 
+static void 
 do_invert(channel *ch)
 {
 	ch->invert_offset += ch->invert_speed;
@@ -563,10 +563,10 @@ do_invert(channel *ch)
 	}
 }
 
-LOCAL void 
+static void 
 set_invert_loop(channel *ch, const event *e)
 {
-	LOCAL unsigned char funk_table[] =
+	static unsigned char funk_table[] =
 	    {0, 5, 6, 7, 8, 10, 11, 13, 16, 19, 22, 26, 32, 43, 64, 128};
 	if (e->parameters) {
 		ch->invert_speed = funk_table[e->parameters];

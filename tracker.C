@@ -15,15 +15,15 @@
 #include "open.h"
 #include "Modules/Pro/play.h"
      
-XT void print_usage(void);
-XT unsigned long half_mask;
-XT unsigned int ask_freq;
-XT int stereo;
-XT unsigned int start;
-XT int trandom;
-XT int loop;
-XT int handle_options(int argc, char *argv[]);
-XT void set_default_prefs(void);
+extern void print_usage(void);
+extern unsigned long half_mask;
+extern unsigned int ask_freq;
+extern int stereo;
+extern unsigned int start;
+extern int trandom;
+extern int loop;
+extern int handle_options(int argc, char *argv[]);
+extern void set_default_prefs(void);
 
 /* global variable to catch various types of errors and achieve the 
  * desired flow of control
@@ -37,7 +37,7 @@ int error;
  * - read the song trying several formats
  * - handle errors gracefully
  */
-LOCAL struct song *load_song(ENTRY e)
+static struct song *load_song(ENTRY e)
    {
    struct song *song;
    char *buffer;
@@ -126,7 +126,7 @@ LOCAL struct song *load_song(ENTRY e)
    }
 
 
-LOCAL void adjust_song(struct song *s, unsigned long m)
+static void adjust_song(struct song *s, unsigned long m)
 	{
 	unsigned i, j ;
 

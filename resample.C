@@ -15,17 +15,17 @@
 #include "empty.h"
 #include "watched_var.h"
      
-LOCAL void init_resample(void);
-LOCAL void (*INIT)(void) = init_resample;
+static void init_resample(void);
+static void (*INIT)(void) = init_resample;
 
 
 /*---------- Channels allocation mechanism -----------------------*/
 
 /* Fixed structure for `hardware audio channels' */
-LOCAL int allocated = 0;
+static int allocated = 0;
 	
 /* log number of channels allocated according to side */
-LOCAL int total[NUMBER_SIDES];
+static int total[NUMBER_SIDES];
 
 audio_channel *
 new_channel_tag_list(tag *prop)
@@ -83,16 +83,16 @@ void release_audio_channels(void)
 
 /*---------- Resampling engine ------------------------------------*/
 
-LOCAL unsigned long step_table[REAL_MAX_PITCH + LEEWAY];  
+static unsigned long step_table[REAL_MAX_PITCH + LEEWAY];  
                   /* holds the increment for finding the next sampled
                    * byte at a given pitch (see resample() ).
                    */
 
-LOCAL unsigned int oversample;
-LOCAL unsigned long resampling_frequency;
-LOCAL unsigned int tempo = 50;
-LOCAL unsigned int num, den = 1;
-LOCAL unsigned int number_samples;
+static unsigned int oversample;
+static unsigned long resampling_frequency;
+static unsigned int tempo = 50;
+static unsigned int num, den = 1;
+static unsigned int number_samples;
 
 void 
 prep_sample_info(sample_info *info)
@@ -115,7 +115,7 @@ prep_sample_info(sample_info *info)
  * - never forget that samples are SIGNED numbers. If you have unsigned 
  * samples, you have to convert them SOMEWHERE.
  */
-LOCAL void 
+static void 
 build_step_table(
     int oversample, 			/* use i sample for each value output */
     unsigned long output_fr /* output frequency */
@@ -135,20 +135,20 @@ build_step_table(
 	}
 }
          
-LOCAL void 
+static void 
 readjust_current_steps(void)
 {
 	for (int i = 0; i < allocated; i++)
 		chan[i].step = step_table[chan[i].pitch];
 }
 
-LOCAL void 
+static void 
 readjust_beat(void)
 {
 	number_samples = resampling_frequency * num / tempo / den;
 }
 
-LOCAL void 
+static void 
 notify_resample(enum watched_var var, long n)
 {
 	switch(var) {
@@ -168,7 +168,7 @@ notify_resample(enum watched_var var, long n)
 	}
 }
 
-LOCAL void 
+static void 
 init_resample(void)
 {
 	add_notify(notify_resample, FREQUENCY);
@@ -184,8 +184,8 @@ set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
 	readjust_beat();
 }
 
-LOCAL int max_side;		/* number of bits on one side */
-LOCAL int max_sample;	/* number of bits for one sample */
+static int max_side;		/* number of bits on one side */
+static int max_sample;	/* number of bits for one sample */
 
 void 
 set_data_width(int side, int sample)

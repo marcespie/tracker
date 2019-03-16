@@ -12,14 +12,14 @@
 #include "autoinit.h"
 
 #include <assert.h>
-LOCAL void init_display(void);
+static void init_display(void);
 
 static init z(init_display);
 
-LOCAL char *base;
+static char *base;
 
 /* lookup tables for speed */
-LOCAL const char *num[] = {
+static const char *num[] = {
 " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9",
 "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -32,12 +32,12 @@ LOCAL const char *num[] = {
 "90", "91", "92", "93", "94", "95", "96", "97", "98", "99",
 "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
 
-LOCAL const char empty[]="                       ";
+static const char empty[]="                       ";
 char instname[] = { ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
-LOCAL void 
+static void 
 color(unsigned int c)
 {
 	if (get_pref_scalar(PREF_COLOR))
@@ -60,14 +60,14 @@ copy<1>(const char *from)
 }
 
 
-LOCAL void 
+static void 
 stringcopy(const char *from)
 {
 	while (*from)
 		*base++ = *from++;
 }
 
-LOCAL void 
+static void 
 num2(unsigned int n)
 {
 	assert(n < 110);
@@ -77,7 +77,7 @@ num2(unsigned int n)
 	*base++ = *v;
 }
 
-LOCAL void 
+static void 
 num3(unsigned int n)
 {
 	assert(n < 1000);
@@ -94,11 +94,11 @@ num3(unsigned int n)
 
 typedef void (*disp_function)(unsigned samp, unsigned para, note note, 
 	const channel *ch);
-LOCAL disp_function table[NUMBER_EFFECTS];
+static disp_function table[NUMBER_EFFECTS];
 
-LOCAL int debug;
+static int debug;
 
-LOCAL void disp_note_name(const channel *ch, note note)
+static void disp_note_name(const channel *ch, note note)
 	{
 	if (ch->samp->start)
 		{
@@ -110,7 +110,7 @@ LOCAL void disp_note_name(const channel *ch, note note)
 	}
 
 /* all the various dump for the effects */
-LOCAL void 
+static void 
 disp_default(unsigned, unsigned, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -118,7 +118,7 @@ disp_default(unsigned, unsigned, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_nothing(unsigned, unsigned, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -127,7 +127,7 @@ disp_nothing(unsigned, unsigned, note note, const channel *ch)
 	copy<4>("!!!!");
 }
 
-LOCAL void 
+static void 
 disp_speed(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -142,7 +142,7 @@ disp_speed(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_old_speed(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -152,7 +152,7 @@ disp_old_speed(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_portamento(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -169,7 +169,7 @@ disp_portamento(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_portaslide(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -188,7 +188,7 @@ disp_portaslide(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_upslide(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -204,7 +204,7 @@ disp_upslide(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_downslide(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -220,7 +220,7 @@ disp_downslide(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_vibrato(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -238,7 +238,7 @@ disp_vibrato(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_tremolo(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -256,7 +256,7 @@ disp_tremolo(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_arpeggio(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -279,7 +279,7 @@ disp_arpeggio(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_volume(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -294,7 +294,7 @@ disp_volume(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_slidevol(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -313,7 +313,7 @@ disp_slidevol(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_smooth_upvolume(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -325,7 +325,7 @@ disp_smooth_upvolume(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_smooth_downvolume(unsigned , unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -339,7 +339,7 @@ disp_smooth_downvolume(unsigned , unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_late_start(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -351,7 +351,7 @@ disp_late_start(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_retrig(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -364,7 +364,7 @@ disp_retrig(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_note_cut(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -376,7 +376,7 @@ disp_note_cut(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_offset(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -397,7 +397,7 @@ disp_offset(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_skip(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -410,7 +410,7 @@ disp_skip(unsigned, unsigned para, note note, const channel *ch)
 		copy<7>("next   ");
 }
 
-LOCAL void 
+static void 
 disp_loop(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -423,7 +423,7 @@ disp_loop(unsigned, unsigned para, note note, const channel *ch)
 	}
 }
 
-LOCAL void 
+static void 
 disp_vibratoslide(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -441,7 +441,7 @@ disp_vibratoslide(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_delay_pattern(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -451,7 +451,7 @@ disp_delay_pattern(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_smooth_up(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -463,7 +463,7 @@ disp_smooth_up(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_smooth_down(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -475,7 +475,7 @@ disp_smooth_down(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_fastskip(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -484,7 +484,7 @@ disp_fastskip(unsigned, unsigned para, note note, const channel *ch)
 	num3(para);
 }
 
-LOCAL void 
+static void 
 disp_invert_loop(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -496,7 +496,7 @@ disp_invert_loop(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_change_finetune(unsigned, unsigned para, note note, const channel *ch)
 {
 	if (ch->samp->start) {
@@ -508,7 +508,7 @@ disp_change_finetune(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_vibrato_wave(unsigned, unsigned para, note note, const channel *ch)
 	{
 	disp_note_name(ch, note);
@@ -538,7 +538,7 @@ disp_vibrato_wave(unsigned, unsigned para, note note, const channel *ch)
 	color(0);
 }
 
-LOCAL void 
+static void 
 disp_tremolo_wave(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -569,7 +569,7 @@ disp_tremolo_wave(unsigned, unsigned para, note note, const channel *ch)
 }
 
 
-LOCAL void 
+static void 
 disp_gliss_ctrl(unsigned, unsigned para, note note, const channel *ch)
 {
 	disp_note_name(ch, note);
@@ -579,7 +579,7 @@ disp_gliss_ctrl(unsigned, unsigned para, note note, const channel *ch)
 		copy<6>("gls off");
 }
 
-LOCAL void 
+static void 
 init_display(void)
 {
 	for (auto& x: table)

@@ -15,8 +15,8 @@
 #define NUMBER_NOTES 120
 #define NUMBER_FINETUNES 17
 
-LOCAL void create_notes_table(void);
-LOCAL void (*INIT)(void) = create_notes_table;
+static void create_notes_table(void);
+static void (*INIT)(void) = create_notes_table;
 
 
 /* the musical notes correspond to some specific pitch.
@@ -27,9 +27,9 @@ LOCAL void (*INIT)(void) = create_notes_table;
 /* pitch values are stored in the range 1 <= n <= NUMBER_NOTES
  * note 0 is NO_NOTE, with corresponding null pitch
  */
-LOCAL pitch pitch_table[NUMBER_NOTES+1][NUMBER_FINETUNES];
+static pitch pitch_table[NUMBER_NOTES+1][NUMBER_FINETUNES];
 
-LOCAL const char *note_template = "C-C#D-D#E-F-F#G-G#A-A#B-";
+static const char *note_template = "C-C#D-D#E-F-F#G-G#A-A#B-";
 
 
 /* note = pitch2note(pitch): 
@@ -92,7 +92,7 @@ pitch round_pitch(pitch pitch, finetune finetune)
    }
 
 
-LOCAL void create_notes_table(void)
+static void create_notes_table(void)
    {
    double base, pitch;
    int i, j, k;
