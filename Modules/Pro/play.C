@@ -236,13 +236,11 @@ static void setup_effect(struct channel *ch,
 
 static void play_one_tick(struct automaton *a)
    {
-   int channel;
-
    if (a->counter == 0)
       {	/* do new effects only if not in delay mode */
       if (a->delay_counter == 0) 
          {
-         for (channel = 0; channel < ntracks; channel++)
+         for (unsigned channel = 0; channel < ntracks; channel++)
             /* setup effects */
             setup_effect(chan + channel, a, EVENT(a, channel));
   			if (get_pref_scalar(PREF_SHOW))
@@ -250,7 +248,7 @@ static void play_one_tick(struct automaton *a)
          }
       }
    else
-      for (channel = 0; channel < ntracks; channel++)
+      for (unsigned channel = 0; channel < ntracks; channel++)
 			{
          /* do the effects */
    		(chan[channel].special)(chan + channel);
