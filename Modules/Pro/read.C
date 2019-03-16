@@ -45,10 +45,10 @@ setup_buffer(unsigned int size)
  * by a 0 if too short. 
  */
 static char *
-getstring(exfile *f, unsigned int len)
+getstring(exfile& f, unsigned int len)
 {
 	assert(len < bufsize);
-	read_file(buffer, len, 1, f);
+	f.read(buffer, len);
 	buffer[len] = '\0';
 	char *n = (char *)malloc(strlen((const char *)buffer)+1);
 	if (!n) 
@@ -61,24 +61,24 @@ getstring(exfile *f, unsigned int len)
  * same as fseek, except it works on stdin
  */
 static void 
-byteskip(exfile *f, unsigned long int len)
+byteskip(exfile& f, unsigned long int len)
 {
 	while (len > bufsize) {
-		read_file(buffer, bufsize, 1, f);
+		f.read(buffer, bufsize);
 		len -= bufsize;
 	}
-	read_file(buffer, len, 1, f);
+	f.read(buffer, len);
 }
 
 /* v = getushort(f)
  * reads an unsigned short from f
  */
 static unsigned int 
-getushort(exfile *f)
+getushort(exfile& f)
 {
 	/* order dependent !!! */
-	unsigned int i = getc_file(f) << 8;
-	return i | getc_file(f);
+	unsigned int i = f.getc() << 8;
+	return i | f.getc();
 }
 
 /***
@@ -94,7 +94,7 @@ getushort(exfile *f)
  * is missing.
  */
 static sample_info *
-fill_sample_info(exfile *f)
+fill_sample_info(exfile& f)
 {
 	/* New method: instead of allocating/freeing sample infos,
 	* we keep one in reserve */
@@ -116,10 +116,10 @@ fill_sample_info(exfile *f)
 		return nullptr;
 	}
 	info->length = getushort(f);
-	info->finetune = getc_file(f);
+	info->finetune = f.getc();
 	if (info->finetune > 15)
 		info->finetune = 0;
-	info->volume = getc_file(f);
+	info->volume = f.getc();
 	info->volume = MIN(info->volume, MAX_VOLUME);
 	info->rp_offset = getushort(f);
 	info->rp_length = getushort(f);
@@ -161,7 +161,7 @@ fill_sample_info(exfile *f)
 
 	
 static void 
-fill_sample_infos(song *song, exfile *f)
+fill_sample_infos(song *song, exfile& f)
 {
 	for (unsigned int i = 1; i <= song->ninstr; i++) {
 		song->samples[i] = fill_sample_info(f);
@@ -175,7 +175,7 @@ free_sample_info(sample_info *sample)
 {
 	if (sample) {
 		if (sample->start)
-			free_sample(sample->start);
+			delete [] sample->start;
 		if (sample->name)
 			free(sample->name);
 		delete sample;
@@ -244,24 +244,20 @@ compress_samples(song *song, unsigned char used[])
 
 
 static void 
-read_sample(sample_info *info, exfile *f)
+read_sample(sample_info *info, exfile& f)
 {
 	/* add one byte for resampling */
-	info->start = (SAMPLE8 *)alloc_sample(info->length + 1);
-	if (!info->start) {
-		error = OUT_OF_MEM;
-		return;
-	}
+	info->start = new SAMPLE8 [info->length+1];
 
 	if (info->rp_length)
 		info->rp_start = info->start + info->rp_offset;
 
-	obtain_sample(info->start, info->length, f);
+	f.read(info->start, info->length);
 }
 
 
 static void 
-read_samples(song *song, exfile *f, char used[])
+read_samples(song *song, exfile& f, char used[])
 {
 	/* read samples from the file if they are needed */
 	for (unsigned int i = 1; i <= song->ninstr; i++)
@@ -278,10 +274,10 @@ read_samples(song *song, exfile *f, char used[])
 ***/
 
 static void 
-fill_pattern_numbers(song_info *info, exfile *f)
+fill_pattern_numbers(song_info *info, exfile& f)
 {
 	for (unsigned int i = 0; i < NUMBER_PATTERNS; i++) {
-		unsigned int p = getc_file(f);
+		unsigned int p = f.getc();
 		if (p >= NUMBER_PATTERNS)
 			p = 0;
 		if (p+1 > info->npat)
@@ -389,9 +385,9 @@ fill_event(event *e, unsigned char *p, int *current_instrument, song *song)
 
 
 static event *
-fill_pattern(exfile *f, song *song, event *e)
+fill_pattern(exfile& f, song *song, event *e)
 {
-	read_file(buffer, patsize, 1, f);
+	f.read(buffer, patsize);
 
 	for (unsigned j = 0; j < song->ntracks; j++) {
 		int current_instrument = NOT_YET;
@@ -409,7 +405,7 @@ fill_pattern(exfile *f, song *song, event *e)
  * used, return memory gain.
  */
 static unsigned 
-fill_patterns(song *song, exfile *f, unsigned char used[])
+fill_patterns(song *song, exfile& f, unsigned char used[])
 {
 	unsigned int won = 0;
 
@@ -458,10 +454,10 @@ setup_song(song *song)
  ***/
 
 static void 
-fill_song_info(song_info *info, exfile *f)
+fill_song_info(song_info *info, exfile& f)
 {
-	info->length = getc_file(f);
-	getc_file(f);
+	info->length = f.getc();
+	f.getc();
 	info->npat = 0;
 	fill_pattern_numbers(info, f);
 	if (info->npat == 0 || 
@@ -521,12 +517,12 @@ error_song(song *song)
  * it is not a known sig. Set some parameters of song as a side effect
  */
 static bool 
-bad_sig(exfile *f, song *song)
+bad_sig(exfile& f, song *song)
 {
-	char a = getc_file(f);
-	char b = getc_file(f);
-	char c = getc_file(f);
-	char d = getc_file(f);
+	char a = f.getc();
+	char b = f.getc();
+	char c = f.getc();
+	char d = f.getc();
 	if (a == 'M' && b == '.' && c == 'K' && d == '.')
 		return false;
 	if (a == 'M' && b == '&' && c == 'K' && d == '!')
@@ -549,7 +545,7 @@ bad_sig(exfile *f, song *song)
  * the correct type.
  */
 song *
-read_song(exfile *f, int type)
+read_song(exfile& f, int type)
 {
 	unsigned char pattern_used[NUMBER_PATTERNS];
 	unsigned char sample_used[MAX_NUMBER_SAMPLES];
@@ -619,7 +615,7 @@ read_song(exfile *f, int type)
 
 	setup_used_samples(song, sample_used);
 
-	song->samples_start = tell_file(f);
+	song->samples_start = f.tell();
 
 	read_samples(song, f, (char *)sample_used);
 	if (error != NONE)

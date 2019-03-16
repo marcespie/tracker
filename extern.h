@@ -71,7 +71,7 @@ extern int error;
  * returns NULL (and an error) if it doesn't work.
  * Returns a dynamic song structure if successful.
  */
-extern struct song *read_song(struct exfile *f, int type);
+extern struct song *read_song(class exfile& f, int type);
 
 /* release_song(s):
  * release all the memory song occupies.
@@ -144,18 +144,6 @@ extern int output_resolution(void);
 
 extern void sync_audio
 	(void (*function)(GENERIC),  void (*f2) (GENERIC), GENERIC parameter);
-
-#ifdef SPECIAL_SAMPLE_MEMORY
-extern GENERIC alloc_sample(unsigned long len);
-extern void free_sample(GENERIC s);
-extern int obtain_sample(GENERIC start, unsigned long l, struct exfile *f);
-
-#else
-#define alloc_sample(len)		calloc(len, 1)
-#define free_sample(sample)		free(sample)
-#define obtain_sample(start, l, f)	read_file(start, 1, l, f)
-#endif
-
 
 /*--------------------------- $(UI)/ui.c ------------------------*/
 /* see unix/ui.c for the general unix implementation.

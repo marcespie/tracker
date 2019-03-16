@@ -42,7 +42,7 @@ load_song(ENTRY e)
 {
 	song *song;
 	char *buffer;
-	struct exfile *file;
+	exfile file;
 	const char *name;
 	size_t i, j;
 
@@ -59,8 +59,7 @@ load_song(ENTRY e)
 	}
 
 	/* read the song */
-	file = open_file(name, "r", getenv("MODPATH"));
-	if (file) {
+	if (file.open(name, getenv("MODPATH"))) {
 		switch(e->filetype) {
 		case NEW:
 			song = read_song(file, NEW);
@@ -76,7 +75,7 @@ load_song(ENTRY e)
 					e->filetype = NEW;
 					break;
 				} else
-					rewind_file(file);
+					file.rewind();
 				/* FALLTHRU */
 			case OLD:
 				song = read_song(file, OLD);
@@ -94,7 +93,6 @@ load_song(ENTRY e)
 			default:
 				song = nullptr;
 			}
-			close_file(file);
 		}
 	} else
 		song = nullptr;

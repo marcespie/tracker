@@ -1,21 +1,22 @@
 /* open.h */
 
-/* handle = open_file(filename, mode, path):
- * transparently open a compressed file.
- */
-extern struct exfile *open_file(const char *fname, const char *fmode, 
-	const char *path);
+class exfile {
+public:
+	exfile(): handle{nullptr} {}
+	
+	bool open(const char* fname, const char* path);
+	int getc();
+	size_t tell() const;
+	unsigned long read(void *, size_t, unsigned long);
+	template<typename T>
+	unsigned  long read(T* p, unsigned long n)
+	{
+		return read(static_cast<void *>(p), sizeof(*p), n);
+	}
+	void rewind();
+	~exfile();
 
-/* close_file(handle):
- * close a file that was opened with open_file.
- */
-extern void close_file(struct exfile *file);
-
-/* analogous of fgetc, ftell, fread, and rewind */
-extern int getc_file(struct exfile *file);
-extern size_t tell_file(struct exfile *file);
-extern unsigned long read_file(void *p, size_t s, unsigned long n, 
-	struct exfile *file);
-extern void rewind_file(struct exfile *file);
-
-
+private:
+	exfile(const exfile&) = delete;
+	FILE *handle;	/* the real Mc Coy */
+};

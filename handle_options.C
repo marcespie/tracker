@@ -111,13 +111,13 @@ const auto MAXLINELENGTH=200;
 static char linebuf[MAXLINELENGTH+1];
 
 static char *
-read_line(exfile *f)
+read_line(exfile& f)
 {
 	size_t i;
 	int c;
 
 	i = 0;
-	while (((c = getc_file(f)) != EOF) && (c != '\n')) {
+	while (((c = f.getc()) != EOF) && (c != '\n')) {
 		if (i < MAXLINELENGTH)
 			linebuf[i++] = c;
 	}
@@ -213,14 +213,12 @@ handle_options(int argc, char *argv[])
 	start = args[21].scalar;
 	if (args[22].pointer) {
 		char *s;
+		exfile file;
 
-		exfile *file = open_file((char*)args[22].pointer, "r", 0);
-		if (!file)
+		if (!file.open((char*)args[22].pointer, nullptr))
 			end_all("List file does not exist");
-		else
-			while ((s = read_line(file)))
-				add_play_list(s);
-		close_file(file);
+		while ((s = read_line(file)))
+			add_play_list(s);
 	}
 	set_pref_scalar(PREF_OUTPUT, args[23].scalar);
 }

@@ -37,4 +37,3 @@ struct play_entry;
 struct option_set;
 struct iff;
 struct comm_chunk;
-struct exfile;
