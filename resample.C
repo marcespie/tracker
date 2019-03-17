@@ -278,47 +278,53 @@ linear_resample(void)
 }
 
 inline void
+oversample_value(audio_channel& ch, long& v)
+{
+	switch(ch.mode) {
+	case DO_NOTHING:
+		break;
+	case PLAY:
+		/* Since we now have fix_length, we can
+		 * do that check with improved performance
+		*/
+		if (ch.pointer < ch.samp->fix_length) {
+			v += ch.samp->start[C] * ch.scaled_volume;
+			ch.pointer += ch.step;
+			break;
+		} else {
+			/* is there a replay ? */
+			if (ch.samp->rp_start) {
+				ch.mode = REPLAY;
+				ch.pointer -= ch.samp->fix_length;
+				/* FALLTHRU */
+			} else {
+				ch.mode = DO_NOTHING;
+				break;
+			}
+		}
+	case REPLAY:
+		while (ch.pointer >= ch.samp->fix_rp_length)
+			ch.pointer -= ch.samp->fix_rp_length;
+		v += ch.samp->rp_start[C] * ch.scaled_volume;
+		ch.pointer += ch.step;
+		break;
+	}
+}
+
+inline void
 over_resample(void)
 {
-	unsigned int i;   /* sample counter */
-	int channel;      /* channel counter */
-	unsigned int sampling;     /* oversample counter */
 	long value[NUMBER_SIDES];
 
 	value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
+
+	unsigned int i;   /* sample counter */
+	unsigned int sampling;     /* oversample counter */
 	i = sampling = 0;
 	while(true) {
-		for (channel = 0; channel < allocated; channel++) {
+		for (int channel = 0; channel < allocated; channel++) {
 			auto& ch = chan[channel];
-			switch(ch.mode) {
-			case DO_NOTHING:
-				break;
-			case PLAY:
-				/* Since we now have fix_length, we can
-				 * do that check with improved performance
-				*/
-				if (ch.pointer < ch.samp->fix_length) {
-					value[ch.side] += ch.samp->start[C] * ch.scaled_volume;
-					ch.pointer += ch.step;
-					break;
-				} else {
-					/* is there a replay ? */
-					if (ch.samp->rp_start) {
-						ch.mode = REPLAY;
-						ch.pointer -= ch.samp->fix_length;
-						/* FALLTHRU */
-					} else {
-						ch.mode = DO_NOTHING;
-						break;
-					}
-				}
-			case REPLAY:
-				while (ch.pointer >= ch.samp->fix_rp_length)
-					ch.pointer -= ch.samp->fix_rp_length;
-				value[ch.side] += ch.samp->rp_start[C] * ch.scaled_volume;
-				ch.pointer += ch.step;
-				break;
-			}
+			oversample_value(ch, value[ch.side]);
 		}
 		if (++sampling >= oversample) {
 			sampling = 0;
