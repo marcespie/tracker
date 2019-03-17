@@ -171,7 +171,7 @@ setup_effect(channel *ch, automaton *a, event *e)
 		ch->finetune = voices[samp]->finetune;
 		if ((1L<<samp) & get_pref(Pref::imask))
 			ch->samp = empty_sample();
-		set_current_volume(ch, voices[samp]->volume);
+		ch->set_current_volume(voices[samp]->volume);
 	}
 
 	pitch = note2pitch(e->note, ch->finetune);
@@ -192,27 +192,27 @@ setup_effect(channel *ch, automaton *a, event *e)
 	switch(eval[cmd].type) {
 	case NOTHING:
 		if (pitch) {
-			set_current_note(ch, e->note, pitch);
-			start_note(ch);
+			ch->set_current_note(e->note, pitch);
+			ch->start_note();
 		}
 		break;
 	case CH_E:
 		if (pitch)
-			set_current_note(ch, e->note, pitch);
+			ch->set_current_note(e->note, pitch);
 		(eval[cmd].f.CH_E)(ch, e);
 		if (pitch)
-			start_note(ch);
+			ch->start_note();
 		break;
 	case A_E:
 		if (pitch)
-			set_current_note(ch, e->note, pitch);
+			ch->set_current_note(e->note, pitch);
 		(eval[cmd].f.A_E)(a, e);
 		if (pitch)
-			start_note(ch);
+			ch->start_note();
 		break;
 	case NO_NOTE_CH_E:
 		if (pitch)
-			set_current_note(ch, e->note, pitch);
+			ch->set_current_note(e->note, pitch);
 		(eval[cmd].f.CH_E)(ch, e);
 		break;
 	case PORTA_CH_PITCH_E:
@@ -220,10 +220,10 @@ setup_effect(channel *ch, automaton *a, event *e)
 		break;
 	case CH_A_E:
 		if (pitch)
-			set_current_note(ch, e->note, pitch);
+			ch->set_current_note(e->note, pitch);
 		(eval[cmd].f.CH_A_E)(ch, a, e);
 		if (pitch)
-			start_note(ch);
+			ch->start_note();
 		break;
 	}
 }

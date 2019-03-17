@@ -65,7 +65,7 @@ do_slide(channel *ch)
 	ch->pitch += ch->slide;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
 	ch->pitch = MAX(ch->pitch, MIN_PITCH);
-	set_temp_pitch(ch, ch->pitch);
+	ch->set_temp_pitch(ch->pitch);
 }
 
 static void 
@@ -111,7 +111,7 @@ do_vibrato(channel *ch)
 	* note that we do not change the saved pitch.
 	*/
 	if (ch->pitch)
-		set_temp_pitch(ch, ch->pitch + sinusoid_value(&(ch->vib))/256);
+		ch->set_temp_pitch(ch->pitch + sinusoid_value(&(ch->vib))/256);
 }
 
 static void 
@@ -124,7 +124,7 @@ set_vibrato(channel *ch, const event *e)
 static void 
 do_tremolo(channel *ch)
 {
-	set_temp_volume(ch, ch->volume + sinusoid_value(&(ch->trem))/128);
+	ch->set_temp_volume(ch->volume + sinusoid_value(&(ch->trem))/128);
 }
 
 static void 
@@ -142,7 +142,7 @@ do_arpeggio(channel *ch)
 {
 	if (++ch->arpindex >= MAX_ARP)
 		ch->arpindex =0;
-	set_temp_pitch(ch, ch->arp[ch->arpindex]);
+	ch->set_temp_pitch(ch->arp[ch->arpindex]);
 }
 
 static void 
@@ -182,7 +182,7 @@ set_arpeggio(channel *ch, const event *e)
 static void 
 do_slidevol(channel *ch)
 {
-	set_current_volume(ch, ch->volume + ch->volumerate);
+	ch->set_current_volume(ch->volume + ch->volumerate);
 }
 
 /* note that volumeslide does not have a ``take default''
@@ -238,10 +238,10 @@ do_portamento(channel *ch)
 		}
 		/* funk glissando: round to the nearest note each time */
 		if (ch->funk_glissando)
-			set_temp_pitch(ch, 
+			ch->set_temp_pitch(
 			    round_pitch(ch->pitch, ch->finetune));
 		else
-			set_temp_pitch(ch, ch->pitch);
+			ch->set_temp_pitch(ch->pitch);
 	}
 }
 
@@ -357,8 +357,8 @@ set_offset(channel *ch, const event *e)
 {
 	if (e->parameters)
 		ch->start_offset = e->parameters * 256;
-	start_note(ch);
-	set_position(ch, ch->start_offset);
+	ch->start_note();
+	ch->set_position(ch->start_offset);
 }
 
 /* change the volume of the current channel. Is effective until there 
@@ -369,7 +369,7 @@ set_offset(channel *ch, const event *e)
 static void 
 set_volume(channel *ch, const event *e)
 {
-	set_current_volume(ch, e->parameters);
+	ch->set_current_volume(e->parameters);
 }
 
 
@@ -385,7 +385,7 @@ static void
 do_retrig(channel *ch)
 {
 	if (--ch->current <= 0) {
-		start_note(ch);
+		ch->start_note();
 		ch->current = ch->retrig;
 	}
 }
@@ -404,8 +404,8 @@ static void
 do_latestart(channel *ch)
 {
 	if (--ch->current <= 0) {
-		set_current_note(ch, ch->note, ch->pitch);
-		start_note(ch);
+		ch->set_current_note(ch->note, ch->pitch);
+		ch->start_note();
 		ch->adjust = do_nothing;
 	}
 }
@@ -414,7 +414,7 @@ static void
 set_late_start(channel *ch, const event *e)
 {
 	/* stop previous note if necessary */
-	stop_note(ch);
+	ch->stop_note();
 	ch->current = e->parameters;
 	ch->adjust = do_latestart;
 }
@@ -427,7 +427,7 @@ do_cut(channel *ch)
 {
 	if (ch->retrig) {
 		if (--ch->retrig == 0)
-			set_current_volume(ch, 0);
+			ch->set_current_volume(0);
 	}
 }
 
@@ -445,7 +445,7 @@ set_smooth_up(channel *ch, const event *e)
 	ch->pitch += e->parameters;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
 	ch->pitch = MAX(ch->pitch, MIN_PITCH);
-	set_temp_pitch(ch, ch->pitch);
+	ch->set_temp_pitch(ch->pitch);
 }
 
 static void 
@@ -454,7 +454,7 @@ set_smooth_down(channel *ch, const event *e)
 	ch->pitch -= e->parameters;
 	ch->pitch = MIN(ch->pitch, MAX_PITCH);
 	ch->pitch = MAX(ch->pitch, MIN_PITCH);
-	set_temp_pitch(ch, ch->pitch);
+	ch->set_temp_pitch(ch->pitch);
 }
 
 static void 
@@ -463,9 +463,9 @@ set_change_finetune(channel *ch, const event *e)
 	ch->finetune = e->parameters;
 	if (e->note != NO_NOTE) {
 		pitch pitch = note2pitch(e->note, ch->finetune);
-		set_current_note(ch, e->note, pitch);
+		ch->set_current_note(e->note, pitch);
 	}
-	start_note(ch);
+	ch->start_note();
 }
 
 
@@ -499,13 +499,13 @@ set_loop(channel *ch, automaton *a, const event *e)
 static void 
 set_smooth_upvolume(channel *ch, const event *e)
 {
-	set_current_volume(ch, ch->volume + e->parameters);
+	ch->set_current_volume(ch->volume + e->parameters);
 }
 
 static void 
 set_smooth_downvolume(channel *ch, const event *e)
 {
-	set_current_volume(ch, ch->volume - e->parameters);
+	ch->set_current_volume(ch->volume - e->parameters);
 }
 
 

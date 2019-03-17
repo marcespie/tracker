@@ -15,55 +15,56 @@
 
 /* setting up a given note */
 void 
-start_note(channel *ch)
+channel::start_note()
 {
-	ch->vib.offset = 0;
-	ch->trem.offset = 0;
-	play_note(ch->audio, ch->samp, ch->pitch);
+	vib.offset = 0;
+	trem.offset = 0;
+	play_note(audio, samp, pitch);
 }
 
 void 
-stop_note(channel *ch)
+channel::stop_note()
 {
-	play_note(ch->audio, empty_sample(), 0);
+	play_note(audio, empty_sample(), 0);
 }
 
 void 
-set_current_note(channel *ch, note note, pitch pitch)
+channel::set_current_note(::note note_, ::pitch pitch_)
 {
-	ch->pitch = pitch;
-	ch->note = note;
+	pitch = pitch_;
+	note = note_;
 }
 
 /* changing the current pitch (value may be temporary, and so is not stored
  * in channel pitch, for instance vibratos)
  */
 void 
-set_temp_pitch(channel *ch, pitch pitch)
+channel::set_temp_pitch(::pitch pitch_)
 {
-	set_play_pitch(ch->audio, pitch);
+	set_play_pitch(audio, pitch_);
 }
 
 /* changing the current volume, storing it in ch->volume
  */
 void 
-set_current_volume(channel *ch, int volume)
+channel::set_current_volume(int volume_)
 {
-	ch->volume = MAX(MIN(volume, MAX_VOLUME), MIN_VOLUME);
-	set_play_volume(ch->audio, ch->volume);
+	volume = MAX(MIN(volume_, MAX_VOLUME), MIN_VOLUME);
+	set_play_volume(audio, volume);
 }
 
 /* changing the current volume WITHOUT storing it
  */
-void set_temp_volume(channel *ch, int volume)
+void 
+channel::set_temp_volume(int volume_)
 {
-	volume = MAX(MIN(volume, MAX_VOLUME), MIN_VOLUME);
-	set_play_volume(ch->audio, volume);
+	volume_ = MAX(MIN(volume_, MAX_VOLUME), MIN_VOLUME);
+	set_play_volume(audio, volume_);
 }
 
 void 
-set_position(channel *ch, size_t pos)
+channel::set_position(size_t pos)
 {
-	set_play_position(ch->audio, pos);
+	set_play_position(audio, pos);
 }
 

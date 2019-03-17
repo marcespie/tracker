@@ -19,9 +19,11 @@ struct sinusoid {
 	int reset;		/* flag */
 };
 
+struct audio_channel;
+
 struct channel {
-	struct sample_info *samp;
-	struct audio_channel *audio;
+	sample_info *samp;
+	audio_channel *audio;
 	finetune finetune;
 	unsigned int volume;	/* current volume of the sample (0-64) */
 	::pitch pitch;          /* current pitch of the sample */
@@ -31,8 +33,8 @@ struct channel {
 	::pitch arp[MAX_ARP];   /* the three pitch values for an arpeggio */
 	int arpindex;           /* an index to know which note the arpeggio is doing */
 
-	struct sinusoid vib;
-	struct sinusoid trem;
+	sinusoid vib;
+	sinusoid trem;
 
 	int slide;              /* step size of pitch slide */
 
@@ -56,6 +58,15 @@ struct channel {
 	int invert_offset;
 	unsigned long invert_position;
 	void (*special)(struct channel *ch);
+
+	// implemented in pro_low.C
+	void start_note();
+	void stop_note();
+	void set_current_note(::note, ::pitch);
+	void set_temp_pitch(::pitch);
+	void set_current_volume(int volume);
+	void set_temp_volume(int volume); // used for tremolo
+	void set_position(size_t pos);
 };
 
 struct automaton;
