@@ -16,8 +16,6 @@ const auto WRITE_ONLY="wb";
 #define MAX(A,B) ((A)>(B) ? (A) : (B))
 #endif
      
-#define D fprintf(stderr, "%d\n", __LINE__);
-
 typedef union {
 	long scalar;
 	float real;
