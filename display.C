@@ -92,15 +92,15 @@ num3(unsigned int n)
 	*base++ = *v;
 }
 
-using disp_function = void (*)(const channel *ch, const event& e);
+using disp_function = void (*)(const channel& ch, const event& e);
 static disp_function table[NUMBER_EFFECTS];
 
 static int debug;
 
 static void 
-disp_note_name(const channel *ch, note note)
+disp_note_name(const channel& ch, note note)
 	{
-	if (ch->samp->start)
+	if (ch.samp->start)
 		{
 		copy<3>(note2name(note));
 		*base++ = ' ';
@@ -111,7 +111,7 @@ disp_note_name(const channel *ch, note note)
 
 /* all the various dump for the effects */
 static void 
-disp_default(const channel *ch, const event& e)
+disp_default(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	copy<7>(empty);
@@ -119,7 +119,7 @@ disp_default(const channel *ch, const event& e)
 }
 
 static void 
-disp_nothing(const channel *ch, const event& e)
+disp_nothing(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -128,7 +128,7 @@ disp_nothing(const channel *ch, const event& e)
 }
 
 static void 
-disp_speed(const channel *ch, const event& e)
+disp_speed(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -143,7 +143,7 @@ disp_speed(const channel *ch, const event& e)
 
 
 static void 
-disp_old_speed(const channel *ch, const event& e)
+disp_old_speed(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -153,9 +153,9 @@ disp_old_speed(const channel *ch, const event& e)
 
 
 static void 
-disp_portamento(const channel *ch, const event& e)
+disp_portamento(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>("-->");
 		copy<3>(note2name(e.note));
 		if (e.parameters) {
@@ -170,9 +170,9 @@ disp_portamento(const channel *ch, const event& e)
 }
 
 static void 
-disp_portaslide(const channel *ch, const event& e)
+disp_portaslide(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>("-->");
 		copy<3>(note2name(e.note));
 		if (e.low()) {
@@ -189,9 +189,9 @@ disp_portaslide(const channel *ch, const event& e)
 }
 
 static void 
-disp_upslide(const channel *ch, const event& e)
+disp_upslide(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>("    -");
 		if (e.parameters)
@@ -205,9 +205,9 @@ disp_upslide(const channel *ch, const event& e)
 }
 
 static void 
-disp_downslide(const channel *ch, const event& e)
+disp_downslide(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>("    +");
 		if (e.parameters)
@@ -221,10 +221,10 @@ disp_downslide(const channel *ch, const event& e)
 }
 
 static void 
-disp_vibrato(const channel *ch, const event& e)
+disp_vibrato(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
-	if (e.parameters || ch->samp->start)
+	if (e.parameters || ch.samp->start)
 		copy<2>("vb");
 	else
 		copy<2>(empty);
@@ -239,10 +239,10 @@ disp_vibrato(const channel *ch, const event& e)
 }
 
 static void 
-disp_tremolo(const channel *ch, const event& e)
+disp_tremolo(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
-	if (e.parameters || ch->samp->start)
+	if (e.parameters || ch.samp->start)
 		copy<2>("tr");
 	else
 		copy<2>(empty);
@@ -257,21 +257,21 @@ disp_tremolo(const channel *ch, const event& e)
 }
 
 static void 
-disp_arpeggio(const channel *ch, const event& e)
+disp_arpeggio(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		*base++=' ';
 		if (e.note != NO_NOTE) {
 			copy<3>(note2name(e.note + e.low()));
 			*base++=' ';
 			copy<3>(note2name(e.note + e.high()));
-		} else if (ch->note == NO_NOTE)
+		} else if (ch.note == NO_NOTE)
 			stringcopy("Arp err ");
 		else {
-			copy<3>(note2name(ch->note + e.low()));
+			copy<3>(note2name(ch.note + e.low()));
 			*base++=' ';
-			copy<3>(note2name(ch->note + e.high()));
+			copy<3>(note2name(ch.note + e.high()));
 		}  
 	} else
 		copy<11>(empty);
@@ -280,9 +280,9 @@ disp_arpeggio(const channel *ch, const event& e)
 
 
 static void 
-disp_volume(const channel *ch, const event& e)
+disp_volume(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		if (e.parameters) {
 			copy<5>(" vol ");
@@ -295,9 +295,9 @@ disp_volume(const channel *ch, const event& e)
 }
 
 static void 
-disp_slidevol(const channel *ch, const event& e)
+disp_slidevol(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" vol ");
 		if (e.low()) {
@@ -314,9 +314,9 @@ disp_slidevol(const channel *ch, const event& e)
 }
 
 static void 
-disp_smooth_upvolume(const channel *ch, const event& e)
+disp_smooth_upvolume(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>("   ++");
 		num3(e.parameters);
@@ -326,9 +326,9 @@ disp_smooth_upvolume(const channel *ch, const event& e)
 }
 
 static void 
-disp_smooth_downvolume(const channel *ch, const event& e)
+disp_smooth_downvolume(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>("   --");
 		num3(e.parameters);
@@ -340,9 +340,9 @@ disp_smooth_downvolume(const channel *ch, const event& e)
 
 
 static void 
-disp_late_start(const channel *ch, const event& e)
+disp_late_start(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" lte ");
 		num3(e.parameters);
@@ -352,9 +352,9 @@ disp_late_start(const channel *ch, const event& e)
 }
 
 static void 
-disp_retrig(const channel *ch, const event& e)
+disp_retrig(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" rtg ");
 		num3(e.parameters);
@@ -365,9 +365,9 @@ disp_retrig(const channel *ch, const event& e)
 }
 
 static void 
-disp_note_cut(const channel *ch, const event& e)
+disp_note_cut(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" cut ");
 		num3(e.parameters);
@@ -377,13 +377,13 @@ disp_note_cut(const channel *ch, const event& e)
 }
 
 static void 
-disp_offset(const channel *ch, const event& e)
+disp_offset(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<4>(" off");
-		if (ch->samp->length) {
-			int percent = e.parameters * 25600/ch->samp->length;
+		if (ch.samp->length) {
+			int percent = e.parameters * 25600/ch.samp->length;
 			if (percent <= 105)
 				num3(percent);
 			else
@@ -398,7 +398,7 @@ disp_offset(const channel *ch, const event& e)
 
 
 static void 
-disp_skip(const channel *ch, const event& e)
+disp_skip(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -411,7 +411,7 @@ disp_skip(const channel *ch, const event& e)
 }
 
 static void 
-disp_loop(const channel *ch, const event& e)
+disp_loop(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -424,9 +424,9 @@ disp_loop(const channel *ch, const event& e)
 }
 
 static void 
-disp_vibratoslide(const channel *ch, const event& e)
+disp_vibratoslide(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" vibs");
 		if (e.low()) {
@@ -442,7 +442,7 @@ disp_vibratoslide(const channel *ch, const event& e)
 }
 
 static void 
-disp_delay_pattern(const channel *ch, const event& e)
+disp_delay_pattern(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -452,9 +452,9 @@ disp_delay_pattern(const channel *ch, const event& e)
 
 
 static void 
-disp_smooth_up(const channel *ch, const event& e)
+disp_smooth_up(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" sth-");
 		num3(e.parameters);
@@ -464,9 +464,9 @@ disp_smooth_up(const channel *ch, const event& e)
 }
 
 static void 
-disp_smooth_down(const channel *ch, const event& e)
+disp_smooth_down(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<5>(" sth+");
 		num3(e.parameters);
@@ -476,7 +476,7 @@ disp_smooth_down(const channel *ch, const event& e)
 }
 
 static void 
-disp_fastskip(const channel *ch, const event& e)
+disp_fastskip(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	color(0);
@@ -485,7 +485,7 @@ disp_fastskip(const channel *ch, const event& e)
 }
 
 static void 
-disp_invert_loop(const channel *ch, const event& e)
+disp_invert_loop(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	if (e.parameters) {
@@ -497,9 +497,9 @@ disp_invert_loop(const channel *ch, const event& e)
 }
 
 static void 
-disp_change_finetune(const channel *ch, const event& e)
+disp_change_finetune(const channel& ch, const event& e)
 {
-	if (ch->samp->start) {
+	if (ch.samp->start) {
 		copy<3>(note2name(e.note));
 		copy<6>(" fine ");
 		num2(e.parameters);
@@ -509,7 +509,7 @@ disp_change_finetune(const channel *ch, const event& e)
 }
 
 static void 
-disp_vibrato_wave(const channel *ch, const event& e)
+disp_vibrato_wave(const channel& ch, const event& e)
 	{
 	disp_note_name(ch, e.note);
 	copy<3>("vb ");
@@ -539,7 +539,7 @@ disp_vibrato_wave(const channel *ch, const event& e)
 }
 
 static void 
-disp_tremolo_wave(const channel *ch, const event& e)
+disp_tremolo_wave(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	copy<3>("tr ");
@@ -570,7 +570,7 @@ disp_tremolo_wave(const channel *ch, const event& e)
 
 
 static void 
-disp_gliss_ctrl(const channel *ch, const event& e)
+disp_gliss_ctrl(const channel& ch, const event& e)
 {
 	disp_note_name(ch, e.note);
 	if (e.parameters)
@@ -631,7 +631,7 @@ dump_event(const channel *ch, const event *e)
 				*base++ = ' ';
 			*base++ = ' ';
 			debug = e->effect;
-			(*table[e->effect])(ch, *e);
+			(*table[e->effect])(*ch, *e);
 		}
 	} else {
 		*base = 0;
