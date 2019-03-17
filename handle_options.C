@@ -65,10 +65,10 @@ static struct option opts[] = {
 
 
 
-VALUE args[24];
+VALUE t[24];
 
-static struct option_set set =
-	{ opts, sizeof(opts)/sizeof(struct option), args};
+static struct option_set args =
+	{ opts, sizeof(opts)/sizeof(struct option), t};
 
 
 /* initialize all options to default values */
@@ -90,7 +90,7 @@ set_default_prefs(void)
 }
 
 static unsigned long 
-get_mask(char *s)
+get_mask(const char *s)
 {
 	char c;
 	unsigned long mask = 0;
@@ -136,23 +136,21 @@ read_line(exfile& f)
 }
 
 static void
-set_speed_mode(void *p)
+set_speed_mode(const char *p)
 {
-	char *check;
 	int mode;
 
-	check = reinterpret_cast<char *>(p);
-	if (stricmp(check, "normal") == 0)
+	if (stricmp(p, "normal") == 0)
 		mode = NORMAL_SPEEDMODE;
-	else if (stricmp(check, "finespeed") == 0)
+	else if (stricmp(p, "finespeed") == 0)
 		mode = FINESPEED_ONLY;
-	else if (stricmp(check, "speed") == 0)
+	else if (stricmp(p, "speed") == 0)
 		mode = SPEED_ONLY;
-	else if (stricmp(check, "old") == 0)
+	else if (stricmp(p, "old") == 0)
 		mode = OLD_SPEEDMODE;
-	else if (stricmp(check, "vblank") == 0)
+	else if (stricmp(p, "vblank") == 0)
 		mode = OLD_SPEEDMODE;
-	else if (stricmp(check, "alter") == 0)
+	else if (stricmp(p, "alter") == 0)
 		mode = ALTER_PROTRACKER;
 	else {
 		end_all("Unknwon speedmode");
@@ -166,7 +164,7 @@ handle_options(int argc, char *argv[])
 {
 	char *s;
 
-	add_option_set(&set);
+	add_option_set(&args);
 	if (port_options)
 		add_option_set(port_options);
 	if ((s = getenv("TRACKER_DEFAULTS")) != NULL) {
@@ -181,48 +179,47 @@ handle_options(int argc, char *argv[])
 	}
 
 	parse_options(argc, argv, add_play_list);
-	if (args[0].scalar) {
+	if (args.get_long(0)) {
 		print_usage();
 		end_all(0);
 	}
-	ask_freq = args[1].scalar;
+	ask_freq = args.get_long(1);
 	if (ask_freq < 1000)
 		ask_freq *= 1000;
-	stereo = args[2].scalar;
-	loop = args[3].scalar;
-	set_watched(watched::oversample, args[4].scalar);
-	trandom = args[5].scalar;
-	set_pref(Pref::show, args[6].scalar);
-	set_pref(Pref::tolerate, args[7].scalar);
-	set_pref(Pref::type, args[8].scalar);
-	set_pref(Pref::repeats, args[9].scalar);
-	set_pref(Pref::speed, args[10].scalar);
-	set_mix(args[11].scalar);
-	set_pref(Pref::color, args[12].scalar);
-	set_pref(Pref::xterm, args[13].scalar);
+	stereo = args.get_long(2);
+	loop = args.get_long(3);
+	set_watched(watched::oversample, args.get_long(4));
+	trandom = args.get_long(5);
+	set_pref(Pref::show, args.get_long(6));
+	set_pref(Pref::tolerate, args.get_long(7));
+	set_pref(Pref::type, args.get_long(8));
+	set_pref(Pref::repeats, args.get_long(9));
+	set_pref(Pref::speed, args.get_long(10));
+	set_mix(args.get_long(11));
+	set_pref(Pref::color, args.get_long(12));
+	set_pref(Pref::xterm, args.get_long(13));
 
-	set_speed_mode(args[14].pointer);
+	set_speed_mode(args.get_string(14));
 
-	set_pref(Pref::transpose, args[15].scalar);
-	if (args[16].pointer)
-		set_pref(Pref::imask, get_mask((char*)args[16].pointer));
-	else if (args[17].pointer)
-		set_pref(Pref::imask, 
-		    ~get_mask((char*)args[17].pointer));
-	if (args[18].pointer)
-		half_mask = get_mask((char*)args[18].pointer);
-	else if (args[19].pointer)
-		half_mask = ~get_mask((char*)args[19].pointer);
-	set_pref(Pref::dump, args[20].scalar);
-	start = args[21].scalar;
-	if (args[22].pointer) {
+	set_pref(Pref::transpose, args.get_long(15));
+	if (args.get_string(16))
+		set_pref(Pref::imask, get_mask(args.get_string(16)));
+	else if (args.get_string(17))
+		set_pref(Pref::imask, ~get_mask(args.get_string(17)));
+	if (args.get_string(18))
+		half_mask = get_mask(args.get_string(18));
+	else if (args.get_string(19))
+		half_mask = ~get_mask(args.get_string(19));
+	set_pref(Pref::dump, args.get_long(20));
+	start = args.get_long(21);
+	if (args.get_string(22)) {
 		char *s;
 		exfile file;
 
-		if (!file.open((char*)args[22].pointer, nullptr))
+		if (!file.open(args.get_string(22), nullptr))
 			end_all("List file does not exist");
 		while ((s = read_line(file)))
 			add_play_list(s);
 	}
-	set_pref(Pref::output, args[23].scalar);
+	set_pref(Pref::output, args.get_long(23));
 }

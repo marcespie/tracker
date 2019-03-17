@@ -96,11 +96,10 @@ set_up_args(struct option_set *set)
 		switch (set->options[i].type) {
 		case 's':
 		case 'n':
-			set->args[i].scalar = set->options[i].def_scalar;
+			set->args[i] = set->options[i].def_scalar;
 			break;
 		case 'a':
-			set->args[i].pointer = (void *)
-			    (set->options[i].def_string);
+			set->args[i] = set->options[i].def_string;
 			break;
 		case 'm':
 			for (int j = 0; j < i; j++) {
@@ -171,9 +170,9 @@ do_option(char *text, char *arg)
 						;
 					if (!text[j+2]) {
 						if (i == argindex)
-							set->args[i].scalar = 0;
+							set->args[i] = 0;
 						else
-							set->args[argindex].scalar = 1; 
+							set->args[argindex] = 1; 
 						return 0;
 					}
 				}
@@ -183,26 +182,26 @@ do_option(char *text, char *arg)
 				case 's':
 				case 'm':
 					if (i == argindex)
-						set->args[argindex].scalar = 1;
+						set->args[argindex] = 1;
 					else
-						set->args[argindex].scalar = 0;
+						set->args[argindex] = 0;
 					return 0;
 				case 'n':
 					if (int d; arg && sscanf(arg, "%d", &d) == 1) {
-						set->args[argindex].scalar = d;
+						set->args[argindex] = d;
 						return 1;
 					} else {
-						set->args[argindex].scalar = 
+						set->args[argindex] = 
 						    set->options[i].def_scalar;
 						return 0;
 					}
 				case 'a':
 					if (arg && (arg[0] != '-')) {
-						set->args[argindex].pointer = arg;
+						set->args[argindex] = arg;
 						return 1;
 					} else {
-						set->args[argindex].pointer = 
-						    (void *)set->options[i].def_string;
+						set->args[argindex] = 
+						    set->options[i].def_string;
 						return 0;
 					}
 				}
@@ -236,42 +235,3 @@ parse_options(int argc, char *argv[], void (*what_to_do)(const char *arg))
 			(*what_to_do)(argv[i]);
 	}
 }
-
-#if 0
-struct option opts[] =
-	{
-	{"coucou", 's', 0, 0},
-	{"randomize", 's', 0, 0}
-	};
-
-VALUE args[3];
-
-void pouet(char *s)
-char *s;
-	{
-	printf("??? %s\n", s);
-	}
-
-main()
-	{
-	char buffer[50];
-	int i, k, p;
-	char **v;
-
-	add_options(opts, sizeof(opts)/sizeof(struct option), args);
-	while(1)
-		{
-		gets(buffer);
-		k = do_string2args(buffer, 0);
-		v = malloc(sizeof(char *) * k);
-		(void)do_string2args(buffer, v);
-		for (i = 0; i < k; i++)
-			printf("%s\n", v[i]);
-		args[0].scalar = args[1].scalar = args[2].scalar = -1;
-		parse_options(k, v, pouet);
-		printf("%d %d %d\n", args[0].scalar, args[1].scalar, args[2].scalar);
-		free(v);
-		}
-	}
-			
-#endif

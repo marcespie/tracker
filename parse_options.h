@@ -1,10 +1,8 @@
 /* parse_options.h */
-typedef union {
-	long scalar;
-	float real;
-	void *pointer;
-} VALUE;
 
+#include <variant>
+
+using VALUE = std::variant<long, const char *>;
 
 struct option {
 	const char *optiontext;
@@ -28,4 +26,12 @@ struct option_set {
 	struct option *options;
 	int number;
 	VALUE *args;
+	long get_long(int n) const 
+	{
+		return std::get<long>(args[n]);
+	}
+	const char *get_string(int n) const 
+	{
+		return std::get<const char *>(args[n]);
+	}
 };
