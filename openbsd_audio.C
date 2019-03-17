@@ -9,6 +9,7 @@
 #include "autoinit.h"
 #include "watched_var.h"
 #include <sndio.h>
+#include <queue>
 struct options_set *port_options=0;
 
 #define UNSIGNED8
@@ -32,18 +33,15 @@ static int stereo;
 static unsigned long pps[32], pms[32];
 
 void set_mix(int percent)
-	{
-	int i;
-
-	for (i = 8; i < 32; i++)
-		{
+{
+	for (int i = 8; i < 32; i++) {
 		pps[i] = 1 << (31 - i);
 		if (i < 29)
 			pms[i] = pps[i] - (percent << (29 - i) )/25;
 		else
 			pms[i] = pps[i] - (percent >> (i - 29) )/25;
-		}
 	}
+}
 
 
 
@@ -192,29 +190,33 @@ open_audio(unsigned long f, int)
 }
 
 /* synchronize stuff with audio output */
-static struct tagged {
-	struct tagged *next;	/* simply linked list */
-	void (*f)(GENERIC p);	/* function to call */
-	void (*f2)(GENERIC p);	/* function to call  for flush */
-	GENERIC p;		/* and parameter */
-	unsigned long when;	/* number of bytes to let go before calling */
-} 	*start,	/* what still to output */
-	*end;	/* where to add new tags */
 
+struct tagged {
+	using callback= void (*)(void *);
+	callback f;		/* function to call */
+	callback f2;		/* function to call  for flush */
+	void *p;		/* and parameter */
+	unsigned long when;	/* number of bytes to let go before calling */
+	tagged(callback f_, callback f2_, void *p_, unsigned long when_):
+	    f{f_}, f2{f2_}, p{p_}, when{when_}
+	{
+	}
+};
+
+std::queue<tagged> q;
 
 
 /* flush_tags: use tags that have gone by recently */
 static void 
 flush_tags(void)
 {
-	if (start) {
-		while (start && start->when <= realpos + ADVANCE_TAGS) {
-
-			(*start->f)(start->p);
-			tagged *tofree = start;
-			start = start->next;
-			delete tofree;
-		}
+	while (!q.empty()) {
+		auto t = q.front();
+		if (t.when <= realpos + ADVANCE_TAGS) {
+			(t.f)(t.p);
+			q.pop();
+		} else
+			break;
 	}
 }
 
@@ -222,40 +224,20 @@ flush_tags(void)
 static void 
 remove_pending_tags(void)
 {
-	while (start) {
-		(*start->f2)(start->p);
-		tagged *tofree = start;
-		start = start->next;
-		delete tofree;
+	while (!q.empty()) {
+		auto t = q.front();
+		(t.f2)(t.p);
+		q.pop();
 	}
 }
 
 void 
-sync_audio(void (*function)(void *p), void (*f2)(void *p), void *parameter)
+sync_audio(tagged::callback f, tagged::callback f2, void *parameter)
 {
 	if (hdl) {
-		tagged *t = new tagged;
-		if (!t) {
-			(*function)(parameter);
-			return;
-		}
-		/* build new tag */
-		t->next = nullptr;
-		t->f = function;
-		t->f2 = f2;
-		t->p = parameter;
-		t->when = total;
-
-		/* add it to list */
-		if (start) 
-			end->next = t;
-		else
-			start = t;
-		end = t;
-
-		/* set up for next tag */
+		q.emplace(f, f2, parameter, total);
 	} else
-		(*function)(parameter);
+		f(parameter);
 }
 
 static void 
