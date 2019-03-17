@@ -280,32 +280,35 @@ song_title(const char *s)
 
 
 
+class Info {
+} info_singleton;
+
 static char scroll_buffer[200];
 
-void * 
+Info *
 begin_info(const char *)
 {
 	if (run_in_fg())
-		return scroll_buffer;
+		return &info_singleton;
 	else
 		return nullptr;
 }
 
-void infos(void *handle, const char *s)
+void infos(Info *handle, const char *s)
 {
 	if (handle)
 		fputs(s, stdout);
 }
 
 void 
-info(void *handle, const char *line)
+info(Info *handle, const char *line)
 {
 	if (handle)
 		puts(line);
 }
 
 void 
-end_info(void *handle)
+end_info(Info *handle)
 {
 	if (handle)
 		fflush(stdout);

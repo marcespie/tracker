@@ -209,21 +209,22 @@ extern void vnotice(const char *fmt, va_list al);
  */
 extern void status(const char *s);
 
+class Info;
 /* begin_info: open a logical information window.
- * returns 0 if the window couldn't be opened.
+ * returns nullptr if the window couldn't be opened.
  * A NULL window shouldn't be used, but don't count on it !
  */
-extern void *begin_info(const char *title);
+extern Info *begin_info(const char *title);
 /* info(handle, line): add a line to the info window,
  * completing the current line if applicable
  */
-extern void info(void *handle, const char *line);
+extern void info(Info *handle, const char *line);
 /* infos(handle, line): add to the current line of the info window
  */
-extern void infos(void *handle, const char *s);
+extern void infos(Info *handle, const char *s);
 /* end_info(handle): this window is complete...
  */
-extern void end_info(void *handle);
+extern void end_info(Info *handle);
 
 /* Scrolling score display:
  * new_scroll() returns a writable buffer of a suitable length for n tracks

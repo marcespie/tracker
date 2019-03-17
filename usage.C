@@ -47,10 +47,8 @@ const char *usage[] =
 
 void print_usage()
 {
-	void *handle;
 	const char **s;
-
-	handle = begin_info("Usage");
+	auto handle = begin_info("Usage");
 	infos(handle, "This is tracker ");
 	info(handle, VERSION);
 	for (s = usage; *s; s++)

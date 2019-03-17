@@ -11,7 +11,7 @@
 #include "channel.h"
 #include "prefs.h"
 
-static void *handle = 0;
+static Info *handle = nullptr;
 static char buffer[80];
 
 extern char instname[];	/* from display.c */
