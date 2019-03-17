@@ -24,32 +24,31 @@ int trandom;
 
 int loop = false;	/* main automaton looping at end of argv ? */
 
-static struct option opts[] =
-	{
-	{"help", 's', 0},					/* 0 */
+static struct option opts[] = {
+	{"help", 's', 0},			/* 0 */
 	{"frequency", 'n', 0},			/* 1 */
-	{"stereo", 's', 1},				/* 2 */
-	{"loop", 's', 0},					/* 3 */
+	{"stereo", 's', 1},			/* 2 */
+	{"loop", 's', 0},			/* 3 */
 	{"oversample", 'n', 1},			/* 4 */
 	{"randomize", 's', 0},			/* 5 */
-	{"scroll", 's', 0},				/* 6 */
-	{"picky", 'n', 1},				/* 7 */
-	{"both", 'n', BOTH},				/* 8 */
-	{"repeats", 'n', 1},				/* 9 */
-	{"speed", 'n', 50},				/* 10 */
-	{"mix", 'n', 30},					/* 11 */
-	{"color", 's', 0},				/* 12 */
-	{"xterm", 's', 0},				/* 13 */
+	{"scroll", 's', 0},			/* 6 */
+	{"picky", 'n', 1},			/* 7 */
+	{"both", 'n', BOTH},			/* 8 */
+	{"repeats", 'n', 1},			/* 9 */
+	{"speed", 'n', 50},			/* 10 */
+	{"mix", 'n', 30},			/* 11 */
+	{"color", 's', 0},			/* 12 */
+	{"xterm", 's', 0},			/* 13 */
 	{"speedmode", 'a', 0, "normal"},	/* 14 */
 	{"transpose", 'n', 0},			/* 15 */
 	{"cut", 'a', 0, NULL},			/* 16 */
 	{"add", 'a',0 , NULL},			/* 17 */
 	{"halve", 'a', 0, NULL},		/* 18 */
 	{"double", 'a', 0, NULL},		/* 19 */
-	{"verbose", 's', 0},				/* 20 */
-	{"start", 'n', 0},				/* 21 */
+	{"verbose", 's', 0},			/* 20 */
+	{"start", 'n', 0},			/* 21 */
 	{"list", 'a', 0, NULL},			/* 22 */
-	{"output", 's', 1},				/* 23 */
+	{"output", 's', 1},			/* 23 */
 	{"mono", 'm', 0, "stereo"},
 	{"bw", 'm', 0, "color"},
 	{"tolerant", 'm', 2, "picky"},
@@ -57,7 +56,7 @@ static struct option opts[] =
 	{"new", 'm', NEW, "both"},
 	{"pal", 'm', 50, "speed"},
 	{"ntsc", 'm', 60, "speed"},
-	};
+};
 
 
 
@@ -152,9 +151,10 @@ set_speed_mode(void *p)
 		mode = OLD_SPEEDMODE;
 	else if (stricmp(check, "alter") == 0)
 		mode = ALTER_PROTRACKER;
-	else
+	else {
 		end_all("Unknwon speedmode");
-		/* NOTREACHED */
+		return;
+	}
 	set_pref_scalar(PREF_SPEEDMODE, mode);
 }
 
