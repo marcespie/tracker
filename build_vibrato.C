@@ -1,24 +1,22 @@
 /* the small file that is used to generate an accurate vibrato table */
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <iostream>
 
-int main(void)
-	{
-	int i;
-	int amplitude = 512;
-	int period = 64;
-	double th;
-	double pi;
+int 
+main(void)
+{
+	const auto pi = 4.0 * std::atan(1.0);
+	const auto amplitude = 512.0;
+	const auto period = 64;
 
-	pi = 4.0 * atan(1.0);
-
-	for (i = 0; i < period; i++) 
-		{
-		th = 2.0 * pi * i / (double)period;
-		printf("%d,", (int) (0.5 + sin(th) * (double)amplitude));
-		}
-	return 0;
+	for (int i = 0; i < period; ++i) {
+		const auto th = 2.0 * pi * i / double(period);
+		if (i != 0)
+			std::cout << ", ";
+		std::cout << std::round(std::sin(th) * amplitude);
 	}
+	std::cout << "\n";
+}
 
 
 	
