@@ -25,14 +25,13 @@ absdiff(S x, T y)
 	return x<y ?  y-x : x-y;
 }
 
-#define	BIAS		(0x84)		/* Bias for linear code. */
-
 static int stereo;
 
 
 static unsigned long pps[32], pms[32];
 
-void set_mix(int percent)
+void 
+set_mix(int percent)
 {
 	for (int i = 8; i < 32; i++) {
 		pps[i] = 1 << (31 - i);
