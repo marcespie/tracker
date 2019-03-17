@@ -40,7 +40,7 @@ const auto LEEWAY=150;
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */
 
-#define ACCURACY 12
+const auto ACCURACY=12;
 #define fix_to_int(x) ((x) >> ACCURACY)
 #define int_to_fix(x) ((x) << ACCURACY)
 #define fractional_part(x) ((x) & (fixed_unit - 1))
