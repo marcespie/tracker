@@ -40,7 +40,7 @@ setup_audio(unsigned long f, int s)
 	if (!opened) {
 		ask_freq = f;
 		stereo = s;
-		if (get_pref_scalar(PREF_OUTPUT))
+		if (get_pref(Pref::output))
 			real_freq = open_audio(f, s);
 		else {
 			real_freq = 22050;
@@ -54,7 +54,7 @@ setup_audio(unsigned long f, int s)
 			ask_freq = f;
 			stereo = s;
 			close_audio();
-			if (get_pref_scalar(PREF_OUTPUT))
+			if (get_pref(Pref::output))
 				new_freq = open_audio(f, s);
 			else {
 				new_freq = 22050;
@@ -68,7 +68,7 @@ setup_audio(unsigned long f, int s)
 static void 
 do_close_audio(void)
 {
-	if (opened && get_pref_scalar(PREF_OUTPUT))
+	if (opened && get_pref(Pref::output))
 		close_audio();
 	opened = false;
 }

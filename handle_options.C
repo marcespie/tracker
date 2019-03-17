@@ -74,8 +74,8 @@ set_default_prefs(void)
 {
 	char *s;
 
-	set_pref_scalar(PREF_IMASK, 0);
-	set_pref_scalar(PREF_BCDVOL, 0);
+	set_pref(Pref::imask, 0);
+	set_pref(Pref::bcdvol, 0);
 
 	/* XXX */
 	s = getenv("TERM");
@@ -155,7 +155,7 @@ set_speed_mode(void *p)
 		end_all("Unknwon speedmode");
 		return;
 	}
-	set_pref_scalar(PREF_SPEEDMODE, mode);
+	set_pref(Pref::speedmode, mode);
 }
 
 void 
@@ -189,27 +189,28 @@ handle_options(int argc, char *argv[])
 	loop = args[3].scalar;
 	set_watched_scalar(OVERSAMPLE, args[4].scalar);
 	trandom = args[5].scalar;
-	set_pref_scalar(PREF_SHOW, args[6].scalar);
-	set_pref_scalar(PREF_TOLERATE, args[7].scalar);
-	set_pref_scalar(PREF_TYPE, args[8].scalar);
-	set_pref_scalar(PREF_REPEATS, args[9].scalar);
-	set_pref_scalar(PREF_SPEED, args[10].scalar);
+	set_pref(Pref::show, args[6].scalar);
+	set_pref(Pref::tolerate, args[7].scalar);
+	set_pref(Pref::type, args[8].scalar);
+	set_pref(Pref::repeats, args[9].scalar);
+	set_pref(Pref::speed, args[10].scalar);
 	set_mix(args[11].scalar);
-	set_pref_scalar(PREF_COLOR, args[12].scalar);
-	set_pref_scalar(PREF_XTERM, args[13].scalar);
+	set_pref(Pref::color, args[12].scalar);
+	set_pref(Pref::xterm, args[13].scalar);
 
 	set_speed_mode(args[14].pointer);
 
-	set_pref_scalar(PREF_TRANSPOSE, args[15].scalar);
+	set_pref(Pref::transpose, args[15].scalar);
 	if (args[16].pointer)
-		set_pref_scalar(PREF_IMASK, get_mask((char*)args[16].pointer));
+		set_pref(Pref::imask, get_mask((char*)args[16].pointer));
 	else if (args[17].pointer)
-		set_pref_scalar(PREF_IMASK, ~get_mask((char*)args[17].pointer));
+		set_pref(Pref::imask, 
+		    ~get_mask((char*)args[17].pointer));
 	if (args[18].pointer)
 		half_mask = get_mask((char*)args[18].pointer);
 	else if (args[19].pointer)
 		half_mask = ~get_mask((char*)args[19].pointer);
-	set_pref_scalar(PREF_DUMP, args[20].scalar);
+	set_pref(Pref::dump, args[20].scalar);
 	start = args[21].scalar;
 	if (args[22].pointer) {
 		char *s;
@@ -220,5 +221,5 @@ handle_options(int argc, char *argv[])
 		while ((s = read_line(file)))
 			add_play_list(s);
 	}
-	set_pref_scalar(PREF_OUTPUT, args[23].scalar);
+	set_pref(Pref::output, args[23].scalar);
 }

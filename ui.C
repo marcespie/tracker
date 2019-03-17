@@ -47,7 +47,7 @@ goodbye(int sig)
 	static char buffer[25];
 	char *pter = buffer;
 
-	if (get_pref_scalar(PREF_COLOR))
+	if (get_pref(Pref::color))
 		pter = write_color(pter, 0);
 	sprintf(pter, "Signal %d", sig);
 	end_all(pter);
@@ -66,7 +66,7 @@ suspend(int)
 	static char buffer[25];
 	char *buf = buffer;
 
-	if (get_pref_scalar(PREF_COLOR))
+	if (get_pref(Pref::color))
 		buf = write_color(buf, 0);
 	*buf = 0;
 	puts(buf);
@@ -200,10 +200,10 @@ get_ui(void)
 		result[0].type = UI_QUIT;
 		break;
 	case 'r':
-		if (get_pref_scalar(PREF_REPEATS))
-			set_pref_scalar(PREF_REPEATS, 0);
+		if (get_pref(Pref::repeats))
+			set_pref(Pref::repeats, 0);
 		else
-			set_pref_scalar(PREF_REPEATS, 1);
+			set_pref(Pref::repeats, 1);
 		break;
 
 	case 'm':
@@ -231,8 +231,8 @@ get_ui(void)
 			result[0].data.scalar--;
 		break;
 	case '?':
-		set_pref_scalar(PREF_SHOW, !get_pref_scalar(PREF_SHOW));
-		if (get_pref_scalar(PREF_SHOW))
+		set_pref(Pref::show, !get_pref(Pref::show));
+		if (get_pref(Pref::show))
 			putchar('\n');
 		break;
 	default:
@@ -385,8 +385,8 @@ do_display_pattern(void *param)
 	free(thingy);
 
 	if (run_in_fg()) {
-		if (get_pref_scalar(PREF_XTERM)) {
-			if (get_pref_scalar(PREF_SHOW)) {
+		if (get_pref(Pref::xterm)) {
+			if (get_pref(Pref::show)) {
 				for (int i = 0; i < ntracks; i++)
 					printf("--------------");
 				putchar('\n');
@@ -401,7 +401,7 @@ do_display_pattern(void *param)
 				fflush(stdout);
 			}
 		} else {
-			if (get_pref_scalar(PREF_SHOW))
+			if (get_pref(Pref::show))
 				printf("\n%3u/%3u[%3u] %s\n", current, total, real, title);
 			else
 				printf("%3u/%3u\b\b\b\b\b\b\b", current, total);

@@ -40,7 +40,7 @@ char instname[] = { ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 static void 
 color(unsigned int c)
 {
-	if (get_pref_scalar(PREF_COLOR))
+	if (get_pref(Pref::color))
 		base = write_color(base, c);
 }
 

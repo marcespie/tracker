@@ -39,7 +39,7 @@ static unsigned long compute_pattern_duration(struct event *base,
 				{
 			case EFF_SPEED:
 				if (e->parameters >= 32 && 
-					get_pref_scalar(PREF_SPEEDMODE) != OLD_SPEEDMODE)
+					get_pref(Pref::speedmode) != OLD_SPEEDMODE)
 					{
 					a->new_finespeed = e->parameters;
 					a->do_stuff |= SET_FINESPEED;

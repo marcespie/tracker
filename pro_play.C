@@ -169,7 +169,7 @@ setup_effect(channel *ch, automaton *a, event *e)
 		 */
 		ch->samp = voices[samp];
 		ch->finetune = voices[samp]->finetune;
-		if ((1L<<samp) & get_pref_scalar(PREF_IMASK))
+		if ((1L<<samp) & get_pref(Pref::imask))
 			ch->samp = empty_sample();
 		set_current_volume(ch, voices[samp]->volume);
 	}
@@ -238,7 +238,7 @@ play_one_tick(automaton *a)
 			for (unsigned channel = 0; channel < ntracks; channel++)
 				setup_effect(chan + channel, a, 
 				    EVENT(a, channel));
-			if (get_pref_scalar(PREF_SHOW))
+			if (get_pref(Pref::show))
 				dump_events(a);
 		}
 	} else
@@ -250,7 +250,7 @@ play_one_tick(automaton *a)
 
 	update_tempo(a);
 	/* actually output samples */
-	if (get_pref_scalar(PREF_OUTPUT))
+	if (get_pref(Pref::output))
 		resample();
 }
 
@@ -276,7 +276,7 @@ play_song(song *song, unsigned int start)
 	voices = song->samples; 
 
 	a = setup_automaton(song, start);
-	set_bpm(a, get_pref_scalar(PREF_SPEED));
+	set_bpm(a, get_pref(Pref::speed));
 
 	init_channels();
 
@@ -330,7 +330,7 @@ play_song(song *song, unsigned int start)
 			break;
 		case ENDED:
 			countup++;
-			if ( (r = get_pref_scalar(PREF_REPEATS)) ) {
+			if ( (r = get_pref(Pref::repeats)) ) {
 				if (countup >= r) {
 					pres[0].type = PLAY_ENDED;
 					return pres;
@@ -342,8 +342,8 @@ play_song(song *song, unsigned int start)
 		case PREVIOUS_SONG:
 		case NEXT_SONG:
 		case UNRECOVERABLE:
-			if ( (error == SAMPLE_FAULT && get_pref_scalar(PREF_TOLERATE))
-			    ||(error == FAULT && get_pref_scalar(PREF_TOLERATE) > 1) )
+			if ( (error == SAMPLE_FAULT && get_pref(Pref::tolerate))
+			    ||(error == FAULT && get_pref(Pref::tolerate) > 1) )
 				break;
 			pres[0].type = PLAY_ERROR;
 			pres[0].data.scalar = error;

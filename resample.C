@@ -126,7 +126,7 @@ build_step_table(
 	if (oversample == 0)
 		oversample = 1;
 	step_table[0] = 0;
-	auto base_freq = AMIGA_CLOCKFREQ * pow(2.0, (double)get_pref_scalar(PREF_TRANSPOSE)/12.0);
+	auto base_freq = AMIGA_CLOCKFREQ * pow(2.0, double(get_pref(Pref::transpose))/12.0);
 	// loop over amiga pitch
 	for (pitch pitch = 1; pitch < REAL_MAX_PITCH + LEEWAY; pitch++) {
 		auto note_fr = base_freq / pitch; // note frequency (in Hz)

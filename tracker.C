@@ -68,7 +68,7 @@ load_song(ENTRY e)
 			song = read_song(file, OLD);
 			break;
 		case UNKNOWN:
-			switch(get_pref_scalar(PREF_TYPE)) {
+			switch(get_pref(Pref::type)) {
 			case BOTH:
 				song = read_song(file, NEW);
 				if (song) {
@@ -152,7 +152,7 @@ main(int argc, char *argv[])
 		auto song = load_song(play_list+song_number);
 
 		if (song) {
-			if (get_pref_scalar(PREF_DUMP))
+			if (get_pref(Pref::dump))
 				dump_song(song); 
 			if (half_mask)
 				adjust_song(song, half_mask);

@@ -126,17 +126,17 @@ update_tempo(automaton *a)
 
 	switch(a->do_stuff & (SET_SPEED | SET_FINESPEED)) {
 	case SET_SPEED | SET_FINESPEED:
-		if (get_pref_scalar(PREF_SPEEDMODE) != FINESPEED_ONLY) {
+		if (get_pref(Pref::speedmode) != FINESPEED_ONLY) {
 			a->finespeed = a->new_finespeed;
 			set_resampling_beat(a->bpm, NORMAL_FINESPEED, 
 			    a->finespeed);
 		}
-		if (get_pref_scalar(PREF_SPEEDMODE) != SPEED_ONLY)
+		if (get_pref(Pref::speedmode) != SPEED_ONLY)
 			a->speed = a->new_speed;
 		break;
 	case SET_SPEED:
 		a->speed = a->new_speed;
-		if (get_pref_scalar(PREF_SPEEDMODE) == ALTER_PROTRACKER) {
+		if (get_pref(Pref::speedmode) == ALTER_PROTRACKER) {
 			a->finespeed = NORMAL_FINESPEED;
 			set_resampling_beat(a->bpm, 1, 1);
 		}

@@ -156,7 +156,7 @@ char **argv;
    int default_type;
 
    default_type = BOTH;
-   set_pref_scalar(PREF_TOLERATE, 2);
+   set_pref(PREF_TOLERATE, 2);
 
    for (i = 1; i < argc; i++)
 		do_load_song(argv[i]);
