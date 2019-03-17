@@ -159,6 +159,7 @@ set_speed_mode(const char *p)
 	set_pref(Pref::speedmode, mode);
 }
 
+#include <iostream>
 void 
 handle_options(int argc, char *argv[])
 {

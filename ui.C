@@ -234,6 +234,7 @@ get_ui(void)
 	default:
 		break;
 	}
+	return result(0);
 }
       
 void 
@@ -334,7 +335,7 @@ do_scroll(char *line)
 		puts(line);
 		fflush(stdout);
 	}
-	delete line;
+	//delete [] line;
 }
 
 void 
@@ -350,9 +351,11 @@ scroll(char *end)
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
 			sync_audio(
-			    [&](){do_scroll(p);},
-			    [&](){delete [] p;}
-			);
+				[]() {},
+				[]() {});
+			 //   [&](){do_scroll(p);},
+			  //  [&](){}
+			//);
 		}
 	}
 }
@@ -431,8 +434,8 @@ display_time(unsigned long time, unsigned long check)
 {
 	if (time/1000 != check/1000) {
 		sync_audio(
-		    [&]() {do_display_time(check); },
-		    []() {});
+		   [&]() {do_display_time(check); },
+		   []() {});
 		if (time > check)
 			sync_audio(
 			    [&]() {do_display_time(time-check);},

@@ -224,7 +224,7 @@ remove_pending_tags(void)
 {
 	while (!q.empty()) {
 		auto t = q.front();
-		t.f2();
+		//t.f2();
 		q.pop();
 	}
 }
