@@ -31,7 +31,7 @@ static void (*INIT)(void) = nonblocking_io;
 /* poor man's timer */
 static unsigned int current_pattern;
 static int count_pattern, count_song;
-#define SMALL_DELAY 75
+const auto SMALL_DELAY=75;
 
 static TERM_SETUP sanity;
 static TERM_SETUP *psanity = nullptr;
