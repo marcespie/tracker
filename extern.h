@@ -142,8 +142,9 @@ extern int output_resolution(void);
  * call f2(parameter) if flush is in effect instead
  */
 
-extern void sync_audio
-	(void (*function)(GENERIC),  void (*f2) (GENERIC), GENERIC parameter);
+#include <functional>
+
+extern void sync_audio(std::function<void()>, std::function<void()>);
 
 /*--------------------------- $(UI)/ui.c ------------------------*/
 /* see unix/ui.c for the general unix implementation.

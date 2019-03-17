@@ -334,18 +334,13 @@ new_scroll(void)
 }
    
 static void 
-do_scroll(void *line)
+do_scroll(char *line)
 {
 	if (run_in_fg()) {
-		puts((char *)line);
+		puts(line);
 		fflush(stdout);
 	}
-	free(line);
-}
-
-static void free_p(void *line)
-{
-	free(line);
+	delete line;
 }
 
 void 
@@ -357,10 +352,13 @@ scroll(char *end)
 
 		t = end - scroll_line;
 		if (t > 0) {
-			p = (char *)malloc(t+1);
+			p = new char[t+1];
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
-			sync_audio(do_scroll, free_p, p);
+			sync_audio(
+			    [&](){do_scroll(p);},
+			    [&](){delete [] p;}
+			);
 		}
 	}
 }
@@ -371,9 +369,8 @@ struct Thingy {
 };
 
 static void 
-do_display_pattern(void *param)
+do_display_pattern(Thingy *thingy)
 {
-	Thingy *thingy = (Thingy *)param;
 	unsigned current, total, real;
 	unsigned long uptilnow, totaltime;
 	char buf0[50], buf1[50];
@@ -382,7 +379,7 @@ do_display_pattern(void *param)
 	real = thingy->t2;
 	uptilnow = thingy->u0;
 	totaltime =thingy->u1;
-	free(thingy);
+	delete(thingy);
 
 	if (run_in_fg()) {
 		if (get_pref(Pref::xterm)) {
@@ -416,38 +413,40 @@ void
 display_pattern(unsigned int current, unsigned int total, 
     unsigned int real, unsigned long uptilnow, unsigned long totaltime)
 {
-	Thingy *thingy;
+	Thingy *thingy = new Thingy;
 
-	thingy = (Thingy *)malloc(sizeof(Thingy));
 	thingy->t0 = current;
 	thingy->t1 = total;
 	thingy->t2 = real;
 	thingy->u0 = uptilnow;
 	thingy->u1 = totaltime;
-	sync_audio(do_display_pattern, free_p, thingy);
+	sync_audio(
+		[&]() {do_display_pattern(thingy);}, 
+		[&]() {delete(thingy); });
 }
 
 static void 
-do_display_time(void *param)
+do_display_time(unsigned long param)
 {
 	char buffer[50];
-	printf("%s\n", time2string(buffer, (unsigned long)param));
-}
-
-static void 
-do_nuts(void *)
-{
+	printf("%s\n", time2string(buffer, param));
 }
 
 void 
 display_time(unsigned long time, unsigned long check)
 {
 	if (time/1000 != check/1000) {
-		sync_audio(do_display_time, do_nuts, (GENERIC)check);
+		sync_audio(
+		    [&]() {do_display_time(check); },
+		    []() {});
 		if (time > check)
-			sync_audio(do_display_time, do_nuts, (GENERIC)(time - check));
+			sync_audio(
+			    [&]() {do_display_time(time-check);},
+			    []() {});
 		else
-			sync_audio(do_display_time, do_nuts, (GENERIC)(check - time));
+			sync_audio(
+			    [&]() {do_display_time(check-time);},
+			    []() {});
 	}
 }
 

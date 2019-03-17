@@ -192,13 +192,12 @@ open_audio(unsigned long f, int)
 /* synchronize stuff with audio output */
 
 struct tagged {
-	using callback= void (*)(void *);
+	using callback= std::function<void ()>;
 	callback f;		/* function to call */
 	callback f2;		/* function to call  for flush */
-	void *p;		/* and parameter */
 	unsigned long when;	/* number of bytes to let go before calling */
-	tagged(callback f_, callback f2_, void *p_, unsigned long when_):
-	    f{f_}, f2{f2_}, p{p_}, when{when_}
+	tagged(callback f_, callback f2_, unsigned long when_):
+	    f{f_}, f2{f2_}, when{when_}
 	{
 	}
 };
@@ -213,7 +212,7 @@ flush_tags(void)
 	while (!q.empty()) {
 		auto t = q.front();
 		if (t.when <= realpos + ADVANCE_TAGS) {
-			(t.f)(t.p);
+			t.f();
 			q.pop();
 		} else
 			break;
@@ -226,18 +225,18 @@ remove_pending_tags(void)
 {
 	while (!q.empty()) {
 		auto t = q.front();
-		(t.f2)(t.p);
+		t.f2();
 		q.pop();
 	}
 }
 
 void 
-sync_audio(tagged::callback f, tagged::callback f2, void *parameter)
+sync_audio(tagged::callback f, tagged::callback f2)
 {
 	if (hdl) {
-		q.emplace(f, f2, parameter, total);
+		q.emplace(f, f2, total);
 	} else
-		f(parameter);
+		f();
 }
 
 static void 
