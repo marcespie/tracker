@@ -172,33 +172,34 @@ may_getchar(void)
 	return EOF;
 }
 
-static tag result[2];
+inline auto 
+result(int type, unsigned long value =0)
+{
+	return std::pair(type, value);
+}
 
-tag *
+std::pair<int, unsigned long>
 get_ui(void)
 {
 	int c;
 
-	result[0].type = TAG_END;
-	result[1].type = TAG_END;
 	count_pattern++;
 	count_song++;
 	switch(c = may_getchar()) {
 	case 'n':
-		result[0].type = UI_NEXT_SONG;
-		break;
+		return result(UI_NEXT_SONG);
 	case 'p':
+		int t;
 		if (count_song > SMALL_DELAY)
-			result[0].type = UI_RESTART;
+			t = UI_RESTART;
 		else
-			result[0].type = UI_PREVIOUS_SONG;
+			t = UI_PREVIOUS_SONG;
 		count_song = 0;
-		break;
+		return result(t);
 	case 'x':
 	case 'e':
 	case 'q':
-		result[0].type = UI_QUIT;
-		break;
+		return result(UI_QUIT);
 	case 'r':
 		if (get_pref(Pref::repeats))
 			set_pref(Pref::repeats, 0);
@@ -213,33 +214,27 @@ get_ui(void)
 		set_mix(30);
 		break;
 	case 's':
-		result[0].type = UI_SET_BPM;
-		result[0].data.scalar = 50;
-		break;
+		return result(UI_SET_BPM, 50);
 	case 'S':
-		result[0].type = UI_SET_BPM;
-		result[0].data.scalar = 60;
-		break;
+		return result(UI_SET_BPM, 60);
 	case '>':
-		result[0].type = UI_JUMP_TO_PATTERN;
-		result[0].data.scalar = current_pattern + 1;
-		break;
+		return result(UI_JUMP_TO_PATTERN, current_pattern + 1);
 	case '<':
-		result[0].type = UI_JUMP_TO_PATTERN;
-		result[0].data.scalar = current_pattern;
-		if (count_pattern < SMALL_DELAY)
-			result[0].data.scalar--;
-		break;
+		{
+		int p = current_pattern;
+		if (count_song < SMALL_DELAY)
+			p--;
+		count_song = 0;
+		return result(UI_JUMP_TO_PATTERN, p);
+		}
 	case '?':
 		set_pref(Pref::show, !get_pref(Pref::show));
 		if (get_pref(Pref::show))
 			putchar('\n');
 		break;
 	default:
-		audio_ui(c);
 		break;
 	}
-	return result;
 }
       
 void 

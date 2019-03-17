@@ -280,42 +280,36 @@ play_song(song *song, unsigned int start)
 	set_data_width(song->side_width, song->max_sample_width);
 
 	while(true) {
-		struct tag *result;
-
 		play_one_tick(a);
 		next_tick(a);
-		result = get_ui();
-		while( (result = get_tag(result)) ) {
-			switch(result->type) {  
-			case UI_NEXT_SONG:
+		auto [type, val] = get_ui();
+		switch(type) {  
+		case UI_NEXT_SONG:
+			discard_buffer();
+			return PLAY_NEXT_SONG;
+		case UI_PREVIOUS_SONG:
+			discard_buffer();
+			return PLAY_PREVIOUS_SONG;
+		case UI_QUIT:
+			discard_buffer();
+			end_all(0);
+			/* NOTREACHED */
+		case UI_SET_BPM:
+			set_bpm(a, val);
+			break;
+		case UI_RESTART:
+			discard_buffer();
+			a = setup_automaton(song, start);
+			init_channels();
+			break;
+		case UI_JUMP_TO_PATTERN:
+			if (val >= 0 && val < a->info->length) {
 				discard_buffer();
-				return PLAY_NEXT_SONG;
-			case UI_PREVIOUS_SONG:
-				discard_buffer();
-				return PLAY_PREVIOUS_SONG;
-			case UI_QUIT:
-				discard_buffer();
-				end_all(0);
-				/* NOTREACHED */
-			case UI_SET_BPM:
-				set_bpm(a, result->data.scalar);
-				break;
-			case UI_RESTART:
-				discard_buffer();
-				a = setup_automaton(song, start);
-				init_channels();
-				break;
-			case UI_JUMP_TO_PATTERN:
-				if (result->data.scalar >= 0 && 
-				    result->data.scalar < a->info->length) {
-					discard_buffer();
-					a = setup_automaton(song, result->data.scalar);
-				}
-				break;
-			default:
-				break;
+				a = setup_automaton(song, val);
 			}
-			result++;
+			break;
+		default:
+			break;
 		}
 
 		switch(error) {

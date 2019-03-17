@@ -143,6 +143,7 @@ extern int output_resolution(void);
  */
 
 #include <functional>
+#include <utility>
 
 extern void sync_audio(std::function<void()>, std::function<void()>);
 
@@ -165,7 +166,8 @@ extern void sync_audio(std::function<void()>, std::function<void()>);
  *   One exception: structures that are dynamically allocated (like UI_LOAD_SONG
  *   values) will ONLY get freed when you ask for it !
  */
-extern struct tag *get_ui(void);
+
+extern std::pair<int, unsigned long> get_ui(void);
 const auto BASE_UI=10;
 const auto UI_NEXT_SONG=BASE_UI;	/* load next song */
 const auto UI_PREVIOUS_SONG=BASE_UI+1;	/* load previous song */

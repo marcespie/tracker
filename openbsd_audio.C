@@ -297,8 +297,3 @@ discard_buffer(void)
 	total = 0;
 }
 
-void 
-audio_ui(char)
-{
-}
-
