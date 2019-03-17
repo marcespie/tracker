@@ -6,7 +6,6 @@
 #include "song.h"
 #include "notes.h"
 #include "channel.h"
-#include "tags.h"
 #include "extern.h"
 #include "prefs.h"
 #include "resample.h"
@@ -28,7 +27,7 @@ static int allocated = 0;
 static int total[NUMBER_SIDES];
 
 audio_channel *
-new_channel_tag_list(tag *prop)
+new_channel(int side)
 {
 	audio_channel *n;
 
@@ -44,21 +43,9 @@ new_channel_tag_list(tag *prop)
 	n->step = 0;
 	n->pitch = 0;
 	n->volume = 0;
-	n->side = NO_SIDE;
+	n->side = side;
 	n->scaled_volume = 0;
 	n->samp = empty_sample();
-
-	/* handling allocation tags (only tag right now is SIDE) */
-	while ( (prop = get_tag(prop)) ) {
-		switch(prop->type) {
-		case AUDIO_SIDE:
-			n->side = prop->data.scalar;
-			break;
-		default:
-			break;
-		}
-		prop++;
-	}
 
 	/* checking allocation */
 	if (n->side < 0 || n->side == NO_SIDE || n->side >= NUMBER_SIDES)

@@ -5,7 +5,6 @@
 #include "notes.h"
 #include "channel.h"
 #include "extern.h"
-#include "tags.h"
 #include "prefs.h"
 #include "pro_effects.h"
 #include "p_automaton.h"
@@ -44,13 +43,9 @@ static struct sample_info **voices;
 static void 
 init_channel(channel *ch, int side)
 {
-	tag tags[2];
-	tags[0].type = AUDIO_SIDE;
-	tags[0].data.scalar = side;
-	tags[1].type = TAG_END;
 	ch->samp = empty_sample();
 	ch->finetune = 0;
-	ch->audio = new_channel_tag_list(tags);
+	ch->audio = new_channel(side);
 	ch->volume = 0; 
 	ch->pitch = 0; 
 	ch->note = NO_NOTE;

@@ -5,7 +5,6 @@
 #include "notes.h"
 #include "channel.h"
 #include "extern.h"
-#include "tags.h"
 #include "prefs.h"
 #include "automaton.h"
 #include "empty.h"

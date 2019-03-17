@@ -9,7 +9,6 @@
 #include "extern.h"
 #include "autoinit.h"
 
-#include "tags.h"
 #include "prefs.h"
 #include "play_list.h"
 #include "open.h"

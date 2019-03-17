@@ -2,7 +2,6 @@
 #include "defs.h"
 #include "extern.h"
 #include "prefs.h"
-#include "tags.h"
 #include "autoinit.h"
 
 static long preferences[static_cast<size_t>(Pref::max_prefs)];

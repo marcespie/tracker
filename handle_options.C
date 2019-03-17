@@ -6,7 +6,6 @@
 
 #include "parse_options.h"
 #include "watched_var.h"
-#include "tags.h"
 #include "prefs.h"
 #include "autoinit.h"
 #include "open.h"

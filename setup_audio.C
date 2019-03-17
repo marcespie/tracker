@@ -3,7 +3,6 @@
 
 #include "defs.h"
 #include "extern.h"
-#include "tags.h"
 #include "prefs.h"
 #include "autoinit.h"
 #include "notes.h"

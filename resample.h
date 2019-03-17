@@ -8,17 +8,13 @@ struct audio_channel;
  */
 extern void release_audio_channels(void);
 
-#define LEFT_SIDE 0
-#define RIGHT_SIDE 1
-#define NUMBER_SIDES 2
-#define BASE_AUDIO 20
-#define AUDIO_SIDE (BASE_AUDIO)
+enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
 
 /* chan = new_channel_tag_list(prop):
  * allocates a new channel for the current song
- * properties: AUDIO_SIDE LEFT_SIDE (default)/RIGHT_SIDE
+ * LEFT_SIDE RIGHT_SIDE
  */
-extern audio_channel *new_channel_tag_list(tag *prop);
+extern audio_channel *new_channel(int side);
 
 /* set_data_width(side_width, sample_width):
  * accumulated data on each side will have width side_width bits,
