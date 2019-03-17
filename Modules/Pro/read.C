@@ -365,14 +365,14 @@ fill_event(event *e, unsigned char *p, int *current_instrument, song *song)
 	/* remove some weirdness from protracker events */
 	switch(e->effect) {
 	case EFF_EXTENDED:
-		e->effect = EXT_BASE + HI(e->parameters);
-		e->parameters = LOW(e->parameters);
+		e->effect = EXT_BASE + e->high();
+		e->parameters = e->low();
 		break;
 	case 0:
 		e->effect = e->parameters ? EFF_ARPEGGIO : EFF_NONE;
 		break;
 	case EFF_SKIP:
-		e->parameters = HI(e->parameters) * 10 + LOW(e->parameters);
+		e->parameters = e->high() * 10 + e->low();
 		break;
 	case EFF_SPEED:
 		if (song->type == OLD_ST)

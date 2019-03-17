@@ -159,7 +159,7 @@ set_arpeggio(channel *ch, const event *e)
 		note note;
 
 		ch->arp[0] = note2pitch(ch->note, ch->finetune);
-		note = ch->note + HI(e->parameters);
+		note = ch->note + e->high();
 		ch->arp[1] = note2pitch(ch->note, ch->finetune);
 		if (!ch->arp[1]) {
 			status("Arpeggio note out of range");

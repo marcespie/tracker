@@ -86,9 +86,6 @@ struct sample_info {
 
 /* the actual parameters may be split in two halves occasionally */
 
-#define LOW(para) ((para) & 15)
-#define HI(para) ((para) >> 4)
-
 struct event {
 	unsigned char sample_number;
 	unsigned char effect;
