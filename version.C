@@ -1,2 +1,1 @@
-#include "config.h"
-const char *VERSION = "5.4";
+const char *VERSION = "6.0";

@@ -11,6 +11,10 @@
 #include "autoinit.h"
 #include "open.h"
 
+inline int stricmp(const char *a, const char *b)
+{
+	return strcasecmp(a, b);
+}
 
 extern void print_usage(void);
 extern struct option_set *port_options;

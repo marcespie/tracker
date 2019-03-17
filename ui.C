@@ -287,7 +287,7 @@ song_title(const char *s)
 
 static char scroll_buffer[200];
 
-GENERIC 
+void * 
 begin_info(const char *)
 {
 	if (run_in_fg())

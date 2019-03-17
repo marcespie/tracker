@@ -47,7 +47,7 @@ const char *usage[] =
 
 void print_usage()
 {
-	GENERIC handle;
+	void *handle;
 	const char **s;
 
 	handle = begin_info("Usage");

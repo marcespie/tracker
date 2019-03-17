@@ -1,6 +1,5 @@
 /* defs.h */
 
-#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -26,7 +25,7 @@ MAX(S x, T y)
 typedef union {
 	long scalar;
 	float real;
-	GENERIC pointer;
+	void *pointer;
 } VALUE;
 
 /* predefinitions for relevant structures */

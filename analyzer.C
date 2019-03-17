@@ -164,7 +164,7 @@ char **argv;
 
 
 void sync_audio(f, p)
-void (*f) P((GENERIC));
+void (*f) P((void *));
 GENERIC p;
 	{
 	}
