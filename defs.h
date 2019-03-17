@@ -9,13 +9,20 @@
 const auto READ_ONLY="rb";
 const auto WRITE_ONLY="wb";
 
-#ifndef MIN
-#define MIN(A,B) ((A)<(B) ? (A) : (B))
-#endif
-#ifndef MAX
-#define MAX(A,B) ((A)>(B) ? (A) : (B))
-#endif
-     
+template<typename S, typename T>
+inline auto
+MIN(S x, T y)
+{
+	return x<y ?  x : y;
+}
+
+template<typename S, typename T>
+inline auto
+MAX(S x, T y)
+{
+	return x>y ?  x : y;
+}
+
 typedef union {
 	long scalar;
 	float real;
