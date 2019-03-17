@@ -241,7 +241,7 @@ linear_value(audio_channel& ch, long& v)
 			if (ch.samp->rp_start) {
 				ch.mode = REPLAY;
 				ch.pointer -= ch.samp->fix_length;
-			/* FALLTHRU */
+				[[fallthrough]];
 			} else {
 				ch.mode = DO_NOTHING;
 				break;
@@ -296,7 +296,7 @@ oversample_value(audio_channel& ch, long& v)
 			if (ch.samp->rp_start) {
 				ch.mode = REPLAY;
 				ch.pointer -= ch.samp->fix_length;
-				/* FALLTHRU */
+				[[fallthrough]];
 			} else {
 				ch.mode = DO_NOTHING;
 				break;

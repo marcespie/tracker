@@ -73,9 +73,10 @@ load_song(ENTRY e)
 				if (song) {
 					e->filetype = NEW;
 					break;
-				} else
+				} else {
 					file.rewind();
-				/* FALLTHRU */
+					[[fallthrough]];
+				}
 			case OLD:
 				song = read_song(file, OLD);
 				if (song)
