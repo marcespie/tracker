@@ -218,6 +218,135 @@ set_data_width(int side, int sample)
 	max_sample = sample;
 }
 
+inline void
+linear_resample(void)
+{
+	unsigned int i;   /* sample counter */
+	int channel;      /* channel counter */
+	int step;         /* fractional part for linear resampling */
+	long value[NUMBER_SIDES];
+	/* recombinations of the various data */
+	audio_channel *ch;
+
+	for (i = 0; i < number_samples; i++) {
+		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
+		for (channel = 0; channel < allocated; channel++) {
+			ch = chan + channel;
+			switch(ch->mode) {
+			case DO_NOTHING:
+				break;
+			case PLAY:
+			/* Since we now have fix_length, we can
+			 * do that check with improved performance
+			 */
+				if (ch->pointer < ch->samp->fix_length) {
+					step = fractional_part(ch->pointer);
+					value[ch->side] += 
+					    (ch->samp->start[C] * (fixed_unit - step) +
+					    ch->samp->start[C+1] * step)
+					    * (ch->scaled_volume);
+					ch->pointer += ch->step;
+					break;
+				} else {
+				/* is there a replay ? */
+					if (ch->samp->rp_start) {
+						ch->mode = REPLAY;
+						ch->pointer -= ch->samp->fix_length;
+					/* FALLTHRU */
+					} else {
+						ch->mode = DO_NOTHING;
+						break;
+					}
+				}
+			case REPLAY:
+				while (ch->pointer >= ch->samp->fix_rp_length)
+					ch->pointer -= ch->samp->fix_rp_length;
+				step = fractional_part(ch->pointer);
+				value[ch->side] += 
+				    (ch->samp->rp_start[C] * (fixed_unit - step) +
+				    ch->samp->rp_start[C+1] * step)
+				    * ch->scaled_volume ;
+				ch->pointer += ch->step;
+				break;
+			}
+		} 
+		/* some assembly required... */
+		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], ACCURACY+max_side);
+	}
+}
+
+inline void
+over_resample(void)
+{
+	unsigned int i;   /* sample counter */
+	int channel;      /* channel counter */
+	unsigned int sampling;     /* oversample counter */
+	long value[NUMBER_SIDES];
+	/* recombinations of the various data */
+	audio_channel *ch;
+
+	value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
+	i = sampling = 0;
+	while(true) {
+		for (channel = 0; channel < allocated; channel++) {
+			ch = chan + channel;
+			switch(ch->mode) {
+			case DO_NOTHING:
+				break;
+			case PLAY:
+				/* Since we now have fix_length, we can
+				 * do that check with improved performance
+				*/
+				if (ch->pointer < ch->samp->fix_length) {
+					value[ch->side] += ch->samp->start[C] * ch->scaled_volume;
+					ch->pointer += ch->step;
+					break;
+				} else {
+					/* is there a replay ? */
+					if (ch->samp->rp_start) {
+						ch->mode = REPLAY;
+						ch->pointer -= ch->samp->fix_length;
+						/* FALLTHRU */
+					} else {
+						ch->mode = DO_NOTHING;
+						break;
+					}
+				}
+			case REPLAY:
+				while (ch->pointer >= ch->samp->fix_rp_length)
+					ch->pointer -= ch->samp->fix_rp_length;
+				value[ch->side] += ch->samp->rp_start[C] * ch->scaled_volume;
+				ch->pointer += ch->step;
+				break;
+			}
+		}
+		if (++sampling >= oversample) {
+			sampling = 0;
+			switch(oversample) {
+			case 1:
+				output_samples(value[LEFT_SIDE],
+				    value[RIGHT_SIDE], max_side);
+				break;
+			case 2:
+				output_samples(value[LEFT_SIDE], 
+				    value[RIGHT_SIDE], max_side+1);
+				break;
+			case 4:
+				output_samples(value[LEFT_SIDE],
+				    value[RIGHT_SIDE], max_side+2);
+				break;
+			default:
+				output_samples(value[LEFT_SIDE]/oversample,
+				    value[RIGHT_SIDE]/oversample, max_side);
+			}
+
+			value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
+			if (++i >= number_samples) 
+				break;
+		}
+	}   
+}
+
 /* The resampling mechanism itself.
  * According to the current channel automaton,
  * we resample the instruments in real time to
@@ -226,132 +355,13 @@ set_data_width(int side, int sample)
 void 
 resample(void)
 {
-	unsigned int i;   /* sample counter */
-	int channel;      /* channel counter */
-	unsigned int sampling;     /* oversample counter */
-	int step;         /* fractional part for linear resampling */
-	long value[NUMBER_SIDES];
-	/* recombinations of the various data */
-	audio_channel *ch;
-
-
-	/* safety check: we can't have a segv there, provided
-	 * chan points to a valid sample.
-	 * For `empty' samples, what is needed is fix_length == 0
-	 * and rp_start == NULL
-	 */
-
 	/* do the resampling, i.e., actually play sounds */
 	/* code unfolding for special cases */
 	switch(oversample) {
-	case 0:	/* linear resampling */
-		for (i = 0; i < number_samples; i++) {
-			value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-			for (channel = 0; channel < allocated; channel++) {
-				ch = chan + channel;
-				switch(ch->mode) {
-				case DO_NOTHING:
-					break;
-				case PLAY:
-				/* Since we now have fix_length, we can
-				 * do that check with improved performance
-				 */
-					if (ch->pointer < ch->samp->fix_length) {
-						step = fractional_part(ch->pointer);
-						value[ch->side] += 
-						    (ch->samp->start[C] * (fixed_unit - step) +
-						    ch->samp->start[C+1] * step)
-						    * (ch->scaled_volume);
-						ch->pointer += ch->step;
-						break;
-					} else {
-					/* is there a replay ? */
-						if (ch->samp->rp_start) {
-							ch->mode = REPLAY;
-							ch->pointer -= ch->samp->fix_length;
-						/* FALLTHRU */
-						} else {
-							ch->mode = DO_NOTHING;
-							break;
-						}
-					}
-				case REPLAY:
-					while (ch->pointer >= ch->samp->fix_rp_length)
-						ch->pointer -= ch->samp->fix_rp_length;
-					step = fractional_part(ch->pointer);
-					value[ch->side] += 
-					    (ch->samp->rp_start[C] * (fixed_unit - step) +
-					    ch->samp->rp_start[C+1] * step)
-					    * ch->scaled_volume ;
-					ch->pointer += ch->step;
-					break;
-				}
-			} 
-			/* some assembly required... */
-			output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], ACCURACY+max_side);
-		}
-		break;
-	default:		/* standard oversampling code */
-		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-		i = sampling = 0;
-		while(true) {
-			for (channel = 0; channel < allocated; channel++) {
-				ch = chan + channel;
-				switch(ch->mode) {
-				case DO_NOTHING:
-					break;
-				case PLAY:
-					/* Since we now have fix_length, we can
-					 * do that check with improved performance
-					*/
-					if (ch->pointer < ch->samp->fix_length) {
-						value[ch->side] += ch->samp->start[C] * ch->scaled_volume;
-						ch->pointer += ch->step;
-						break;
-					} else {
-						/* is there a replay ? */
-						if (ch->samp->rp_start) {
-							ch->mode = REPLAY;
-							ch->pointer -= ch->samp->fix_length;
-							/* FALLTHRU */
-						} else {
-							ch->mode = DO_NOTHING;
-							break;
-						}
-					}
-				case REPLAY:
-					while (ch->pointer >= ch->samp->fix_rp_length)
-						ch->pointer -= ch->samp->fix_rp_length;
-					value[ch->side] += ch->samp->rp_start[C] * ch->scaled_volume;
-					ch->pointer += ch->step;
-					break;
-				}
-			}
-			if (++sampling >= oversample) {
-				sampling = 0;
-				switch(oversample) {
-				case 1:
-					output_samples(value[LEFT_SIDE],
-					    value[RIGHT_SIDE], max_side);
-					break;
-				case 2:
-					output_samples(value[LEFT_SIDE], 
-					    value[RIGHT_SIDE], max_side+1);
-					break;
-				case 4:
-					output_samples(value[LEFT_SIDE],
-					    value[RIGHT_SIDE], max_side+2);
-					break;
-				default:
-					output_samples(value[LEFT_SIDE]/oversample,
-					    value[RIGHT_SIDE]/oversample, max_side);
-				}
-
-				value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-				if (++i >= number_samples) 
-					break;
-			}
-		}   
+	case 0:
+		linear_resample();
+	default:
+		over_resample();
 	}
 	flush_buffer();
 }
