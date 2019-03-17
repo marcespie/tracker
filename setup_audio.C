@@ -22,60 +22,54 @@ static int stereo;
 /* forward declaration */
 static void do_close_audio(void);
 
-static void init_audio(void)
-   {
-   at_end(do_close_audio);
-   }
+static void 
+init_audio(void)
+{
+	at_end(do_close_audio);
+}
 
 /* setup_audio(frequency, stereo):
  * try to avoid calling open_audio and other things
  * all the time
  */
-void setup_audio(unsigned long f, int s)
-   {
-   INIT_ONCE;
+void 
+setup_audio(unsigned long f, int s)
+{
+	INIT_ONCE;
 
-   if (!opened)
-      {
-      ask_freq = f;
-      stereo = s;
+	if (!opened) {
+		ask_freq = f;
+		stereo = s;
 		if (get_pref_scalar(PREF_OUTPUT))
 			real_freq = open_audio(f, s);
-		else
-			{
+		else {
 			real_freq = 22050;
 			set_watched_scalar(FREQUENCY, real_freq);
-			}
-      opened = true;
-      }
-   else
-      {
-      unsigned long new_freq;
+		}
+		opened = true;
+	} else {
+		unsigned long new_freq;
 
-      if (s != stereo || f != ask_freq)
-         {
-         ask_freq = f;
-         stereo = s;
-         close_audio();
+		if (s != stereo || f != ask_freq) {
+			ask_freq = f;
+			stereo = s;
+			close_audio();
 			if (get_pref_scalar(PREF_OUTPUT))
 				new_freq = open_audio(f, s);
-			else
-				{
+			else {
 				new_freq = 22050;
 				set_watched_scalar(FREQUENCY, real_freq);
-				}
-         }
-      else
-         new_freq = real_freq;
-      }
-   }
+			}
+		} else
+			new_freq = real_freq;
+	}
+}
 
-static void do_close_audio(void)
-   {
-   if (opened && get_pref_scalar(PREF_OUTPUT))
-      {
-      close_audio();
-      }
-   opened = false;
-   }
+static void 
+do_close_audio(void)
+{
+	if (opened && get_pref_scalar(PREF_OUTPUT))
+		close_audio();
+	opened = false;
+}
 
