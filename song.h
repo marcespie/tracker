@@ -4,18 +4,18 @@
 
 using SAMPLE8 = signed char;
 
-#define MAX_NUMBER_SAMPLES 32
-#define LAST_SAMPLE 31
-#define ST_NUMBER_SAMPLES 15
-#define PRO_NUMBER_SAMPLES 31
+const auto MAX_NUMBER_SAMPLES=32;
+const auto LAST_SAMPLE=31;
+const auto ST_NUMBER_SAMPLES=15;
+const auto PRO_NUMBER_SAMPLES=31;
 
-#define NORMAL_PLENGTH 64
-#define NORMAL_NTRACKS 4
-#define MAX_TRACKS 8
-#define NUMBER_SAMPLES 32
+const auto NORMAL_PLENGTH=64;
+const auto NORMAL_NTRACKS=4;
+const auto MAX_TRACKS=8;
+const auto NUMBER_SAMPLES=32;
 
-#define BLOCK_LENGTH 64
-#define NUMBER_TRACKS 4
+const auto BLOCK_LENGTH=64;
+const auto NUMBER_TRACKS=4;
 const auto NUMBER_PATTERNS=128;
 
 const inline unsigned int NUMBER_EFFECTS=40;
@@ -94,6 +94,14 @@ struct event {
 	unsigned char effect;
 	unsigned char parameters;
 	unsigned char note;
+	auto low() const
+	{
+		return parameters & 15U;
+	}
+	auto high() const
+	{
+		return parameters >> 4U;
+	}
 };
 
 struct pattern {
@@ -114,8 +122,8 @@ struct song_info {
 	event *data;
 };
 
-#define OLD_ST 0
-#define PROTRACKER 1
+const auto OLD_ST=0;
+const auto PROTRACKER=1;
 
 struct song {
 	char *title;
@@ -130,4 +138,4 @@ struct song {
 	long samples_start;
 };
 
-#define AMIGA_CLOCKFREQ 3575872
+const auto AMIGA_CLOCKFREQ=3575872;

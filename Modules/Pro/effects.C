@@ -95,10 +95,10 @@ sinusoid_value(sinusoid *s)
 static void 
 set_sinusoid(const event *e, sinusoid *s)
 {
-	if (HI(e->parameters))
-		s->rate = HI(e->parameters);
-	if (LOW(e->parameters))
-		s->depth = LOW(e->parameters);
+	if (e->high())
+		s->rate = e->high();
+	if (e->low())
+		s->depth = e->low();
 	if (s->reset)
 		s->offset = 0;
 }
@@ -165,7 +165,7 @@ set_arpeggio(channel *ch, const event *e)
 			status("Arpeggio note out of range");
 			error = FAULT;
 		}
-		note = ch->note + LOW(e->parameters);
+		note = ch->note + e->low();
 		ch->arp[2] = note2pitch(note, ch->finetune);
 		if (!ch->arp[2]) {
 			status("Arpeggio note out of range");
@@ -192,19 +192,19 @@ do_slidevol(channel *ch)
  * DON'T GET the test order wrong!!! or ghouls will sound strange
  */
 static void 
-parse_slidevol(channel *ch, int para)
+parse_slidevol(channel *ch, const event *e)
 {
-	if (HI(para))
-		ch->volumerate = HI(para);
+	if (e->high())
+		ch->volumerate = e->high();
 	else
-		ch->volumerate = -LOW(para);
+		ch->volumerate = -e->low();
 }
 
 static void 
 set_slidevol(channel *ch, const event *e)
 {
 	ch->adjust = do_slidevol;
-	parse_slidevol(ch, e->parameters);
+	parse_slidevol(ch, e);
 }
 
 /* portamento goes from a given pitch to another.  We could optimize 
@@ -278,7 +278,7 @@ set_portaslide(channel *ch, pitch pitch, const event *e)
 {
 	if (pitch)
 		ch->pitchgoal = pitch;
-	parse_slidevol(ch, e->parameters);
+	parse_slidevol(ch, e);
 	if (ch->pitchgoal)
 		ch->adjust = do_portaslide;
 	else
@@ -296,7 +296,7 @@ static void
 set_vibratoslide(channel *ch, const event *e)
 {
 	ch->adjust = do_vibratoslide;
-	parse_slidevol(ch, e->parameters);
+	parse_slidevol(ch, e);
 	if (ch->vib.reset)
 		ch->vib.offset = 0;
 }
