@@ -26,7 +26,6 @@
 #include "channel.h"
 #include "prefs.h"
 
-static Info *handle = nullptr;
 static char buffer[80];
 
 extern char instname[];	/* from display.c */
@@ -76,7 +75,7 @@ dump_song(song *song)
 	static char dummy[1];
 
 
-	handle = begin_info(song->title);
+	auto handle = begin_info(song->title);
 	if (!handle)
 		return;
 
@@ -137,5 +136,4 @@ dump_song(song *song)
 		}
 	}
 	end_info(handle);
-	handle = 0;
 }
