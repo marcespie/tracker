@@ -46,7 +46,17 @@ const auto ACCURACY=12;
 #define fractional_part(x) ((x) & (fixed_unit - 1))
 #define fixed_unit	 (1 << ACCURACY)
 
-#define C fix_to_int(ch->pointer)
+#define C reduced(ch)
+
+inline size_t reduced(const audio_channel& ch)
+{
+	return fix_to_int(ch.pointer);
+}
+
+inline size_t reduced(const audio_channel* ch)
+{
+	return fix_to_int(ch->pointer);
+}
 
 static void init_resample(void);
 static void (*INIT)(void) = init_resample;
@@ -221,57 +231,54 @@ set_data_width(int side, int sample)
 inline void
 linear_resample(void)
 {
-	unsigned int i;   /* sample counter */
-	int channel;      /* channel counter */
 	int step;         /* fractional part for linear resampling */
 	long value[NUMBER_SIDES];
-	/* recombinations of the various data */
-	audio_channel *ch;
 
-	for (i = 0; i < number_samples; i++) {
+	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-		for (channel = 0; channel < allocated; channel++) {
-			ch = chan + channel;
-			switch(ch->mode) {
+		for (int channel = 0; channel < allocated; channel++) {
+			auto& ch = chan[channel];
+			switch(ch.mode) {
 			case DO_NOTHING:
 				break;
 			case PLAY:
 			/* Since we now have fix_length, we can
 			 * do that check with improved performance
 			 */
-				if (ch->pointer < ch->samp->fix_length) {
-					step = fractional_part(ch->pointer);
-					value[ch->side] += 
-					    (ch->samp->start[C] * (fixed_unit - step) +
-					    ch->samp->start[C+1] * step)
-					    * (ch->scaled_volume);
-					ch->pointer += ch->step;
+				if (ch.pointer < ch.samp->fix_length) {
+					step = fractional_part(ch.pointer);
+					value[ch.side] += 
+					    (ch.samp->start[C] * (fixed_unit - step) +
+					    ch.samp->start[C+1] * step)
+					    * (ch.scaled_volume);
+					ch.pointer += ch.step;
 					break;
 				} else {
 				/* is there a replay ? */
-					if (ch->samp->rp_start) {
-						ch->mode = REPLAY;
-						ch->pointer -= ch->samp->fix_length;
+					if (ch.samp->rp_start) {
+						ch.mode = REPLAY;
+						ch.pointer -= ch.samp->fix_length;
 					/* FALLTHRU */
 					} else {
-						ch->mode = DO_NOTHING;
+						ch.mode = DO_NOTHING;
 						break;
 					}
 				}
 			case REPLAY:
-				while (ch->pointer >= ch->samp->fix_rp_length)
-					ch->pointer -= ch->samp->fix_rp_length;
-				step = fractional_part(ch->pointer);
-				value[ch->side] += 
-				    (ch->samp->rp_start[C] * (fixed_unit - step) +
-				    ch->samp->rp_start[C+1] * step)
-				    * ch->scaled_volume ;
-				ch->pointer += ch->step;
+				while (ch.pointer >= ch.samp->fix_rp_length)
+					ch.pointer -= ch.samp->fix_rp_length;
+				step = fractional_part(ch.pointer);
+				value[ch.side] += 
+				    (ch.samp->rp_start[C] * (fixed_unit - step) +
+				    ch.samp->rp_start[C+1] * step)
+				    * ch.scaled_volume ;
+				ch.pointer += ch.step;
 				break;
 			}
 		} 
 		/* some assembly required... */
-		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], ACCURACY+max_side);
+		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
+		    ACCURACY+max_side);
 	}
 }
 
