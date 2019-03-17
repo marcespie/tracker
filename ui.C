@@ -335,7 +335,7 @@ do_scroll(char *line)
 		puts(line);
 		fflush(stdout);
 	}
-	//delete [] line;
+	delete [] line;
 }
 
 void 
@@ -351,11 +351,9 @@ scroll(char *end)
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
 			sync_audio(
-				[]() {},
-				[]() {});
-			 //   [&](){do_scroll(p);},
-			  //  [&](){}
-			//);
+			    [=](){do_scroll(p);},
+			    [=](){delete[] p;}
+			);
 		}
 	}
 }
@@ -418,8 +416,8 @@ display_pattern(unsigned int current, unsigned int total,
 	thingy->u0 = uptilnow;
 	thingy->u1 = totaltime;
 	sync_audio(
-		[&]() {do_display_pattern(thingy);}, 
-		[&]() {delete(thingy); });
+		[=]() {do_display_pattern(thingy);}, 
+		[=]() {delete(thingy); });
 }
 
 static void 

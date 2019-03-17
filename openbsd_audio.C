@@ -209,9 +209,8 @@ static void
 flush_tags(void)
 {
 	while (!q.empty()) {
-		auto t = q.front();
-		if (t.when <= realpos + ADVANCE_TAGS) {
-			t.f();
+		if (q.front().when <= realpos + ADVANCE_TAGS) {
+			q.front().f();
 			q.pop();
 		} else
 			break;
@@ -223,8 +222,7 @@ static void
 remove_pending_tags(void)
 {
 	while (!q.empty()) {
-		auto t = q.front();
-		//t.f2();
+		q.front().f2();
 		q.pop();
 	}
 }
