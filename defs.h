@@ -22,22 +22,12 @@ MAX(S x, T y)
 	return x>y ?  x : y;
 }
 
-typedef union {
-	long scalar;
-	float real;
-	void *pointer;
-} VALUE;
-
 /* predefinitions for relevant structures */
-struct tag;
 struct channel; 
 struct song;
 struct automaton;
 struct sample_info;
 struct event;
 struct tempo;
-struct vauto;
 struct play_entry;
 struct option_set;
-struct iff;
-struct comm_chunk;

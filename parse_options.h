@@ -1,4 +1,10 @@
 /* parse_options.h */
+typedef union {
+	long scalar;
+	float real;
+	void *pointer;
+} VALUE;
+
 
 struct option {
 	const char *optiontext;
