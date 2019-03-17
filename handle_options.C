@@ -187,7 +187,7 @@ handle_options(int argc, char *argv[])
 		ask_freq *= 1000;
 	stereo = args[2].scalar;
 	loop = args[3].scalar;
-	set_watched_scalar(OVERSAMPLE, args[4].scalar);
+	set_watched(watched::oversample, args[4].scalar);
 	trandom = args[5].scalar;
 	set_pref(Pref::show, args[6].scalar);
 	set_pref(Pref::tolerate, args[7].scalar);

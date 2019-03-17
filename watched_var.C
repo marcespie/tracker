@@ -1,7 +1,6 @@
 /* watched_var.c */
 
 #include "defs.h"
-#include <assert.h>
 #include <list>
 #include <functional>
 #include "watched_var.h"
@@ -11,42 +10,42 @@ static struct {
 	long value;
 	bool set;
 	std::list<notify_function> l;
-} variable[NUMBER_WATCHED];
+} variable[static_cast<size_t>(watched::number_watched)];
 
 static void 
-notify_new(enum watched_var var)
+notify_new(watched var)
 {
-	variable[var].set = true;
+	const auto idx = static_cast<size_t>(var);
+	variable[idx].set = true;
 
-	for (const auto& f: variable[var].l)
-		f(var, variable[var].value);
+	for (const auto& f: variable[idx].l)
+		f(var, variable[idx].value);
 }
 
 void 
-set_watched_scalar(enum watched_var var, long new_val)
+set_watched(watched var, long new_val)
 {
-	assert(var < NUMBER_WATCHED);
-	if (!variable[var].set || variable[var].value != new_val) {
+	const auto idx = static_cast<size_t>(var);
+	if (!variable[idx].set || variable[idx].value != new_val) {
 		/* first set the variable to avoid looping */
-		variable[var].value = new_val;
+		variable[idx].value = new_val;
 		notify_new(var);
 	}
 }
 
 long
-get_watched_scalar(enum watched_var var)
+get_watched(watched var)
 {
-	assert(var < NUMBER_WATCHED);
-	return variable[var].value;
+	const auto idx = static_cast<size_t>(var);
+	return variable[idx].value;
 }
 
 
 void 
-add_notify(notify_function f, enum watched_var var)
+add_notify(notify_function f, watched var)
 {
-	assert(var < NUMBER_WATCHED);
-
-	variable[var].l.push_back(f);
-	if (variable[var].set)
-		f(var, variable[var].value);
+	const auto idx = static_cast<size_t>(var);
+	variable[idx].l.push_back(f);
+	if (variable[idx].set)
+		f(var, variable[idx].value);
 }

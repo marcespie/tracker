@@ -150,16 +150,16 @@ readjust_beat(void)
 }
 
 static void 
-notify_resample(enum watched_var var, long n)
+notify_resample(watched var, long n)
 {
 	switch(var) {
-	case FREQUENCY:
+	case watched::frequency:
 		resampling_frequency = n;
 		build_step_table(oversample, resampling_frequency);
 		readjust_beat();
 		readjust_current_steps();
 		break;
-	case OVERSAMPLE:
+	case watched::oversample:
 		oversample = n;
 		if (resampling_frequency) {
 			build_step_table(oversample, resampling_frequency);
@@ -174,8 +174,8 @@ notify_resample(enum watched_var var, long n)
 static void 
 init_resample(void)
 {
-	add_notify(notify_resample, FREQUENCY);
-	add_notify(notify_resample, OVERSAMPLE);
+	add_notify(notify_resample, watched::frequency);
+	add_notify(notify_resample, watched::oversample);
 }
 
 void 

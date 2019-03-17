@@ -44,7 +44,7 @@ setup_audio(unsigned long f, int s)
 			real_freq = open_audio(f, s);
 		else {
 			real_freq = 22050;
-			set_watched_scalar(FREQUENCY, real_freq);
+			set_watched(watched::oversample, real_freq);
 		}
 		opened = true;
 	} else {
@@ -58,7 +58,7 @@ setup_audio(unsigned long f, int s)
 				new_freq = open_audio(f, s);
 			else {
 				new_freq = 22050;
-				set_watched_scalar(FREQUENCY, real_freq);
+				set_watched(watched::frequency, real_freq);
 			}
 		} else
 			new_freq = real_freq;
