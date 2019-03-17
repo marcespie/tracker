@@ -136,9 +136,10 @@ add_samples8(long left, long right, int n)
 
 
 
+using audio_offset = unsigned long long;
 
 
-static long long realpos;
+static audio_offset realpos;
 static struct sio_hdl *hdl;           	
 static unsigned long current_freq;
 
@@ -194,8 +195,8 @@ struct tagged {
 	using callback= std::function<void ()>;
 	callback f;		/* function to call */
 	callback f2;		/* function to call  for flush */
-	unsigned long when;	/* number of bytes to let go before calling */
-	tagged(callback f_, callback f2_, unsigned long when_):
+	audio_offset when;	/* number of bytes to let go before calling */
+	tagged(callback f_, callback f2_, audio_offset when_):
 	    f{f_}, f2{f2_}, when{when_}
 	{
 	}
