@@ -166,6 +166,8 @@ notify_resample(enum watched_var var, long n)
 			readjust_current_steps();
 		}
 		break;
+	default:
+		break;
 	}
 }
 
