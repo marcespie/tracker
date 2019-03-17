@@ -351,8 +351,8 @@ scroll(char *end)
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
 			sync_audio(
-			    [=](){do_scroll(p);},
-			    [=](){delete[] p;}
+			    [p](){do_scroll(p);},
+			    [p](){delete[] p;}
 			);
 		}
 	}
@@ -416,8 +416,8 @@ display_pattern(unsigned int current, unsigned int total,
 	thingy->u0 = uptilnow;
 	thingy->u1 = totaltime;
 	sync_audio(
-		[=]() {do_display_pattern(thingy);}, 
-		[=]() {delete(thingy); });
+		[thingy]() {do_display_pattern(thingy);}, 
+		[thingy]() {delete(thingy); });
 }
 
 static void 
@@ -432,15 +432,15 @@ display_time(unsigned long time, unsigned long check)
 {
 	if (time/1000 != check/1000) {
 		sync_audio(
-		   [&]() {do_display_time(check); },
+		   [check]() {do_display_time(check); },
 		   []() {});
 		if (time > check)
 			sync_audio(
-			    [&]() {do_display_time(time-check);},
+			    [time,check]() {do_display_time(time-check);},
 			    []() {});
 		else
 			sync_audio(
-			    [&]() {do_display_time(check-time);},
+			    [time,check]() {do_display_time(check-time);},
 			    []() {});
 	}
 }
