@@ -224,7 +224,7 @@ parse_options(int argc, char *argv[], void (*what_to_do)(const char *arg))
 			if (i+1 < argc)
 				arg = argv[i+1];
 			else
-				arg = 0;
+				arg = nullptr;
 			if (argv[i][1] == '-') {
 				(*what_to_do)(argv[i]);
 				(*what_to_do)(arg);
