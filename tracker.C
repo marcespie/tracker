@@ -160,22 +160,19 @@ main(int argc, char *argv[])
 			auto result = play_song(song, start);
 			release_song(song);
 			status(0);
-			while ( (result = get_tag(result)) ) {
-				switch (result->type) {
-				case PLAY_PREVIOUS_SONG:
-					song_number--;
-					break;
-					/* NOTREACHED */
-				case PLAY_NEXT_SONG:
-				case PLAY_ENDED:
-					song_number++;
-					break;
-				case PLAY_ERROR:
-					delete_entry(play_list+song_number);
-				default:
-					break;
-				}
-				result++;
+			switch(result) {
+			case PLAY_PREVIOUS_SONG:
+				song_number--;
+				break;
+				/* NOTREACHED */
+			case PLAY_NEXT_SONG:
+			case PLAY_ENDED:
+				song_number++;
+				break;
+			case PLAY_ERROR:
+				delete_entry(play_list+song_number);
+			default:
+				break;
 			}
 		} else
 			delete_entry(play_list+song_number);

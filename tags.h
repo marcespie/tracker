@@ -27,4 +27,3 @@ struct tag
 #endif
 
 struct tag *get_tag (struct tag *t);
-

@@ -254,9 +254,7 @@ play_one_tick(automaton *a)
 		resample();
 }
 
-static tag pres[2];
-
-tag *
+int
 play_song(song *song, unsigned int start)
 {
 	int countup;      /* keep playing the tune or not */
@@ -266,7 +264,6 @@ play_song(song *song, unsigned int start)
 	INIT_ONCE;
 
 	song_title(song->title);
-	pres[1].type = TAG_END;
 
 	ntracks = song->ntracks;
 	set_number_tracks(ntracks);
@@ -290,16 +287,12 @@ play_song(song *song, unsigned int start)
 		result = get_ui();
 		while( (result = get_tag(result)) ) {
 			switch(result->type) {  
-			case UI_LOAD_SONG:
-				if (!result->data.pointer)
-					break;
-				/*FALLTHRU*/
 			case UI_NEXT_SONG:
+				discard_buffer();
+				return PLAY_NEXT_SONG;
 			case UI_PREVIOUS_SONG:
 				discard_buffer();
-				pres[0].type = result->type;
-				pres[0].data = result->data;
-				return pres;
+				return PLAY_PREVIOUS_SONG;
 			case UI_QUIT:
 				discard_buffer();
 				end_all(0);
@@ -330,12 +323,9 @@ play_song(song *song, unsigned int start)
 			break;
 		case ENDED:
 			countup++;
-			if ( (r = get_pref(Pref::repeats)) ) {
-				if (countup >= r) {
-					pres[0].type = PLAY_ENDED;
-					return pres;
-				}
-			}
+			if ( (r = get_pref(Pref::repeats)) )
+				if (countup >= r)
+					return PLAY_ENDED;
 			break;
 		case SAMPLE_FAULT:
 		case FAULT:
@@ -345,9 +335,7 @@ play_song(song *song, unsigned int start)
 			if ( (error == SAMPLE_FAULT && get_pref(Pref::tolerate))
 			    ||(error == FAULT && get_pref(Pref::tolerate) > 1) )
 				break;
-			pres[0].type = PLAY_ERROR;
-			pres[0].data.scalar = error;
-			return pres;
+			return PLAY_ERROR;
 		default:
 			break;
 		}

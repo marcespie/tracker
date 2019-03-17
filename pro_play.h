@@ -12,5 +12,5 @@ extern void init_player(int o, unsigned long f);
 /* play_song(song, start):
  * play the song.  return tags as shown in get_ui 
  */
-extern tag *play_song(song *song, unsigned int start);
+extern int play_song(song *song, unsigned int start);
 
