@@ -7,13 +7,13 @@
 #include "extern.h"
 #include "tags.h"
 #include "prefs.h"
-#include "Modules/Pro/effects.h"
+#include "pro_effects.h"
 #include "p_automaton.h"
 #include "automaton.h"
 #include "autoinit.h"
 #include "resample.h"
-#include "Modules/Pro/play.h"
-#include "Modules/Pro/low.h"
+#include "pro_play.h"
+#include "pro_low.h"
 #include "empty.h"
      
 

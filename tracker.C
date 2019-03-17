@@ -13,7 +13,7 @@
 #include "prefs.h"
 #include "play_list.h"
 #include "open.h"
-#include "Modules/Pro/play.h"
+#include "pro_play.h"
      
 extern void print_usage(void);
 extern unsigned long half_mask;

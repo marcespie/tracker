@@ -8,7 +8,7 @@
 #include "defs.h"
 #include "notes.h"
 #include "channel.h"
-#include "Modules/Pro/low.h"
+#include "pro_low.h"
 #include "resample.h"
 #include "song.h"
 #include "empty.h"

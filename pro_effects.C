@@ -7,8 +7,8 @@
 #include "song.h"
 #include "extern.h"
 #include "prefs.h"
-#include "Modules/Pro/effects.h"
-#include "Modules/Pro/low.h"
+#include "pro_effects.h"
+#include "pro_low.h"
 #include "p_automaton.h"
      
 /* sine table for the vibrato effect (obtained through build_vibrato.c) */
