@@ -45,10 +45,6 @@ const char *usage[] =
 "-color              Ansi color scrolling",
 "-sync               Try to synch audio output with display",
 "-randomize          randomize play order",
-#ifdef VOLUME_CONTROL
-"-speaker				 Output audio to internal speaker",
-"-volume <n>         Set volume in dB",
-#endif
 "",
 "RunTime:",
 "e,x     exit program",

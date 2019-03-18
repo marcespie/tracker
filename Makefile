@@ -11,6 +11,5 @@ SRCS = tracker.C \
 CXXFLAGS = -O2 -W -Wall -std=c++17
 CPPFLAGS = -I${.CURDIR}
 LDADD = -lsndio -lm
-NOMAN =
 
 .include <bsd.prog.mk>
