@@ -43,7 +43,6 @@ play_entry::play_entry(const char* dir, const char* f):
 		name = std::string(dir) + '/' + f;
 	else
 		name = f;
-	filename = name.c_str();
 }
 
 std::vector<play_entry> table;
@@ -69,8 +68,8 @@ expand_dir(const char *name)
 			    strcmp(de->d_name, "..") == 0)
 				continue;
 			play_entry n {name, de->d_name};
-			if (is_dir(n.filename))
-				expand_dir(n.filename);
+			if (is_dir(n.filename()))
+				expand_dir(n.filename());
 			else
 				table.push_back(n);
 		}
@@ -78,6 +77,7 @@ expand_dir(const char *name)
 	}
 }
 
+#include <iostream>
 ENTRY
 obtain_play_list(void)
 {

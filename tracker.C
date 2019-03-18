@@ -60,7 +60,7 @@ load_song(ENTRY e)
 	const char *name;
 	size_t i, j;
 
-	name = e->filename;
+	name = e->filename();
 	/* display the file name */
 	i = strlen(name);
 

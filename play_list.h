@@ -21,9 +21,12 @@ const int UNKNOWN=42;
 
 struct play_entry {
 	play_entry(const char*, const char *);
-	const char *filename;
 	int filetype;
 	std::string name;
+	const char *filename()
+	{
+		return name.c_str();
+	}
 };
 
 
