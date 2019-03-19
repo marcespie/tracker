@@ -25,8 +25,6 @@
 #include <queue>
 struct options_set *port_options=0;
 
-#define UNSIGNED8
-
 // fine-tune to get the scrolling display in sync with the music
 const auto ADVANCE_TAGS=20000;
 
@@ -57,37 +55,20 @@ set_mix(int percent)
 
 
 
-#ifdef UNSIGNED16
-static unsigned short *buffer16;
-inline unsigned short
-VALUE16(long x)
-{
-	return x+32768;
-}
-#else
 static short *buffer16;
 inline unsigned short
 VALUE16(long x)
 {
 	return x;
 }
-#endif
 
-#ifdef UNSIGNED8
 static unsigned char *buffer;
 inline unsigned char
 VALUE8(long x)
 {
 	return x+128;
 }
-#else
-static signed char *buffer;
-inline signed char
-VALUE8(long x)
-{
-	return x;
-}
-#endif
+
 static unsigned long idx;
 static int dsize;			/* current data size */
 static unsigned long samples_max;	/* number of samples in buffer */
@@ -209,7 +190,7 @@ open_audio(unsigned long f, int)
 	dsp_samplesize = par.bits;
 	dsize = par.bps;
 	buffer = new unsigned char [buf_max];
-	buffer16 = (short *)buffer;
+	buffer16 = reinterpret_cast<short *>(buffer);
 
 	idx = 0;
 	samples_max = buf_max / dsize / par.pchan;
