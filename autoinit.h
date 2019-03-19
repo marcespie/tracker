@@ -23,7 +23,7 @@
  * s may be 0 for normal exit. DO NOT use exit() anywhere in tracker 
  * but end_all() instead.
  */
-extern void end_all(const char *fmt, ...);
+extern void end_all(const char *fmt = nullptr, ...);
 
 /* at_end(cleanup): stack cleanup to be called at program's termination
  */

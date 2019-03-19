@@ -52,11 +52,8 @@ int error;
 static song *
 load_song(ENTRY e)
 {
-	song *song;
-	char *buffer;
+	song *song = nullptr;
 	exfile file;
-	const char *name;
-	size_t i, j;
 
 	std::cout << e->name << "...";
 
@@ -94,15 +91,13 @@ load_song(ENTRY e)
 					e->filetype = NEW;
 				break;
 			default:
-				song = nullptr;
+				break;
 			}
 		}
-	} else
-		song = nullptr;
+	}
 
 	if (!song)
-		std::cout << "Not a song";
-	std::cout << "\n";
+		std::cout << "Not a song\n";
 
 	return song;
 }
@@ -125,11 +120,11 @@ main(int argc, char *argv[])
 	set_default_prefs();
 	if (argc == 1) {
 		print_usage();
-		end_all(nullptr);
+		end_all();
 	}
 
 
-	/* remove the program name from the options to parse !!! */
+	// remove the program name from the options to parse !!!
 	handle_options(argc-1, argv+1);
 	if (trandom)
 		randomize();
@@ -146,7 +141,7 @@ main(int argc, char *argv[])
 			if (loop)
 				song_number = 0;
 			else
-				end_all(nullptr);
+				end_all();
 		}
 		auto song = load_song(play_list+song_number);
 
@@ -176,7 +171,7 @@ main(int argc, char *argv[])
 		} else
 			delete_entry(play_list+song_number);
 	}
-	end_all(nullptr);
+	end_all();
 	/* NOTREACHED */
 }
 
