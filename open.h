@@ -25,11 +25,11 @@ public:
 	bool open(const std::string& fname);
 	int getc();
 	size_t tell();
-	unsigned long read(void *, size_t, unsigned long);
+	size_t read(char *, size_t);
 	template<typename T>
-	unsigned  long read(T* p, unsigned long n)
+	size_t read(T* p, unsigned long n)
 	{
-		return read(static_cast<void *>(p), sizeof(*p), n);
+		return read(reinterpret_cast<char *>(p), sizeof(*p)*n);
 	}
 	void rewind();
 	~exfile();

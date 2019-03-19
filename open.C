@@ -45,10 +45,10 @@ exfile::getc()
 	return c;
 }
 
-unsigned long
-exfile::read(void *p, size_t sz, unsigned long n)
+size_t
+exfile::read(char *p, size_t sz)
 {
-	handle.read(reinterpret_cast<char *>(p), sz*n);
+	handle.read(p, sz);
 	return handle.gcount();
 }
 
