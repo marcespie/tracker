@@ -18,6 +18,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <string.h>
+#include <vector>
 
 #include "extern.h"
 #include "song.h"
@@ -33,19 +34,12 @@ static unsigned int patsize;
 
 const auto NOT_YET=-1;
 
-static unsigned char *buffer;		/* Buffer to read everything */
-static unsigned int bufsize;
+std::vector<char> buffer;
 
 static void 
 setup_buffer(unsigned int size)
 {
-	bufsize = size;
-	if (!buffer)
-		buffer = (unsigned char *)malloc(bufsize);
-	else
-		buffer = (unsigned char *)realloc(buffer, bufsize);
-	if (!buffer)
-		end_all("Memory allocation");
+	buffer.resize(size);
 }
 
 /***
@@ -60,14 +54,14 @@ setup_buffer(unsigned int size)
 static char *
 getstring(exfile& f, unsigned int len)
 {
-	assert(len < bufsize);
-	f.read(buffer, len);
+	assert(len < buffer.size());
+	f.read(buffer.data(), len);
 	buffer[len] = '\0';
-	char *n = (char *)malloc(strlen((const char *)buffer)+1);
+	char *n = (char *)malloc(strlen(buffer.data())+1);
 	if (!n) 
 		return nullptr;
 
-	return strcpy(n, (char *)buffer);
+	return strcpy(n, buffer.data());
 }
 
 /* byteskip(f, len)
@@ -76,11 +70,11 @@ getstring(exfile& f, unsigned int len)
 static void 
 byteskip(exfile& f, unsigned long int len)
 {
-	while (len > bufsize) {
-		f.read(buffer, bufsize);
-		len -= bufsize;
+	while (len > buffer.size()) {
+		f.read(buffer.data(), buffer.size());
+		len -= buffer.size();
 	}
-	f.read(buffer, len);
+	f.read(buffer.data(), len);
 }
 
 /* v = getushort(f)
@@ -400,12 +394,12 @@ fill_event(event *e, unsigned char *p, int *current_instrument, song *song)
 static event *
 fill_pattern(exfile& f, song *song, event *e)
 {
-	f.read(buffer, patsize);
+	f.read(buffer.data(), patsize);
 
 	for (unsigned j = 0; j < song->ntracks; j++) {
 		int current_instrument = NOT_YET;
 		for (unsigned i = 0; i < song->info.plength; i++)
-			fill_event(e+i, buffer+4*(i*song->ntracks+j), 
+			fill_event(e+i, reinterpret_cast<unsigned char *>(buffer.data()+4*(i*song->ntracks+j)), 
 			    &current_instrument, song);
 		e += song->info.plength;
 	}
@@ -565,7 +559,7 @@ read_song(exfile& f, int type)
 
 	error = NONE;
 
-	if (!buffer)
+	if (buffer.size() == 0)
 		setup_buffer(1024);
 
 	auto song = new_song();
@@ -615,10 +609,6 @@ read_song(exfile& f, int type)
 		return error_song(song);
 
 	setup_buffer(patsize);
-	if (!buffer) {
-		error = OUT_OF_MEM;
-		return error_song(song);
-	}
 
 	auto won = fill_patterns(song, f, pattern_used);
 	if (error != NONE)
