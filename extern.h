@@ -62,7 +62,9 @@ extern void dump_song(struct song *song);
  * (some events need the current channel state for a correct dump)
  * special case: ch == 0 means current set of events done
  */
-extern void dump_event(const channel *ch, const event *e);
+extern void dump_event(const channel& ch, const event *e);
+// finish the line if necessary
+extern void dump_event();
 
 /* dump_delimiter(): add a delimiter to the current dump, to 
  * separate left channels from right channels, for instance

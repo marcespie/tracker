@@ -51,11 +51,10 @@ static struct sample_info **voices;
 
 
 
-channel::channel(int side)
+channel::channel(int side): audio {new_channel(side)}
 {
 	samp = empty_sample();
 	finetune = 0;
-	audio = new_channel(side);
 	volume = 0; 
 	pitch = 0; 
 	note = NO_NOTE;
@@ -130,31 +129,31 @@ dump_events(automaton *a)
 	/* display the output in a reasonable order:
 	 * LEFT1 LEFT2 || RIGHT1 RIGHT 2
 	 */
-	dump_event(&(chan[0]), EVENT(a, 0));
+	dump_event(chan[0], EVENT(a, 0));
 	dump_delimiter();
-	dump_event(&(chan[3]), EVENT(a, 3));
+	dump_event(chan[3], EVENT(a, 3));
 	dump_delimiter();
 	if (ntracks > 4) {
-		dump_event(&(chan[4]), EVENT(a, 4));
+		dump_event(chan[4], EVENT(a, 4));
 		dump_delimiter();
 	}
 	if (ntracks > 7) {
-		dump_event(&(chan[7]), EVENT(a, 7));
+		dump_event(chan[7], EVENT(a, 7));
 		dump_delimiter();
 	}
 	dump_delimiter();
-	dump_event(&(chan[1]), EVENT(a, 1));
+	dump_event(chan[1], EVENT(a, 1));
 	dump_delimiter();
-	dump_event(&(chan[2]), EVENT(a, 2));
+	dump_event(chan[2], EVENT(a, 2));
 	if (ntracks > 5) {
 		dump_delimiter();
-		dump_event(&(chan[5]), EVENT(a, 5));
+		dump_event(chan[5], EVENT(a, 5));
 	}
 	if (ntracks > 6) {
 		dump_delimiter();
-		dump_event(&(chan[6]), EVENT(a, 6));
+		dump_event(chan[6], EVENT(a, 6));
 	}
-	dump_event(0, 0);
+	dump_event();
 }
 
 static void 

@@ -631,26 +631,28 @@ init_display(void)
 }
 
 void 
-dump_event(const channel *ch, const event *e)
+dump_event(const channel& ch, const event *e)
 {
-	if (ch)	{ /* do we have a scroll line AND are we not finished */
-		if (!base)
-			base = new_scroll();
-		if (base) {
-			color(ch->samp->color);
-			if (ch->samp != empty_sample())
-				*base++ = instname[e->sample_number];
-			else 
-				*base++ = ' ';
+	if (!base)
+		base = new_scroll();
+	if (base) {
+		color(ch.samp->color);
+		if (ch.samp != empty_sample())
+			*base++ = instname[e->sample_number];
+		else 
 			*base++ = ' ';
-			debug = e->effect;
-			(*table[e->effect])(*ch, *e);
-		}
-	} else {
-		*base = 0;
-		scroll(base);
-		base = 0;
+		*base++ = ' ';
+		debug = e->effect;
+		(*table[e->effect])(ch, *e);
 	}
+}
+
+void
+dump_event()
+{
+	*base = 0;
+	scroll(base);
+	base = 0;
 }
 
 void 
