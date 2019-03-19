@@ -16,6 +16,7 @@
  */
 
 #include <signal.h>
+#include <iostream>
      
 #include "song.h"
 #include "extern.h"
@@ -57,20 +58,10 @@ load_song(ENTRY e)
 	const char *name;
 	size_t i, j;
 
-	name = e->filename();
-	/* display the file name */
-	i = strlen(name);
-
-	j = 0;
-
-	buffer = (char*)malloc( i - j + 5);
-	if (buffer) {
-		sprintf(buffer, "%s...", name + j);
-		status(buffer);
-	}
+	std::cout << e->name << "...";
 
 	/* read the song */
-	if (file.open(name, getenv("MODPATH"))) {
+	if (file.open(e->name)) {
 		switch(e->filetype) {
 		case NEW:
 			song = read_song(file, NEW);
@@ -110,12 +101,8 @@ load_song(ENTRY e)
 		song = nullptr;
 
 	if (!song)
-		notice("Not a song");
-	/* remove the displayed file name */
-	if (buffer) {
-		status("");
-		free(buffer);
-	}
+		std::cout << "Not a song";
+	std::cout << "\n";
 
 	return song;
 }

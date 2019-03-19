@@ -231,7 +231,7 @@ handle_options(int argc, char *argv[])
 		char *s;
 		exfile file;
 
-		if (!file.open(args.get_string(22), nullptr))
+		if (!file.open(args.get_string(22)))
 			end_all("List file does not exist");
 		while ((s = read_line(file)))
 			add_play_list(s);
