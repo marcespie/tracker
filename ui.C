@@ -349,7 +349,7 @@ do_scroll(char *line)
 		puts(line);
 		fflush(stdout);
 	}
-	delete [] line;
+	delete[] line;
 }
 
 void 

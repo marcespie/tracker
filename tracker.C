@@ -113,7 +113,7 @@ load_song(ENTRY e)
 		notice("Not a song");
 	/* remove the displayed file name */
 	if (buffer) {
-		status(0);
+		status(nullptr);
 		free(buffer);
 	}
 
@@ -138,7 +138,7 @@ main(int argc, char *argv[])
 	set_default_prefs();
 	if (argc == 1) {
 		print_usage();
-		end_all(0);
+		end_all(nullptr);
 	}
 
 
@@ -148,9 +148,9 @@ main(int argc, char *argv[])
 		randomize();
 	auto play_list = obtain_play_list();
 
-	int song_number = 0;
+	auto song_number = 0;
 	while(true) {
-		int n = last_entry_index();
+		auto n = last_entry_index();
 		if (n < 0)
 			end_all("No playable song");
 		if (song_number < 0)
@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 			if (loop)
 				song_number = 0;
 			else
-				end_all(0);
+				end_all(nullptr);
 		}
 		auto song = load_song(play_list+song_number);
 
@@ -171,7 +171,7 @@ main(int argc, char *argv[])
 			setup_audio(ask_freq, stereo);
 			auto result = play_song(song, start);
 			release_song(song);
-			status(0);
+			status(nullptr);
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:
 				song_number--;
@@ -189,7 +189,7 @@ main(int argc, char *argv[])
 		} else
 			delete_entry(play_list+song_number);
 	}
-	end_all(0);
+	end_all(nullptr);
 	/* NOTREACHED */
 }
 
