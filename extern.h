@@ -19,6 +19,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <string>
+#include <functional>
+#include <utility>
+#include <iosfwd>
 
 const auto READ_ONLY="rb";
 const auto WRITE_ONLY="wb";
@@ -188,8 +192,6 @@ extern int output_resolution(void);
  * call f2(parameter) if flush is in effect instead
  */
 
-#include <functional>
-#include <utility>
 
 extern void sync_audio(std::function<void()>, std::function<void()>);
 

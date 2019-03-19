@@ -17,8 +17,6 @@
 
 /* global values that propagates changes */
 
-#include <functional>
-
 enum class watched {
 	oversample, 
 	frequency,
