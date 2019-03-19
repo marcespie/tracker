@@ -25,22 +25,23 @@
 #include <ctype.h>
 
 
-#define LOOK_FOR_ARG 0	/* beginning of an argument, interspace */
-#define QUOTED_ARG 1	/* argument with quote, looking for corresponding
-                         * quote */
-#define IN_ARG 2        /* inside normal argument */
+enum class state {
+	LOOK_FOR_ARG, 	// beginning of an argument, interspace
+	QUOTED_ARG, 	// argument with quote, 
+			// looking for corresponding quote
+	IN_ARG }; 	// inside normal argument
 
 int 
 string2args(char *s, char *v[])
 {
 	char c;
 
-	int mode = LOOK_FOR_ARG;
+	auto mode = state::LOOK_FOR_ARG;
 	int j = 0;
 
 	while (*s) {
 		switch(mode) {
-		case LOOK_FOR_ARG:
+		case state::LOOK_FOR_ARG:
 			switch(*s) {
 			case ' ': case '\t':
 				break;
@@ -50,29 +51,29 @@ string2args(char *s, char *v[])
 				j++;
 				if (! *++s)	/* check for last char */
 					return j;
-				mode = IN_ARG;
+				mode = state::IN_ARG;
 				break;
 			case '"': case '\'':
 				c = *s;
 				if (v != nullptr)
 					v[j] = s+1;
 				j++;
-				mode = QUOTED_ARG;
+				mode = state::QUOTED_ARG;
 				break;
 			default:
 				if (v != nullptr)
 					v[j] = s;
 				j++;
-				mode = IN_ARG;
+				mode = state::IN_ARG;
 				break;
 			}
 			break;
-		case IN_ARG:
+		case state::IN_ARG:
 			switch(*s) {
 			case ' ': case '\t':
 				if (v != nullptr)
 					*s = 0;
-				mode = LOOK_FOR_ARG;
+				mode = state::LOOK_FOR_ARG;
 				break;
 			case '\\':
 				if (! *++s)
@@ -82,14 +83,14 @@ string2args(char *s, char *v[])
 				break;
 			}
 			break;
-		case QUOTED_ARG:
+		case state::QUOTED_ARG:
 			if (*s == '\\') {
 				if (! *++s)
 					return j;
 			} else if (*s == c) {
 				if (v != NULL)
 					*s = 0;
-				mode = LOOK_FOR_ARG;
+				mode = state::LOOK_FOR_ARG;
 			}
 			break;
 		}
