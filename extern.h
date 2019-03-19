@@ -255,7 +255,7 @@ extern void vnotice(const char *fmt, va_list al);
  * Used for fleeing error messages too. 
  * s = 0 is valid and indicates return to the default status.
  */
-extern void status(const char *s);
+extern void status(const std::string&);
 
 class Info;
 /* begin_info: open a logical information window.

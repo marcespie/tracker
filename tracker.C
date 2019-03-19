@@ -113,7 +113,7 @@ load_song(ENTRY e)
 		notice("Not a song");
 	/* remove the displayed file name */
 	if (buffer) {
-		status(nullptr);
+		status("");
 		free(buffer);
 	}
 
@@ -171,7 +171,7 @@ main(int argc, char *argv[])
 			setup_audio(ask_freq, stereo);
 			auto result = play_song(song, start);
 			release_song(song);
-			status(nullptr);
+			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:
 				song_number--;

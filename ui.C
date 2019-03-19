@@ -20,6 +20,7 @@
 
 #include <signal.h>
 #include <ctype.h>
+#include <iostream>
 
 #include "extern.h"
 #include "prefs.h"
@@ -268,13 +269,10 @@ vnotice(const char *fmt, va_list al)
 }
 
 void 
-status(const char *s)
+status(const std::string& s)
 {
 	if (run_in_fg()) {
-		if (s) {
-			puts(s);
-		} else
-			putchar('\n');
+		std::cout << s << std::endl;
 	}
 }
 
