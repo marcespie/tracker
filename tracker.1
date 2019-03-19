@@ -6,30 +6,122 @@
 .Nd play amiga protracker modules
 .Sh SYNOPSIS
 .Nm tracker
-.Op Fl help
-.Op Fl picky
-.Op Fl tolerant
-.Op Fl mono
-.Op Fl stereo
-.Op Fl verbose
-.Op Fl repeats Ar count
-.Op Fl loop
-.Op Fl speed Ar speed
-.Op Fl mix Ar percent
-.Op Fl new Ns | Ns Fl old Ns | Ns Fl both
-.Op Fl frequency Ar freq
-.Op Fl oversample Ar times
-.Op Fl transpose Ar n
-.Op Fl scroll
 .Op Fl color
-.Op Fl sync
+.Op Fl frequency Ar freq
+.Op Fl help
+.Op Fl loop
+.Op Fl mix Ar percent
+.Op Fl mono
+.Op Fl new Ns | Ns Fl old Ns | Ns Fl both
+.Op Fl oversample Ar times
+.Op Fl picky
 .Op Fl randomize
+.Op Fl repeats Ar count
+.Op Fl scroll
+.Op Fl speed Ar speed
+.Op Fl stereo
+.Op Fl tolerant
+.Op Fl transpose Ar n
+.Op Fl verbose
 .Bk -words
-.Ar file ...
+.Ar file|dir ...
 .Ek
 .Sh DESCRIPTION
 .Nm
 plays soundtracker or protracker modules.
-Options are as follows
+.Ar dir
+will be automatically expanded to all the files in that directory.
+Options are as follows:
+.Bl -tag -width oversample
+.It Fl color
+Use color to display information.
+Defaults to on.
+Disable with
+.Fl nocolor
+or
+.Fl bw .
+.It Fl frequency Ar freq
+Set audio output frequency to
+.Ar freq
+(Hz or kHz).
+.It Fl help
+Display usage and quit.
+.It Fl loop
+Infinite loop of the whole song list
+.It Fl mix Ar percent
+Left/right channel mixing.
+0 stands for no mixing.
+100 stands for identical left/right output.
+.It Fl mono
+Set audio output to monophonic.
+.It Fl new Ns | Ns Fl old Ns | Ns Fl both
+Choose format of tracker modules.
+.Fl new
+stands for newer protracker-only.
+.Fl old
+stands for old soundtracker.
+.Fl both
+will auto-guess based on file hints, with limited success.
+.It Fl oversample Ar times
+Synthetize audio by averaging over several samples.
+0 is pure linear resampling, 1 is the default (no oversample).
+Credible values go up to 4 or so.
+.It Fl picky
+Put the player into
+.Sq picky
+mode, where it will flag every weird combination in the module
+and abort.
+.It Fl randomize
+Shuffle the playlist into a random order
+.It Fl repeats Ar count
+Repeat each song
+.Ar count
+times before moving to the next song.
+.It Fl scroll
+Displays module information as it plays.
+Default.
+Disable with
+.Fl noscroll .
+.It Fl speed Ar speed
+Choose module
+.Sq speed .
+Default is 50 (PAL).
+A few modules want 60 (NTSC).
+Shortcuts to
+.Fl pal
+or
+.Fl ntsc .
+.It Fl stereo
+Set audio output to stereophonic.
+.It Fl tolerant
+Be more lenient than usual while handling module effects.
+.It Fl transpose Ar n
+Transpose full notes by
+.Ar n
+halftones.
+Somewhat experimental, as the timing and a lot of effects will be off.
+.It Fl verbose
+Display module information as it loads.
+.El
+.Pp
+During play, the following keys can be used to control
+.Nm :
+.Pp
+.Bl -compact -tag -offset indent -width xxxxxx
+.It e,x,q
+Exit program
+.It n
+Next song
+.It p
+Previous song
+.It >
+Fast forward
+.It <
+Rewind
+.It S
+NTSC tempo
+.It s
+PAL tempo
+.El
 .Sh AUTHOR
 Marc Espie

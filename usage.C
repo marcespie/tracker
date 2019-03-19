@@ -38,7 +38,6 @@ const char *usage[] = {
 "-transpose <n>      Transpose all notes up",
 "-scroll             Show what's going on",
 "-color              Ansi color scrolling",
-"-sync               Try to synch audio output with display",
 "-randomize          randomize play order",
 "",
 "RunTime:",
