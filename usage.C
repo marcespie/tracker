@@ -20,11 +20,7 @@
 
 extern char *VERSION;
 
-const char *usage[] =
-	{
-"This program is NOT to be redistributed",
-"         without the full documentation",
-"",
+const char *usage[] = {
 "Usage: tracker [options] filename [...]",
 "-help               Display usage information",
 "-picky              Do not tolerate any faults (default is to ignore most)",
@@ -51,17 +47,16 @@ const char *usage[] =
 "p       restart/previous song",
 ">       fast forward",
 "<       rewind",
-"S       NTSC tempo\t s\tPAL tempo",
-0
-	};
+"S       NTSC tempo\t s\tPAL tempo"
+};
 
-void print_usage()
+void 
+print_usage()
 {
-	const char **s;
 	auto handle = begin_info("Usage");
 	infos(handle, "This is tracker ");
 	info(handle, VERSION);
-	for (s = usage; *s; s++)
-		info(handle, *s);
+	for (auto s: usage)
+		info(handle, s);
 	end_info(handle);
 }
