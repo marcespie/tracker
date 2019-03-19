@@ -31,31 +31,11 @@ const auto MAX_CHANNELS=8;
 
 enum audio_state { DO_NOTHING, PLAY, REPLAY};
 
-static struct audio_channel {
-	sample_info *samp;
-	enum audio_state mode;
-	unsigned long pointer;
-	unsigned long step;
-	unsigned int volume;
-	unsigned int scaled_volume;
-	pitch pitch;
-	int side;
-} chan[MAX_CHANNELS];
-
-/* define NO_SIDE for errors (no side specified) */
-const auto NO_SIDE=-1;
-
-/* Have to get some leeway for vibrato (since we don't bound pitch with
- * vibrato). This is conservative.
- */
-const auto LEEWAY=150;
-
-
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */
 
-const auto ACCURACY=12;
-const auto fixed_unit = 1 << ACCURACY;
+const auto ACCURACY=12U;
+const auto fixed_unit = 1U << ACCURACY;
 
 template<typename T>
 auto inline fix_to_int(T x)
@@ -76,7 +56,27 @@ auto inline fractional_part(T x)
 }
 
 
-#define C fix_to_int(ch.pointer)
+static struct audio_channel {
+	sample_info *samp;
+	enum audio_state mode;
+	unsigned long pointer;
+	unsigned long step;
+	unsigned int volume;
+	unsigned int scaled_volume;
+	pitch pitch;
+	int side;
+	auto C() const
+	{
+		return fix_to_int(pointer);
+	}
+} chan[MAX_CHANNELS];
+
+/* Have to get some leeway for vibrato (since we don't bound pitch with
+ * vibrato). This is conservative.
+ */
+const auto LEEWAY=150;
+
+
 
 static void init_resample(void);
 static void (*INIT)(void) = init_resample;
@@ -112,7 +112,7 @@ new_channel(int side)
 	n->samp = empty_sample();
 
 	/* checking allocation */
-	if (n->side < 0 || n->side == NO_SIDE || n->side >= NUMBER_SIDES)
+	if (n->side < 0 || n->side >= NUMBER_SIDES)
 		end_all("Improper alloc channel call (side)");
 	/* logging number of channels per side */
 	total[n->side]++;
@@ -261,8 +261,8 @@ linear_value(audio_channel& ch, long& v)
 		if (ch.pointer < ch.samp->fix_length) {
 			auto step = fractional_part(ch.pointer);
 			v += 
-			    (ch.samp->start[C] * (fixed_unit - step) +
-			    ch.samp->start[C+1] * step)
+			    (ch.samp->start[ch.C()] * (fixed_unit - step) +
+			    ch.samp->start[ch.C()+1] * step)
 			    * (ch.scaled_volume);
 			ch.pointer += ch.step;
 			break;
@@ -282,8 +282,8 @@ linear_value(audio_channel& ch, long& v)
 			ch.pointer -= ch.samp->fix_rp_length;
 		auto step = fractional_part(ch.pointer);
 		v +=
-		    (ch.samp->rp_start[C] * (fixed_unit - step) +
-		    ch.samp->rp_start[C+1] * step)
+		    (ch.samp->rp_start[ch.C()] * (fixed_unit - step) +
+		    ch.samp->rp_start[ch.C()+1] * step)
 		    * ch.scaled_volume ;
 		ch.pointer += ch.step;
 		break;
@@ -318,7 +318,7 @@ oversample_value(audio_channel& ch, long& v)
 		 * do that check with improved performance
 		*/
 		if (ch.pointer < ch.samp->fix_length) {
-			v += ch.samp->start[C] * ch.scaled_volume;
+			v += ch.samp->start[ch.C()] * ch.scaled_volume;
 			ch.pointer += ch.step;
 			break;
 		} else {
@@ -335,7 +335,7 @@ oversample_value(audio_channel& ch, long& v)
 	case REPLAY:
 		while (ch.pointer >= ch.samp->fix_rp_length)
 			ch.pointer -= ch.samp->fix_rp_length;
-		v += ch.samp->rp_start[C] * ch.scaled_volume;
+		v += ch.samp->rp_start[ch.C()] * ch.scaled_volume;
 		ch.pointer += ch.step;
 		break;
 	}
