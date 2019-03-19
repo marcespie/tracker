@@ -28,20 +28,18 @@ extern int error;
 bool
 exfile::open(const std::string& fname)
 {
-	handle = fopen(fname.c_str(), READ_ONLY);
-	return handle != nullptr;
-		
+	handle.open(fname, std::ios::binary);
+	return handle.is_open();
 }
+
 exfile::~exfile()
 {
-	if (handle)
-		fclose(handle);
 }
 
 int 
 exfile::getc()
 {
-	int c = fgetc(handle);
+	int c = handle.get();
 	if (c == EOF)
 		error = FILE_TOO_SHORT;
 	return c;
@@ -50,17 +48,18 @@ exfile::getc()
 unsigned long
 exfile::read(void *p, size_t sz, unsigned long n)
 {
-	return fread(p, sz, n, handle);
+	handle.read(reinterpret_cast<char *>(p), sz*n);
+	return handle.gcount();
 }
 
 void
 exfile::rewind()
 {
-	::rewind(handle);
+	handle.seekg(0);
 }
 
 size_t
-exfile::tell() const
+exfile::tell()
 {
-	return ::ftell(handle);
+	return handle.tellg();
 }

@@ -15,13 +15,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <iostream>
+#include <fstream>
+
 class exfile {
 public:
 	exfile(): handle{nullptr} {}
 	
 	bool open(const std::string& fname);
 	int getc();
-	size_t tell() const;
+	size_t tell();
 	unsigned long read(void *, size_t, unsigned long);
 	template<typename T>
 	unsigned  long read(T* p, unsigned long n)
@@ -33,5 +36,5 @@ public:
 
 private:
 	exfile(const exfile&) = delete;
-	FILE *handle;	/* the real Mc Coy */
+	std::ifstream handle;
 };
