@@ -27,6 +27,7 @@
 #include "resample.h"
 #include "pro_play.h"
 #include "empty.h"
+#include <vector>
      
 
 extern short vibrato_table[3][64];
@@ -42,60 +43,56 @@ static void (*INIT)(void) = init_st_play;
 static struct st_effect eval[NUMBER_EFFECTS];
                     		/* the effect table */
 
-static struct channel chan[MAX_TRACKS];
-                    /* every channel */
+
+std::vector<channel> chan;
 
 static unsigned int ntracks;		/* number of tracks of the current song */
 static struct sample_info **voices;
 
 
 
-/* init_channel(ch, dummy):
- * setup channel, with initially a dummy sample ready to play, and no note.
- */
-static void 
-init_channel(channel *ch, int side)
+channel::channel(int side)
 {
-	ch->samp = empty_sample();
-	ch->finetune = 0;
-	ch->audio = new_channel(side);
-	ch->volume = 0; 
-	ch->pitch = 0; 
-	ch->note = NO_NOTE;
+	samp = empty_sample();
+	finetune = 0;
+	audio = new_channel(side);
+	volume = 0; 
+	pitch = 0; 
+	note = NO_NOTE;
 
 	/* we don't setup arpeggio values. */
-	ch->vib.offset = 0; 
-	ch->vib.depth = 0;
-	ch->vib.rate = 0;
-	ch->vib.table = vibrato_table[0];
-	ch->vib.reset = false;
+	vib.offset = 0; 
+	vib.depth = 0;
+	vib.rate = 0;
+	vib.table = vibrato_table[0];
+	vib.reset = false;
 
-	ch->trem.offset = 0;
-	ch->trem.depth = 0;
-	ch->trem.rate = 0;
-	ch->trem.table = vibrato_table[0];
-	ch->trem.reset = false;
+	trem.offset = 0;
+	trem.depth = 0;
+	trem.rate = 0;
+	trem.table = vibrato_table[0];
+	trem.reset = false;
 
-	ch->slide = 0; 
+	slide = 0; 
 
-	ch->pitchgoal = 0; 
-	ch->pitchrate = 0;
+	pitchgoal = 0; 
+	pitchrate = 0;
 
-	ch->volumerate = 0;
+	volumerate = 0;
 
 
-	ch->funk_glissando = false;
-	ch->start_offset = 0;
-	ch->adjust = do_nothing;
+	funk_glissando = false;
+	start_offset = 0;
+	adjust = do_nothing;
 	/* initialize loop to no loop, loop start at 0 
 	 * (needed for don't you want me, for instance) */
-	ch->loop_counter = -1;
-	ch->loop_note_num = 0;
+	loop_counter = -1;
+	loop_note_num = 0;
 
-	ch->special = do_nothing;
-	ch->invert_speed = 0;
-	ch->invert_offset = 0;
-	ch->invert_position = 0;
+	special = do_nothing;
+	invert_speed = 0;
+	invert_offset = 0;
+	invert_position = 0;
 }
 
 
@@ -104,17 +101,18 @@ init_channels(void)
 {
 	release_audio_channels();
 
-	init_channel(chan, LEFT_SIDE);
-	init_channel(chan + 1, RIGHT_SIDE);
-	init_channel(chan + 2, RIGHT_SIDE);
-	init_channel(chan + 3, LEFT_SIDE);
+	chan.clear();
+	chan.emplace_back(LEFT_SIDE);
+	chan.emplace_back(RIGHT_SIDE);
+	chan.emplace_back(RIGHT_SIDE);
+	chan.emplace_back(LEFT_SIDE);
 	if (ntracks > 4) {
-		init_channel(chan + 4, LEFT_SIDE);
-		init_channel(chan + 5, RIGHT_SIDE);
+		chan.emplace_back(LEFT_SIDE);
+		chan.emplace_back(RIGHT_SIDE);
 	}
 	if (ntracks > 6) {
-		init_channel(chan + 6, RIGHT_SIDE);
-		init_channel(chan + 7, LEFT_SIDE);
+		chan.emplace_back(RIGHT_SIDE);
+		chan.emplace_back(LEFT_SIDE);
 	}
 }
 
@@ -132,29 +130,29 @@ dump_events(automaton *a)
 	/* display the output in a reasonable order:
 	 * LEFT1 LEFT2 || RIGHT1 RIGHT 2
 	 */
-	dump_event(chan, EVENT(a, 0));
+	dump_event(&(chan[0]), EVENT(a, 0));
 	dump_delimiter();
-	dump_event(chan+3, EVENT(a, 3));
+	dump_event(&(chan[3]), EVENT(a, 3));
 	dump_delimiter();
 	if (ntracks > 4) {
-		dump_event(chan+4, EVENT(a, 4));
+		dump_event(&(chan[4]), EVENT(a, 4));
 		dump_delimiter();
 	}
 	if (ntracks > 7) {
-		dump_event(chan+7, EVENT(a, 7));
+		dump_event(&(chan[7]), EVENT(a, 7));
 		dump_delimiter();
 	}
 	dump_delimiter();
-	dump_event(chan+1, EVENT(a, 1));
+	dump_event(&(chan[1]), EVENT(a, 1));
 	dump_delimiter();
-	dump_event(chan+2, EVENT(a, 2));
+	dump_event(&(chan[2]), EVENT(a, 2));
 	if (ntracks > 5) {
 		dump_delimiter();
-		dump_event(chan+5, EVENT(a, 5));
+		dump_event(&(chan[5]), EVENT(a, 5));
 	}
 	if (ntracks > 6) {
 		dump_delimiter();
-		dump_event(chan+6, EVENT(a, 6));
+		dump_event(&(chan[6]), EVENT(a, 6));
 	}
 	dump_event(0, 0);
 }
@@ -244,7 +242,7 @@ play_one_tick(automaton *a)
 		/* do new effects only if not in delay mode */
 		if (a->delay_counter == 0) {
 			for (unsigned channel = 0; channel < ntracks; channel++)
-				setup_effect(chan + channel, a, 
+				setup_effect(&(chan[channel]), a, 
 				    EVENT(a, channel));
 			if (get_pref(Pref::show))
 				dump_events(a);
@@ -252,8 +250,8 @@ play_one_tick(automaton *a)
 	} else
 		for (unsigned channel = 0; channel < ntracks; channel++) {
 			/* do the effects */
-			(chan[channel].special)(chan + channel);
-			(chan[channel].adjust)(chan + channel);
+			(chan[channel].special)(&(chan[channel]));
+			(chan[channel].adjust)(&(chan[channel]));
 		}
 
 	update_tempo(a);

@@ -37,6 +37,7 @@ struct sinusoid {
 struct audio_channel;
 
 struct channel {
+	channel(int side);
 	sample_info *samp;
 	audio_channel *audio;
 	finetune finetune;
