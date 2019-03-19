@@ -26,14 +26,6 @@
 extern int error;
 
 bool
-exfile::open(const char* fname)
-{
-	handle = fopen(fname, READ_ONLY);
-	return handle != nullptr;
-		
-}
-
-bool
 exfile::open(const std::string& fname)
 {
 	handle = fopen(fname.c_str(), READ_ONLY);

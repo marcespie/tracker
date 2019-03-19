@@ -19,7 +19,6 @@ class exfile {
 public:
 	exfile(): handle{nullptr} {}
 	
-	bool open(const char* fname);
 	bool open(const std::string& fname);
 	int getc();
 	size_t tell() const;
