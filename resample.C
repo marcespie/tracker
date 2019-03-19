@@ -55,10 +55,26 @@ const auto LEEWAY=150;
 /* NOTE these should be used ONLY with unsigned values !!!! */
 
 const auto ACCURACY=12;
-#define fix_to_int(x) ((x) >> ACCURACY)
-#define int_to_fix(x) ((x) << ACCURACY)
-#define fractional_part(x) ((x) & (fixed_unit - 1))
-#define fixed_unit	 (1 << ACCURACY)
+const auto fixed_unit = 1 << ACCURACY;
+
+template<typename T>
+auto inline fix_to_int(T x)
+{
+	return x >> ACCURACY;
+}
+
+template<typename T>
+auto inline int_to_fix(T x)
+{
+	return x << ACCURACY;
+}
+
+template<typename T>
+auto inline fractional_part(T x)
+{
+	return x & (fixed_unit - 1);
+}
+
 
 #define C fix_to_int(ch.pointer)
 

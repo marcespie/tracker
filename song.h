@@ -36,54 +36,58 @@ const auto NUMBER_PATTERNS=128;
 const inline unsigned int NUMBER_EFFECTS=40;
 
 /* some effects names */
-#define EFF_ARPEGGIO    0
-#define EFF_DOWN        1
-#define EFF_UP          2
-#define EFF_PORTA       3
-#define EFF_VIBRATO     4
-#define EFF_PORTASLIDE  5
-#define EFF_VIBSLIDE    6
-#define EFF_TREMOLO		7
-#define EFF_OFFSET      9
-#define EFF_VOLSLIDE    10
-#define EFF_FF          11
-#define EFF_VOLUME      12
-#define EFF_SKIP        13
-#define EFF_EXTENDED    14
-#define EFF_SPEED       15
-#define EFF_NONE        16
-#define EFF_OLD_SPEED	17
-#define EXT_BASE        18
-#define EFF_SMOOTH_DOWN   (EXT_BASE + 1)
-#define EFF_SMOOTH_UP   (EXT_BASE + 2)
-#define EFF_GLISS_CTRL	(EXT_BASE + 3)
-#define EFF_VIBRATO_WAVE	(EXT_BASE + 4)
-#define EFF_CHG_FTUNE   (EXT_BASE + 5)
-#define EFF_LOOP        (EXT_BASE + 6)
-#define EFF_TREMOLO_WAVE	(EXT_BASE + 7)
-#define EFF_RETRIG      (EXT_BASE + 9)
-#define EFF_S_UPVOL     (EXT_BASE + 10)
-#define EFF_S_DOWNVOL   (EXT_BASE + 11)
-#define EFF_NOTECUT     (EXT_BASE + 12)
-#define EFF_LATESTART   (EXT_BASE + 13)
-#define EFF_DELAY       (EXT_BASE + 14)
-#define EFF_INVERT_LOOP	(EXT_BASE + 15)
+const auto EFF_ARPEGGIO =	0;
+const auto EFF_DOWN = 		1;
+const auto EFF_UP =		2;
+const auto EFF_PORTA =		3;
+const auto EFF_VIBRATO =	4;
+const auto EFF_PORTASLIDE =	5;
+const auto EFF_VIBSLIDE =	6;
+const auto EFF_TREMOLO =	7;
 
-#define SAMPLENAME_MAXLENGTH 22
-#define TITLE_MAXLENGTH 20
+// XXX missing 8 not an error
+const auto EFF_OFFSET =		9;
+const auto EFF_VOLSLIDE =	10;
+const auto EFF_FF =		11;
+const auto EFF_VOLUME =		12;
+const auto EFF_SKIP =		13;
+const auto EFF_EXTENDED =	14;
+const auto EFF_SPEED =		15;
+const auto EFF_NONE =		16;
+const auto EFF_OLD_SPEED =	17;
 
-#define MIN_PITCH 113
-#define MAX_PITCH 856
-#define REAL_MAX_PITCH 1050
+const auto EXT_BASE =		18;
+const auto EFF_SMOOTH_DOWN = 	EXT_BASE + 1;
+const auto EFF_SMOOTH_UP =  	EXT_BASE + 2;
+const auto EFF_GLISS_CTRL =	EXT_BASE + 3;
+const auto EFF_VIBRATO_WAVE =	EXT_BASE + 4;
+const auto EFF_CHG_FTUNE =  	EXT_BASE + 5;
+const auto EFF_LOOP =		EXT_BASE + 6;
+const auto EFF_TREMOLO_WAVE =	EXT_BASE + 7;
+const auto EFF_RETRIG =      	EXT_BASE + 9;
+const auto EFF_S_UPVOL =	EXT_BASE + 10;
+const auto EFF_S_DOWNVOL =   	EXT_BASE + 11;
+const auto EFF_NOTECUT =	EXT_BASE + 12;
+const auto EFF_LATESTART =   	EXT_BASE + 13;
+const auto EFF_DELAY =	      	EXT_BASE + 14;
+const auto EFF_INVERT_LOOP =	EXT_BASE + 15;
 
-#define MIN_VOLUME 0
-#define MAX_VOLUME 64
+const auto SAMPLENAME_MAXLENGTH=22;
+const auto TITLE_MAXLENGTH=20;
 
-/* the fuzz in note pitch */
+const auto MIN_PITCH=113;
+const auto MAX_PITCH=856;
+const auto REAL_MAX_PITCH=1050;
+
+const auto MIN_VOLUME=0;
+const auto MAX_VOLUME=64;
+
+// the fuzz in note pitch
+const auto FUZZ=5;
 #define FUZZ 5
 
-/* we refuse to allocate more than 500000 bytes for one sample */
-#define MAX_SAMPLE_LENGTH 500000
+// we refuse to allocate more than 500000 bytes for one sample
+const auto MAX_SAMPLE_LENGTH= 500000;
 
 struct sample_info {
 	SAMPLE8 *start, *rp_start;
