@@ -15,8 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "defs.h"
-
 #include "extern.h"
 #include "song.h"
 #include "autoinit.h"

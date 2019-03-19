@@ -16,7 +16,6 @@
  */
 /* sndio(7) interface */
 
-#include "defs.h"
 #include <unistd.h>
 #include "extern.h"
 #include "prefs.h"

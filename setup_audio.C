@@ -16,7 +16,6 @@
  */
 /* higher level interface to the raw metal */
 
-#include "defs.h"
 #include "extern.h"
 #include "prefs.h"
 #include "autoinit.h"

@@ -17,8 +17,6 @@
 
 /* Magic open file: path lookup and transparent decompression */
 
-#include "defs.h"
-
 #include <ctype.h>
 
 #include "extern.h"

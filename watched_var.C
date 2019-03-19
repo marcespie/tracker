@@ -15,7 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "defs.h"
 #include <list>
 #include <functional>
 #include "watched_var.h"

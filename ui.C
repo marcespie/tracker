@@ -21,7 +21,6 @@
 #include <signal.h>
 #include <ctype.h>
 
-#include "defs.h"
 #include "extern.h"
 #include "prefs.h"
 #include "autoinit.h"

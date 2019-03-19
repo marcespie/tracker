@@ -16,11 +16,10 @@
  */
 
 
-#include "defs.h"
+#include "extern.h"
 #include "notes.h"
 #include "channel.h"
 #include "song.h"
-#include "extern.h"
 #include "prefs.h"
 #include "pro_effects.h"
 #include "p_automaton.h"

@@ -19,7 +19,6 @@
  * (and parse them in the future)
  * not used yet...
  */
-#include "defs.h"
 #include "parse_options.h"
 #include "extern.h"
 #include "autoinit.h"

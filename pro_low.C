@@ -20,7 +20,7 @@
  * to tracker resampling engine/Amiga audio.device control code)
  */
 
-#include "defs.h"
+#include "extern.h"
 #include "notes.h"
 #include "channel.h"
 #include "resample.h"

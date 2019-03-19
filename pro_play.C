@@ -15,11 +15,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "defs.h"
+#include "extern.h"
 #include "song.h"
 #include "notes.h"
 #include "channel.h"
-#include "extern.h"
 #include "prefs.h"
 #include "pro_effects.h"
 #include "p_automaton.h"

@@ -22,7 +22,6 @@
 #include <time.h>
 
 #include <vector>
-#include "defs.h"
 #include "extern.h"
 #include "play_list.h"
 #include "autoinit.h"

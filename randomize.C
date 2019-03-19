@@ -21,7 +21,6 @@
  * tracker `randomize *` (jukebox)
  */
 
-#include "defs.h"
 #include <sys/types.h>
 #include <time.h>
 

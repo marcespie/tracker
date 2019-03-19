@@ -16,7 +16,6 @@
  */
 
 
-#include "defs.h"
 #include "extern.h"
 
 extern char *VERSION;

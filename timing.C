@@ -15,8 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "defs.h"
 #include "timing.h"
+#include <stdio.h>
      
 /* TIME_SCALE is one microsecond. Hence an unsigned long is enough
  * for a little over one hour */

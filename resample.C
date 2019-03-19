@@ -17,7 +17,6 @@
 
 #include <math.h>
 
-#include "defs.h"
 #include "song.h"
 #include "notes.h"
 #include "channel.h"
