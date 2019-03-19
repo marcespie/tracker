@@ -337,10 +337,10 @@ static unsigned int
 setup_patterns(song_info *info, unsigned int ntracks, unsigned int used)
 {
 	/* allocate the memory */
-	info->patterns = (pattern *)malloc(sizeof(pattern) * info->length);
-	info->data = (event *)malloc(sizeof(event) * info->plength * 
-	    ntracks * used);
-	if (!info->patterns ||!info->data) {
+	try {
+		info->patterns = new pattern[info->length];
+		info->data = new event [info->plength * ntracks * used];
+	} catch (...) {
 		error = OUT_OF_MEM;
 		return 0;
 	}
@@ -501,10 +501,8 @@ release_song(song *song)
 	/* Since sample compression, structure is INVALID after song->ninstr */
 	for (unsigned i = 1; i <= song->ninstr; i++)
 		free_sample_info(song->samples[i]);
-	if (song->info.patterns)
-		free(song->info.patterns);
-	if (song->info.data)
-		free(song->info.data);
+	delete [] song->info.patterns;
+	delete [] song->info.data;
 	if (song->title)
 		free(song->title);
 	delete song;
