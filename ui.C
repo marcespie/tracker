@@ -95,8 +95,7 @@ run_in_fg(void)
 {
 	pid_t val;
 
-	/* this should work on every unix */
-	if (!isatty(fileno(stdin)) || !isatty(fileno(stdout)))
+	if (!isatty(0) || !isatty(1))
 		return false;
 
 	val = tcgetpgrp(0);
@@ -373,23 +372,11 @@ scroll(char *end)
 	}
 }
 
-struct Thingy {
-	unsigned t0, t1, t2;
-	unsigned long u0, u1;
-};
-
 static void 
-do_display_pattern(Thingy *thingy)
+do_display_pattern(unsigned int current, unsigned int total, 
+    unsigned int real, unsigned long uptilnow, unsigned long totaltime)
 {
-	unsigned current, total, real;
-	unsigned long uptilnow, totaltime;
 	char buf0[50], buf1[50];
-	current = thingy->t0;
-	total = thingy->t1;
-	real = thingy->t2;
-	uptilnow = thingy->u0;
-	totaltime =thingy->u1;
-	delete(thingy);
 
 	if (run_in_fg()) {
 		if (get_pref(Pref::xterm)) {
@@ -423,16 +410,13 @@ void
 display_pattern(unsigned int current, unsigned int total, 
     unsigned int real, unsigned long uptilnow, unsigned long totaltime)
 {
-	Thingy *thingy = new Thingy;
-
-	thingy->t0 = current;
-	thingy->t1 = total;
-	thingy->t2 = real;
-	thingy->u0 = uptilnow;
-	thingy->u1 = totaltime;
 	sync_audio(
-		[thingy]() {do_display_pattern(thingy);}, 
-		[thingy]() {delete(thingy); });
+	    [=]() 
+	    {
+		do_display_pattern(current, total, real, 
+		    uptilnow, totaltime);
+	    }, 
+	    []() {});
 }
 
 static void 
