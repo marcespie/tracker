@@ -27,8 +27,8 @@ struct options_set *port_options=0;
 
 #define UNSIGNED8
 
-/* fine-tune to get the scrolling display in sync with the music */
-#define ADVANCE_TAGS 20000 
+// fine-tune to get the scrolling display in sync with the music
+const auto ADVANCE_TAGS=20000;
 
 /* this macro works with unsigned values !!! */
 template<typename S, typename T>
@@ -59,18 +59,34 @@ set_mix(int percent)
 
 #ifdef UNSIGNED16
 static unsigned short *buffer16;
-#define VALUE16(x)	((x)+32768)
+inline unsigned short
+VALUE16(long x)
+{
+	return x+32768;
+}
 #else
 static short *buffer16;
-#define VALUE16(x)	(x)
+inline unsigned short
+VALUE16(long x)
+{
+	return x;
+}
 #endif
 
 #ifdef UNSIGNED8
 static unsigned char *buffer;
-#define VALUE8(x)		((x)+128)
+inline unsigned char
+VALUE8(long x)
+{
+	return x+128;
+}
 #else
-static char *buffer;
-#define VALUE8(x)		(x)
+static signed char *buffer;
+inline signed char
+VALUE8(long x)
+{
+	return x;
+}
 #endif
 static unsigned long idx;
 static int dsize;			/* current data size */

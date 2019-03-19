@@ -31,7 +31,7 @@
 
 static unsigned int patsize;
 
-#define NOT_YET (-1)
+const auto NOT_YET=-1;
 
 static unsigned char *buffer;		/* Buffer to read everything */
 static unsigned int bufsize;

@@ -84,7 +84,6 @@ const auto MAX_VOLUME=64;
 
 // the fuzz in note pitch
 const auto FUZZ=5;
-#define FUZZ 5
 
 // we refuse to allocate more than 500000 bytes for one sample
 const auto MAX_SAMPLE_LENGTH= 500000;
