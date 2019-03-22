@@ -138,12 +138,10 @@ read_line(exfile& f)
 			linebuf[i++] = c;
 	}
 	if (c == EOF)
-		return 0;
+		return nullptr;
 	else {
-		char *s;
-
-		s = (char *)malloc(i+1);
-		strncpy(s, linebuf, i);
+		char *s = (char *)malloc(i+1);
+		memcpy(s, linebuf, i);
 		s[i] = 0;
 		return s;
 	}

@@ -136,10 +136,7 @@ set_up_args(struct option_set *set)
 void 
 add_option_set(struct option_set *set)
 {
-	struct option_set_list *n =
-	(struct option_set_list *)malloc(sizeof(struct option_set_list));
-	if (!n)
-		end_all("Error: out of memory");			
+	auto n = new option_set_list;
 	n->next = nullptr;
 	n->set.options = set->options;
 	n->set.number = set->number;
