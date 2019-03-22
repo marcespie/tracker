@@ -177,20 +177,16 @@ set_speed_mode(const char *p)
 void 
 handle_options(int argc, char *argv[])
 {
-	char *s;
-
 	add_option_set(&args);
 	if (port_options)
 		add_option_set(port_options);
-	if ((s = getenv("TRACKER_DEFAULTS")) != NULL) {
-		int t;
-		char **v;
+	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
-		t = string2args(s, 0);
-		v = (char **)malloc(sizeof(char *) * t);
+		auto t = string2args(s, nullptr);
+		auto v = new char *[t];
 		string2args(s, v);
 		parse_options(t, v, add_play_list);
-		free(v);
+		delete []v;
 	}
 
 	parse_options(argc, argv, add_play_list);
@@ -233,7 +229,7 @@ handle_options(int argc, char *argv[])
 
 		if (!file.open(args.get_string(22)))
 			end_all("List file does not exist");
-		while ((s = read_line(file)))
+		while ((s = read_line(file)) != nullptr)
 			add_play_list(s);
 	}
 	set_pref(Pref::output, args.get_long(23));
