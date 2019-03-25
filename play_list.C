@@ -76,7 +76,6 @@ expand_dir(const char *name)
 	}
 }
 
-#include <iostream>
 ENTRY
 obtain_play_list(void)
 {

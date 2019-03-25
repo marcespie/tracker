@@ -23,6 +23,7 @@
 #include <functional>
 #include <utility>
 #include <iosfwd>
+#include <cstdint>
 
 const auto READ_ONLY="rb";
 const auto WRITE_ONLY="wb";
