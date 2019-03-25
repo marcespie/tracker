@@ -128,22 +128,11 @@ main(int argc, char *argv[])
 	handle_options(argc-1, argv+1);
 	if (trandom)
 		randomize();
-	auto play_list = obtain_play_list();
 
-	auto song_number = 0;
-	while(true) {
-		auto n = last_entry_index();
-		if (n < 0)
-			end_all("No playable song");
-		if (song_number < 0)
-			song_number = n;
-		if (song_number > n) {
-			if (loop)
-				song_number = 0;
-			else
-				end_all();
-		}
-		auto song = load_song(play_list+song_number);
+	auto list = obtain_play_list();
+
+	for (auto it = begin(list); it != end(list);) {
+		auto song = load_song(it);
 
 		if (song) {
 			if (get_pref(Pref::dump))
@@ -156,20 +145,27 @@ main(int argc, char *argv[])
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:
-				song_number--;
+				--it;
 				break;
 				/* NOTREACHED */
 			case PLAY_NEXT_SONG:
 			case PLAY_ENDED:
-				song_number++;
+				++it;
 				break;
 			case PLAY_ERROR:
-				delete_entry(play_list+song_number);
+				it = delete_entry(it);
 			default:
 				break;
 			}
 		} else
-			delete_entry(play_list+song_number);
+			it = delete_entry(it);
+
+		if (it == end(list)) {
+			if (loop)
+				it = begin(list);
+			else
+				end_all();
+		}
 	}
 	end_all();
 	/* NOTREACHED */

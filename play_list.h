@@ -29,10 +29,11 @@ struct play_entry {
 };
 
 
-using ENTRY = std::vector<play_entry>::iterator;
+using play_list=std::vector<play_entry>;
 
-extern ENTRY obtain_play_list(void);
+using ENTRY = play_list::iterator;
 
-extern  int last_entry_index(void);
+extern play_list& obtain_play_list(void);
+
 extern void randomize(void);
-extern void delete_entry(ENTRY);
+extern ENTRY delete_entry(ENTRY);

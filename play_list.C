@@ -44,7 +44,7 @@ play_entry::play_entry(const char* dir, const char* f):
 		name = f;
 }
 
-std::vector<play_entry> table;
+play_list table;
 
 static int 
 is_dir(const char *name)
@@ -76,11 +76,10 @@ expand_dir(const char *name)
 	}
 }
 
-ENTRY
-obtain_play_list(void)
+play_list&
+obtain_play_list()
 {
-	std::cout << "Total files: " << table.size() << "\n"; 
-	return begin(table);
+	return table;
 }
 
 void 
@@ -92,16 +91,10 @@ add_play_list(const char *name)
 		table.emplace_back(nullptr, name);
 }
 
-int 
-last_entry_index(void)
-{
-	return table.size() - 1;
-}
-
-void 
+ENTRY
 delete_entry(ENTRY entry)
 {
-	table.erase(entry);
+	return table.erase(entry);
 }
 
 void 
