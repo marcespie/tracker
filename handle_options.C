@@ -40,7 +40,7 @@ int trandom;
 
 bool loop = false;	/* main automaton looping at end of argv ? */
 
-static option_init opts[] = {
+static option_set args = {
 	{"help", 's'},				
 	{"frequency", 'n'},			
 	{"stereo", 's', 1},			
@@ -73,9 +73,6 @@ static option_init opts[] = {
 	{"pal", 'm', 50, "speed"},
 	{"ntsc", 'm', 60, "speed"},
 };
-
-struct option_set args = {std::begin(opts), std::end(opts)};
-
 
 /* initialize all options to default values */
 void 

@@ -66,16 +66,14 @@ struct option_set {
 	{
 		return options[s];
 	}
-	template<class T>
-	option_set(T b, T e)
+	option_set(std::initializer_list<option_init> l)
 	{
-		add(b, e);
+		add(l);
 	}
-	template<class T>
-	void add(T b, T e)
+	void add(std::initializer_list<option_init> l)
 	{
-		for (auto i = b; i != e; ++i)
-			options[i->optiontext] = *i;
+		for (auto& i: l)
+			options[i.optiontext] = i;
 	}
 	long get_long(const char *t)
 	{
