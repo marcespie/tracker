@@ -102,26 +102,24 @@ string2args(char *s, char *v[])
 
 std::list<std::unique_ptr<option_set>> options;
 
-static void 
-set_up_args(option_set& set)
+void
+option::finish_setup()
 {
-	for (auto [key, opt]: set.options) {
-		switch (opt->type) {
-		case 's':
-		case 'n':
-			opt->arg = opt->def_scalar;
-			break;
-		case 'a':
-			opt->arg = opt->def_string;
-			break;
-		case 'm':
-			opt->multi = opt->def_string;
-			break;
-		default:
-			notice("Internal problem with option:");
-			notice(key);
+	switch (type) {
+	case 's':
+	case 'n':
+		arg = def_scalar;
 		break;
-		}
+	case 'a':
+		arg = def_string;
+		break;
+	case 'm':
+		multi = def_string;
+		break;
+	default:
+		notice("Internal problem with option:");
+		notice(optiontext);
+	break;
 	}
 }
 
@@ -129,7 +127,6 @@ void
 add_option_set(const option_set& set)
 {
 	auto s = new option_set(set);
-	set_up_args(*s);
 	options.push_back(std::unique_ptr<option_set>(s));
 }
 

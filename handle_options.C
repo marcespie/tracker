@@ -91,9 +91,9 @@ set_default_prefs(void)
 	s = getenv("TERM");
 	if (s && (strncmp(s, "xterm", 5) == 0 || strncmp(s, "kterm", 5) == 0 
 	    || strncmp(s, "cxterm", 6) == 0) )
-		args["xterm"].def_scalar = 1;
+		args["xterm"].arg = 1;
 	else
-		args["xterm"].def_scalar = 0;
+		args["xterm"].arg = 0;
 }
 
 static unsigned long 
@@ -164,7 +164,6 @@ set_speed_mode(const char *p)
 	set_pref(Pref::speedmode, mode);
 }
 
-#include <iostream>
 void 
 handle_options(int argc, char *argv[])
 {

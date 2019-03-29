@@ -27,6 +27,7 @@ struct option {
 	const char *def_string;
 	const char *multi;
 	VALUE arg;
+	void finish_setup();
 	option(const char *optiontext_, char type_,
 	    unsigned long def_scalar_ =0,
 	    const char *def_string_ =nullptr,
@@ -36,7 +37,10 @@ struct option {
 		def_scalar{def_scalar_},
 		def_string{def_string_},
 		multi{multi_}
-		{}
+		{
+			finish_setup();
+		}
+
 };
 
 struct option_set {
