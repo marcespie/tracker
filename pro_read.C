@@ -57,7 +57,7 @@ getstring(exfile& f, unsigned int len)
 	assert(len < buffer.size());
 	f.read(buffer.data(), len);
 	buffer[len] = '\0';
-	char *n = (char *)malloc(strlen(buffer.data())+1);
+	char *n = new char [strlen(buffer.data())+1];
 	if (!n) 
 		return nullptr;
 
@@ -156,7 +156,7 @@ fill_sample_info(exfile& f)
 
 	if (info->length <= 2) {
 		if (info->name)
-			free(info->name);
+			delete [] info->name;
 		return nullptr;
 	}
 	if (info->length > MAX_SAMPLE_LENGTH)
@@ -184,7 +184,7 @@ free_sample_info(sample_info *sample)
 		if (sample->start)
 			delete [] sample->start;
 		if (sample->name)
-			free(sample->name);
+			delete [] sample->name;
 		delete sample;
 	}
 }
@@ -504,7 +504,7 @@ release_song(song *song)
 	delete [] song->info.patterns;
 	delete [] song->info.data;
 	if (song->title)
-		free(song->title);
+		delete [] song->title;
 	delete song;
 }
 

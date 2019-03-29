@@ -129,7 +129,7 @@ read_line(exfile& f)
 	if (c == EOF)
 		return nullptr;
 	else {
-		char *s = (char *)malloc(i+1);
+		char *s = new char[i+1];
 		memcpy(s, linebuf, i);
 		s[i] = 0;
 		return s;
@@ -214,7 +214,7 @@ handle_options(int argc, char *argv[])
 			end_all("List file does not exist");
 		while ((s = read_line(file)) != nullptr) {
 			add_play_list(s);
-			free(s);
+			delete [] s;
 		}
 	}
 	set_pref(Pref::output, args.get_long("output"));
