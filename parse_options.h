@@ -63,4 +63,6 @@ struct option_set {
 	{
 		return std::get<const char *>(options[t]->arg);
 	}
+	void parse(int argc, char *argv[], void (*what_to_do) (const char *arg));
+	int do1(char* text, char* arg);
 };

@@ -175,11 +175,11 @@ handle_options(int argc, char *argv[])
 		auto t = string2args(s, nullptr);
 		auto v = new char *[t];
 		string2args(s, v);
-		parse_options(t, v, add_play_list);
+		args.parse(t, v, add_play_list);
 		delete []v;
 	}
 
-	parse_options(argc, argv, add_play_list);
+	args.parse(argc, argv, add_play_list);
 	if (args.get_long("help")) {
 		print_usage();
 		end_all(0);

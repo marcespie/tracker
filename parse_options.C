@@ -130,66 +130,65 @@ add_option_set(const option_set& set)
 	options.push_back(std::unique_ptr<option_set>(s));
 }
 
-static int 
-do_option(char *text, char *arg)
+int 
+option_set::do1(char *text, char *arg)
 {
 	int j;
 	const char *argindex;
 	int type;
 
-	for (auto& p: options) {
-		auto set = *p;
-		for (auto [key, opt]: set.options) {
-			for (j = 0; key[j] && (key[j] == tolower(text[j])); j++)
-				;
-			if (opt->type == 'm')
-				argindex = opt->multi;
-			else
-				argindex = key;
-			type = opt->type;
-			if (text[j]) {
-				/* last chance for switches */
-				if (type == 's'
-				    && tolower(text[0]) == 'n'
-				    && tolower(text[1]) == 'o') {
-					for (j = 0; 
-					    key[j] && 
-					    key[j] == tolower(text[j+2]); j++)
-						;
-					if (!text[j+2]) {
-						if (key == argindex)
-							opt->arg = 0;
-						else
-							set[argindex].arg = 1; 
-						return 0;
-					}
-				}
-			} else {
-				/* found option */
-				switch(type) {
-				case 's':
-				case 'm':
+	auto& set = *this;
+
+	for (auto [key, opt]: set.options) {
+		for (j = 0; key[j] && (key[j] == tolower(text[j])); j++)
+			;
+		if (opt->type == 'm')
+			argindex = opt->multi;
+		else
+			argindex = key;
+		type = opt->type;
+		if (text[j]) {
+			/* last chance for switches */
+			if (type == 's'
+			    && tolower(text[0]) == 'n'
+			    && tolower(text[1]) == 'o') {
+				for (j = 0; 
+				    key[j] && 
+				    key[j] == tolower(text[j+2]); j++)
+					;
+				if (!text[j+2]) {
 					if (key == argindex)
-						opt->arg = 1;
+						opt->arg = 0;
 					else
-						set[argindex].arg = 0; 
+						set[argindex].arg = 1; 
 					return 0;
-				case 'n':
-					if (int d; arg && sscanf(arg, "%d", &d) == 1) {
-						set[argindex].arg = d;
-						return 1;
-					} else {
-						set[argindex].arg = opt->def_scalar;
-						return 0;
-					}
-				case 'a':
-					if (arg && (arg[0] != '-')) {
-						set[argindex].arg = arg;
-						return 1;
-					} else {
-						set[argindex].arg = opt->def_string;
-						return 0;
-					}
+				}
+			}
+		} else {
+			/* found option */
+			switch(type) {
+			case 's':
+			case 'm':
+				if (key == argindex)
+					opt->arg = 1;
+				else
+					set[argindex].arg = 0; 
+				return 0;
+			case 'n':
+				if (int d; arg && sscanf(arg, "%d", &d) == 1) {
+					set[argindex].arg = d;
+					return 1;
+				} else {
+					set[argindex].arg = opt->def_scalar;
+					return 0;
+				}
+			case 'a':
+				if (arg && (arg[0] != '-')) {
+					set[argindex].arg = arg;
+					return 1;
+				} else {
+					set[argindex].arg = opt->def_string;
+					return 0;
 				}
 			}
 		}
@@ -201,7 +200,7 @@ do_option(char *text, char *arg)
 
 					
 void 
-parse_options(int argc, char *argv[], void (*what_to_do)(const char *arg))
+option_set::parse(int argc, char *argv[], void (*what_to_do)(const char *arg))
 {
 	int i;
 	char *arg;
@@ -216,7 +215,7 @@ parse_options(int argc, char *argv[], void (*what_to_do)(const char *arg))
 				(*what_to_do)(arg);
 				i++;
 			} else
-				i += do_option(argv[i]+1, arg);
+				i += do1(argv[i]+1, arg);
 		} else
 			(*what_to_do)(argv[i]);
 	}
