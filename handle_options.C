@@ -91,9 +91,9 @@ set_default_prefs(void)
 	s = getenv("TERM");
 	if (s && (strncmp(s, "xterm", 5) == 0 || strncmp(s, "kterm", 5) == 0 
 	    || strncmp(s, "cxterm", 6) == 0) )
-		args.options["xterm"]->def_scalar = 1;
+		args["xterm"].def_scalar = 1;
 	else
-		args.options["xterm"]->def_scalar = 0;
+		args["xterm"].def_scalar = 0;
 }
 
 static unsigned long 
