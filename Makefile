@@ -8,8 +8,9 @@ SRCS = tracker.C \
     pro_virt.C pro_play.C \
     openbsd_audio.C resample.C usage.C
 
-CXXFLAGS = -O2 -W -Wall -std=c++17
+CXXFLAGS = -O2 -W -Wall -std=c++17 ${DEBUG}
 CPPFLAGS = -I${.CURDIR}
 LDADD = -lsndio -lm
+
 
 .include <bsd.prog.mk>
