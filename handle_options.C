@@ -75,14 +75,7 @@ static option opts[] = {
 	{"ntsc", 'm', 60, "speed"},
 };
 
-
-
-
-
-VALUE t[24];
-
-static struct option_set args =
-	{ opts, sizeof(opts)/sizeof(struct option), t};
+struct option_set args = {std::begin(opts), std::end(opts)};
 
 
 /* initialize all options to default values */
@@ -98,9 +91,9 @@ set_default_prefs(void)
 	s = getenv("TERM");
 	if (s && (strncmp(s, "xterm", 5) == 0 || strncmp(s, "kterm", 5) == 0 
 	    || strncmp(s, "cxterm", 6) == 0) )
-		opts[13].def_scalar = 1;
+		args.options["xterm"]->def_scalar = 1;
 	else
-		opts[13].def_scalar = 0;
+		args.options["xterm"]->def_scalar = 0;
 }
 
 static unsigned long 
@@ -188,47 +181,47 @@ handle_options(int argc, char *argv[])
 	}
 
 	parse_options(argc, argv, add_play_list);
-	if (args.get_long(0)) {
+	if (args.get_long("help")) {
 		print_usage();
 		end_all(0);
 	}
-	ask_freq = args.get_long(1);
+	ask_freq = args.get_long("frequency");
 	if (ask_freq < 1000)
 		ask_freq *= 1000;
-	stereo = args.get_long(2);
-	loop = args.get_long(3);
-	set_watched(watched::oversample, args.get_long(4));
-	trandom = args.get_long(5);
-	set_pref(Pref::show, args.get_long(6));
-	set_pref(Pref::tolerate, args.get_long(7));
-	set_pref(Pref::type, args.get_long(8));
-	set_pref(Pref::repeats, args.get_long(9));
-	set_pref(Pref::speed, args.get_long(10));
-	set_mix(args.get_long(11));
-	set_pref(Pref::color, args.get_long(12));
-	set_pref(Pref::xterm, args.get_long(13));
+	stereo = args.get_long("stereo");
+	loop = args.get_long("loop");
+	set_watched(watched::oversample, args.get_long("oversample"));
+	trandom = args.get_long("randomize");
+	set_pref(Pref::show, args.get_long("scroll"));
+	set_pref(Pref::tolerate, args.get_long("picky"));
+	set_pref(Pref::type, args.get_long("both"));
+	set_pref(Pref::repeats, args.get_long("repeats"));
+	set_pref(Pref::speed, args.get_long("speed"));
+	set_mix(args.get_long("mix"));
+	set_pref(Pref::color, args.get_long("color"));
+	set_pref(Pref::xterm, args.get_long("xterm"));
 
-	set_speed_mode(args.get_string(14));
+	set_speed_mode(args.get_string("speedmode"));
 
-	set_pref(Pref::transpose, args.get_long(15));
-	if (args.get_string(16))
-		set_pref(Pref::imask, get_mask(args.get_string(16)));
-	else if (args.get_string(17))
-		set_pref(Pref::imask, ~get_mask(args.get_string(17)));
-	if (args.get_string(18))
-		half_mask = get_mask(args.get_string(18));
-	else if (args.get_string(19))
-		half_mask = ~get_mask(args.get_string(19));
-	set_pref(Pref::dump, args.get_long(20));
-	start = args.get_long(21);
-	if (args.get_string(22)) {
+	set_pref(Pref::transpose, args.get_long("transpose"));
+	if (args.get_string("cut"))
+		set_pref(Pref::imask, get_mask(args.get_string("cut")));
+	else if (args.get_string("add"))
+		set_pref(Pref::imask, ~get_mask(args.get_string("add")));
+	if (args.get_string("halve"))
+		half_mask = get_mask(args.get_string("halve"));
+	else if (args.get_string("double"))
+		half_mask = ~get_mask(args.get_string("double"));
+	set_pref(Pref::dump, args.get_long("verbose"));
+	start = args.get_long("start");
+	if (args.get_string("list")) {
 		char *s;
 		exfile file;
 
-		if (!file.open(args.get_string(22)))
+		if (!file.open(args.get_string("list")))
 			end_all("List file does not exist");
 		while ((s = read_line(file)) != nullptr)
 			add_play_list(s);
 	}
-	set_pref(Pref::output, args.get_long(23));
+	set_pref(Pref::output, args.get_long("output"));
 }

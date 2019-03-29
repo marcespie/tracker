@@ -16,6 +16,7 @@
  */
 
 #include <variant>
+#include <map>
 
 using VALUE = std::variant<long, const char *>;
 
@@ -24,11 +25,12 @@ struct option {
 	char type;
 	unsigned long def_scalar;
 	const char *def_string;
-	int multi;
+	const char *multi;
+	VALUE arg;
 	option(const char *optiontext_, char type_,
 	    unsigned long def_scalar_ =0,
 	    const char *def_string_ =nullptr,
-	    int multi_ =0): 
+	    const char *multi_ =nullptr): 
 		optiontext{optiontext_},
 		type{type_},
 		def_scalar{def_scalar_},
@@ -38,15 +40,19 @@ struct option {
 };
 
 struct option_set {
-	struct option *options;
-	int number;
-	VALUE *args;
-	long get_long(int n) const 
+	std::map<const char *, option *> options;
+	template<class T>
+	option_set(T b, T e)
 	{
-		return std::get<long>(args[n]);
+		for (auto i = b; i != e; ++i)
+			options[i->optiontext] = i;
 	}
-	const char *get_string(int n) const 
+	long get_long(const char *t)
 	{
-		return std::get<const char *>(args[n]);
+		return std::get<long>(options[t]->arg);
+	}
+	const char *get_string(const char *t)
+	{
+		return std::get<const char *>(options[t]->arg);
 	}
 };

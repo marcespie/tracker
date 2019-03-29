@@ -105,27 +105,27 @@ std::list<std::unique_ptr<option_set>> options;
 static void 
 set_up_args(option_set& set)
 {
-	for (int i = 0; i < set.number; i++) {
-		switch (set.options[i].type) {
+	for (auto [key, opt]: set.options) {
+		switch (opt->type) {
 		case 's':
 		case 'n':
-			set.args[i] = set.options[i].def_scalar;
+			opt->arg = opt->def_scalar;
 			break;
 		case 'a':
-			set.args[i] = set.options[i].def_string;
+			opt->arg = opt->def_string;
 			break;
 		case 'm':
-			for (int j = 0; j < i; j++) {
-			    if (strcmp(set.options[i].def_string, 
-				set.options[j].optiontext) == 0) {
-				    set.options[i].multi = j;
-				    break;
+			for (auto [k2, o2]: set.options) {
+				if (strcmp(opt->def_string, 
+				    o2->optiontext) == 0) {
+				    	opt->multi = k2;
+					break;
 			    }
 			}
 			break;
 		default:
 			notice("Internal problem with option:");
-			notice(set.options[i].optiontext);
+			notice(opt->optiontext);
 		break;
 		}
 	}
@@ -142,23 +142,23 @@ add_option_set(const option_set& set)
 static int 
 do_option(char *text, char *arg)
 {
-	int i, j;
+	int j;
 	const char *check;
-	int argindex;
+	const char *argindex;
 	int type;
 
 	for (auto& p: options) {
 		auto set = *p;
-		for (i = 0; i < set.number; i++) {
-			check = set.options[i].optiontext;
+		for (auto [key, opt]: set.options) {
+			check = opt->optiontext;
 
 			for (j = 0; check[j] && (check[j] == tolower(text[j])); j++)
 				;
-			if (set.options[i].type == 'm')
-				argindex = set.options[i].multi;
+			if (opt->type == 'm')
+				argindex = opt->multi;
 			else
-				argindex = i;
-			type = set.options[argindex].type;
+				argindex = key;
+			type = opt->type;
 			if (text[j]) {
 				/* last chance for switches */
 				if (type == 's'
@@ -169,10 +169,10 @@ do_option(char *text, char *arg)
 					    check[j] == tolower(text[j+2]); j++)
 						;
 					if (!text[j+2]) {
-						if (i == argindex)
-							set.args[i] = 0;
+						if (key == argindex)
+							opt->arg = 0;
 						else
-							set.args[argindex] = 1; 
+							set.options[argindex]->arg = 1; 
 						return 0;
 					}
 				}
@@ -181,27 +181,27 @@ do_option(char *text, char *arg)
 				switch(type) {
 				case 's':
 				case 'm':
-					if (i == argindex)
-						set.args[argindex] = 1;
+					if (key == argindex)
+						opt->arg = 1;
 					else
-						set.args[argindex] = 0;
+						set.options[argindex]->arg = 0; 
 					return 0;
 				case 'n':
 					if (int d; arg && sscanf(arg, "%d", &d) == 1) {
-						set.args[argindex] = d;
+						set.options[argindex]->arg = d;
 						return 1;
 					} else {
-						set.args[argindex] = 
-						    set.options[i].def_scalar;
+						set.options[argindex]->arg = 
+						    opt->def_scalar;
 						return 0;
 					}
 				case 'a':
 					if (arg && (arg[0] != '-')) {
-						set.args[argindex] = arg;
+						set.options[argindex]->arg = arg;
 						return 1;
 					} else {
-						set.args[argindex] = 
-						    set.options[i].def_string;
+						set.options[argindex]->arg =
+						    opt->def_string;
 						return 0;
 					}
 				}
