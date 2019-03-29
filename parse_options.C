@@ -100,8 +100,6 @@ string2args(char *s, char *v[])
 	return j;
 }
 
-std::list<std::unique_ptr<option_set>> options;
-
 void
 option::finish_setup()
 {
@@ -121,13 +119,6 @@ option::finish_setup()
 		notice(optiontext);
 	break;
 	}
-}
-
-void 
-add_option_set(const option_set& set)
-{
-	auto s = new option_set(set);
-	options.push_back(std::unique_ptr<option_set>(s));
 }
 
 int 

@@ -30,7 +30,6 @@ inline int stricmp(const char *a, const char *b)
 }
 
 extern void print_usage(void);
-extern struct option_set *port_options;
 
 unsigned long half_mask = 0;
 int ask_freq;		/* parameters for setup audio */
@@ -42,30 +41,30 @@ int trandom;
 bool loop = false;	/* main automaton looping at end of argv ? */
 
 static option opts[] = {
-	{"help", 's'},				/* 0 */
-	{"frequency", 'n'},			/* 1 */
-	{"stereo", 's', 1},			/* 2 */
-	{"loop", 's'},				/* 3 */
-	{"oversample", 'n', 1},			/* 4 */
-	{"randomize", 's'},			/* 5 */
-	{"scroll", 's', 1},			/* 6 */
-	{"picky", 'n', 1},			/* 7 */
-	{"both", 'n', BOTH},			/* 8 */
-	{"repeats", 'n', 1},			/* 9 */
-	{"speed", 'n', 50},			/* 10 */
-	{"mix", 'n', 30},			/* 11 */
-	{"color", 's', 1},			/* 12 */
-	{"xterm", 's'},				/* 13 */
-	{"speedmode", 'a', 0, "normal"},	/* 14 */
-	{"transpose", 'n'},			/* 15 */
-	{"cut", 'a'},				/* 16 */
-	{"add", 'a'},				/* 17 */
-	{"halve", 'a'},				/* 18 */
-	{"double", 'a'},			/* 19 */
-	{"verbose", 's'},			/* 20 */
-	{"start", 'n'},				/* 21 */
-	{"list", 'a'},				/* 22 */
-	{"output", 's', 1},			/* 23 */
+	{"help", 's'},				
+	{"frequency", 'n'},			
+	{"stereo", 's', 1},			
+	{"loop", 's'},				
+	{"oversample", 'n', 1},			
+	{"randomize", 's'},			
+	{"scroll", 's', 1},			
+	{"picky", 'n', 1},			
+	{"both", 'n', BOTH},			
+	{"repeats", 'n', 1},			
+	{"speed", 'n', 50},			
+	{"mix", 'n', 30},			
+	{"color", 's', 1},			
+	{"xterm", 's'},				
+	{"speedmode", 'a', 0, "normal"},	
+	{"transpose", 'n'},			
+	{"cut", 'a'},				
+	{"add", 'a'},				
+	{"halve", 'a'},				
+	{"double", 'a'},			
+	{"verbose", 's'},			
+	{"start", 'n'},				
+	{"list", 'a'},				
+	{"output", 's', 1},
 	{"mono", 'm', 0, "stereo"},
 	{"bw", 'm', 0, "color"},
 	{"tolerant", 'm', 2, "picky"},
@@ -167,9 +166,6 @@ set_speed_mode(const char *p)
 void 
 handle_options(int argc, char *argv[])
 {
-	add_option_set(args);
-	if (port_options)
-		add_option_set(*port_options);
 	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
 		auto t = string2args(s, nullptr);

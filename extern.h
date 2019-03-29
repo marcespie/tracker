@@ -329,17 +329,6 @@ extern char *write_color(char *base, unsigned int color);
 extern void audio_ui(char c);
 /*--------------------------- parse_options.c --------------------*/
 
-/* add_option_set(set)
- * add a set of options to known options. 
- */
-extern void add_option_set(const option_set& options);
-
-/* parse_options(argc, argv, what_to_do):
- * parse options according to the currently known options. Call
- * (*what_to_do)(arg) on any real argument
- */
-extern void parse_options(int argc, char *argv[], void (*what_to_do) (const char *arg));
-
 extern int string2args(char *s, char *v[]);
 
 extern void add_play_list(const char *);

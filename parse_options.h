@@ -52,6 +52,11 @@ struct option_set {
 	template<class T>
 	option_set(T b, T e)
 	{
+		add(b, e);
+	}
+	template<class T>
+	void add(T b, T e)
+	{
 		for (auto i = b; i != e; ++i)
 			options[i->optiontext] = i;
 	}
