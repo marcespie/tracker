@@ -202,12 +202,12 @@ option_set::parse(int argc, char *argv[], void (*what_to_do)(const char *arg))
 			else
 				arg = nullptr;
 			if (argv[i][1] == '-') {
-				(*what_to_do)(argv[i]);
-				(*what_to_do)(arg);
+				what_to_do(argv[i]);
+				what_to_do(arg);
 				i++;
 			} else
 				i += do1(argv[i]+1, arg);
 		} else
-			(*what_to_do)(argv[i]);
+			what_to_do(argv[i]);
 	}
 }
