@@ -38,7 +38,7 @@ absdiff(S x, T y)
 static bool stereo;
 
 
-static unsigned long pps[32], pms[32];
+static uint32_t pps[32], pms[32];
 
 void 
 set_mix(int percent)
@@ -54,15 +54,15 @@ set_mix(int percent)
 
 
 
-static short *buffer16;
-inline unsigned short
+static int16_t *buffer16;
+inline int16_t
 VALUE16(long x)
 {
 	return x;
 }
 
-static unsigned char *buffer;
-inline unsigned char
+static uint8_t *buffer;
+inline uint8_t
 VALUE8(long x)
 {
 	return x+128;
@@ -188,8 +188,8 @@ open_audio(unsigned long f, int)
 
 	dsp_samplesize = par.bits;
 	dsize = par.bps;
-	buffer = new unsigned char [buf_max];
-	buffer16 = reinterpret_cast<short *>(buffer);
+	buffer = new uint8_t [buf_max];
+	buffer16 = reinterpret_cast<int16_t *>(buffer);
 
 	idx = 0;
 	samples_max = buf_max / dsize / par.pchan;
