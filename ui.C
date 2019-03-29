@@ -441,9 +441,3 @@ display_time(unsigned long time, unsigned long check)
 			    []() {});
 	}
 }
-
-bool 
-checkbrk(void)
-{
-	return false;
-}

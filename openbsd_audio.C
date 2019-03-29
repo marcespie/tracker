@@ -240,9 +240,9 @@ remove_pending_tags(void)
 void 
 sync_audio(tagged::callback f, tagged::callback f2)
 {
-	if (hdl) {
+	if (hdl)
 		q.emplace(f, f2, total);
-	} else
+	else
 		f();
 }
 
@@ -289,12 +289,6 @@ close_audio(void)
 	actually_flush_buffer();
 	sio_close(hdl);
 	delete [] buffer;
-}
-
-unsigned long 
-update_frequency(void)
-{
-	return 0;
 }
 
 void 

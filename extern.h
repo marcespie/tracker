@@ -166,7 +166,6 @@ extern void set_mix(int percent);
  * Samples are n bits signed.
  * Output routine should be able to face anything from 16 to 25
  */
-extern void old_output_samples(long left, long right);
 extern void output_samples(long left, long right, int n);
 
 /* flush_buffer(): call from time to time, because buffering
@@ -178,44 +177,14 @@ extern void flush_buffer(void);
  */
 extern void discard_buffer(void);
 
-/* new_freq = update_frequency():
- * if !0, frequency changed and playing should be updated accordingly
- */
-extern unsigned long update_frequency(void);
-
-/* bits = output_resolution()
- * returns the number of bits expected for the output.
- * Not necessary to use 16 bit samples if output is to be 8 bits
- * for instance. Return 16 by default
- */
-extern int output_resolution(void);
-
 /* sync_audio(function, f2, parameter):
  * call function(parameter) when audio finally gets to the current point
  * call f2(parameter) if flush is in effect instead
  */
-
-
 extern void sync_audio(std::function<void()>, std::function<void()>);
 
-/*--------------------------- $(UI)/ui.c ------------------------*/
-/* see unix/ui.c for the general unix implementation.
- * The old may_getchar() has been replaced by the tag-based
- * get_ui
- */
-/* get_ui(): returns an array of tags that reflect the current user-interface
- * actions. Unknown tags WILL be ignored.
- * Note that get_ui will be called about once every tick, providing a poor man's
- * timer to the interface writer if needed to code multiple actions on the same
- * user-input. See unix/termio.c for a good example.
- * see amiga/ui.c for the correct way to do it when you have a real timer.
- *
- * VERY IMPORTANT: who do the tags belong to ?
- *   as a general rule, result (and their values) MUST only be considered
- *   valid between two calls to get_ui ! Be careful to call get_ui ONLY at
- *   reasonable places.
- *   One exception: structures that are dynamically allocated (like UI_LOAD_SONG
- *   values) will ONLY get freed when you ask for it !
+/*--------------------------- ui.c ------------------------*/
+/* get_ui(): returns a user-interface action + optional parameter
  */
 
 extern std::pair<int, unsigned long> get_ui(void);
@@ -311,13 +280,6 @@ extern void display_time(unsigned long time_elapsed, unsigned long check);
  * make a copy if needed
  */
 extern void song_title(const char *s);
-
-/* boolean checkbrk():
- * check whether a break occured and we should end right now.
- * Call it often enough (like when loading songs and stuff)
- */
-extern bool checkbrk(void);
-
 
 /*--------------------------- color.c ----------------------------*/
 /* s = write_color(base, color):
