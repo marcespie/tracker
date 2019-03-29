@@ -212,8 +212,10 @@ handle_options(int argc, char *argv[])
 
 		if (!file.open(args.get_string("list")))
 			end_all("List file does not exist");
-		while ((s = read_line(file)) != nullptr)
+		while ((s = read_line(file)) != nullptr) {
 			add_play_list(s);
+			free(s);
+		}
 	}
 	set_pref(Pref::output, args.get_long("output"));
 }
