@@ -105,42 +105,42 @@ static struct option_set_list {
 } *first, *current;
 
 static void 
-set_up_args(struct option_set *set)
+set_up_args(option_set& set)
 {
-	for (int i = 0; i < set->number; i++) {
-		switch (set->options[i].type) {
+	for (int i = 0; i < set.number; i++) {
+		switch (set.options[i].type) {
 		case 's':
 		case 'n':
-			set->args[i] = set->options[i].def_scalar;
+			set.args[i] = set.options[i].def_scalar;
 			break;
 		case 'a':
-			set->args[i] = set->options[i].def_string;
+			set.args[i] = set.options[i].def_string;
 			break;
 		case 'm':
 			for (int j = 0; j < i; j++) {
-			    if (strcmp(set->options[i].def_string, 
-				set->options[j].optiontext) == 0) {
-				    set->options[i].multi = j;
+			    if (strcmp(set.options[i].def_string, 
+				set.options[j].optiontext) == 0) {
+				    set.options[i].multi = j;
 				    break;
 			    }
 			}
 			break;
 		default:
 			notice("Internal problem with option:");
-			notice(set->options[i].optiontext);
+			notice(set.options[i].optiontext);
 		break;
 		}
 	}
 }
 
 void 
-add_option_set(struct option_set *set)
+add_option_set(option_set& set)
 {
 	auto n = new option_set_list;
 	n->next = nullptr;
-	n->set.options = set->options;
-	n->set.number = set->number;
-	n->set.args = set->args;
+	n->set.options = set.options;
+	n->set.number = set.number;
+	n->set.args = set.args;
 	set_up_args(set);
 	if (current)
 		current->next = n;

@@ -175,9 +175,9 @@ set_speed_mode(const char *p)
 void 
 handle_options(int argc, char *argv[])
 {
-	add_option_set(&args);
+	add_option_set(args);
 	if (port_options)
-		add_option_set(port_options);
+		add_option_set(*port_options);
 	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
 		auto t = string2args(s, nullptr);
