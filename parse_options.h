@@ -41,6 +41,10 @@ struct option {
 
 struct option_set {
 	std::map<const char *, option *> options;
+	option& operator[](const char* s)
+	{
+		return *options[s];
+	}
 	template<class T>
 	option_set(T b, T e)
 	{

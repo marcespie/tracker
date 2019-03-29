@@ -124,7 +124,7 @@ set_up_args(option_set& set)
 			break;
 		default:
 			notice("Internal problem with option:");
-			notice(opt->optiontext);
+			notice(key);
 		break;
 		}
 	}
@@ -168,7 +168,7 @@ do_option(char *text, char *arg)
 						if (key == argindex)
 							opt->arg = 0;
 						else
-							set.options[argindex]->arg = 1; 
+							set[argindex].arg = 1; 
 						return 0;
 					}
 				}
@@ -180,24 +180,22 @@ do_option(char *text, char *arg)
 					if (key == argindex)
 						opt->arg = 1;
 					else
-						set.options[argindex]->arg = 0; 
+						set[argindex].arg = 0; 
 					return 0;
 				case 'n':
 					if (int d; arg && sscanf(arg, "%d", &d) == 1) {
-						set.options[argindex]->arg = d;
+						set[argindex].arg = d;
 						return 1;
 					} else {
-						set.options[argindex]->arg = 
-						    opt->def_scalar;
+						set[argindex].arg = opt->def_scalar;
 						return 0;
 					}
 				case 'a':
 					if (arg && (arg[0] != '-')) {
-						set.options[argindex]->arg = arg;
+						set[argindex].arg = arg;
 						return 1;
 					} else {
-						set.options[argindex]->arg =
-						    opt->def_string;
+						set[argindex].arg = opt->def_string;
 						return 0;
 					}
 				}
