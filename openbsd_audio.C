@@ -72,9 +72,16 @@ static unsigned long idx;
 static int dsize;			/* current data size */
 static unsigned long samples_max;	/* number of samples in buffer */
 
+void (*add_samples)(long, long, int);
 
-static void 
-add_samples16_stereo(long left, long right, int n)
+// abstract specialization for each possibility
+template<typename sample, bool stereo>
+static void do_add_samples(long, long, int);
+
+
+template<>
+void 
+do_add_samples<int16_t, true>(long left, long right, int n)
 {
 	if (pms[n] == pps[n]) {	/* no mixing */
 		if (n<16) {
@@ -93,8 +100,9 @@ add_samples16_stereo(long left, long right, int n)
 	}
 }
 
-static void 
-add_samples16_mono(long left, long right, int n)
+template<>
+void 
+do_add_samples<int16_t,false>(long left, long right, int n)
 {
 	if (n<15)		/* is this possible? */
 		buffer16[idx++] = VALUE16( (left + right) << (15-n) );
@@ -102,17 +110,9 @@ add_samples16_mono(long left, long right, int n)
 		buffer16[idx++] = VALUE16( (left + right) >> (n-15) );
 }
 
-static void 
-add_samples16(long left, long right, int n)
-{
-	if (stereo)
-		add_samples16_stereo(left, right, n);
-	else
-		add_samples16_mono(left, right, n);
-}
-
-static void 
-add_samples8_stereo(long left, long right, int n)
+template<>
+void 
+do_add_samples<uint8_t,true>(long left, long right, int n)
 {
 	if (pms[n] == pps[n]) {	/* no mixing */
 		/* if n<8 -> same problem as above,
@@ -128,22 +128,12 @@ add_samples8_stereo(long left, long right, int n)
 	}
 }
 
-static void 
-add_samples8_mono(long left, long right, int n)
+template<>
+void 
+do_add_samples<uint8_t,false>(long left, long right, int n)
 {
 	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
 }
-
-static void 
-add_samples8(long left, long right, int n)
-{
-	if (stereo)
-		add_samples8_stereo(left, right, n);
-	else
-		add_samples8_mono(left, right, n);
-}
-
-
 
 using audio_offset = unsigned long long;
 
@@ -190,6 +180,17 @@ open_audio(unsigned long f, int)
 	dsize = par.bps;
 	buffer = new uint8_t [buf_max];
 	buffer16 = reinterpret_cast<int16_t *>(buffer);
+	if (dsp_samplesize == 16) {
+		if (stereo)
+			add_samples = do_add_samples<int16_t, true>;
+		else
+			add_samples = do_add_samples<int16_t, false>;
+	} else {
+		if (stereo)
+			add_samples = do_add_samples<uint8_t, true>;
+		else
+			add_samples = do_add_samples<uint8_t, false>;
+	}
 
 	idx = 0;
 	samples_max = buf_max / dsize / par.pchan;
@@ -261,16 +262,7 @@ output_samples(long left, long right, int n)
 {
 	if (idx >= samples_max - 1)
 		actually_flush_buffer();
-	switch(dsp_samplesize) {
-	case 16:
-		add_samples16(left, right, n);
-		break;
-	case 8:
-		add_samples8(left, right, n);
-		break;
-	default:	/* should not happen */
-		;
-	}
+	add_samples(left, right, n);
 }
 
 void 
