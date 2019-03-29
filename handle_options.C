@@ -175,7 +175,7 @@ handle_options(int argc, char *argv[])
 	args.parse(argc, argv, add_play_list);
 	if (args.get_long("help")) {
 		print_usage();
-		end_all(0);
+		end_all();
 	}
 	ask_freq = args.get_long("frequency");
 	if (ask_freq < 1000)

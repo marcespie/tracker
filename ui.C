@@ -186,7 +186,7 @@ may_getchar(void)
 }
 
 inline auto 
-result(int type, unsigned long value =0)
+result(int type =0, unsigned long value =0)
 {
 	return std::pair(type, value);
 }
@@ -248,7 +248,7 @@ get_ui(void)
 	default:
 		break;
 	}
-	return result(0);
+	return result();
 }
       
 void 
