@@ -20,15 +20,13 @@
 
 using VALUE = std::variant<long, const char *>;
 
-struct option {
+struct option_init {
 	const char *optiontext;
 	char type;
 	unsigned long def_scalar;
 	const char *def_string;
 	const char *multi;
-	VALUE arg;
-	void finish_setup();
-	option(const char *optiontext_, char type_,
+	option_init(const char *optiontext_, char type_,
 	    unsigned long def_scalar_ =0,
 	    const char *def_string_ =nullptr,
 	    const char *multi_ =nullptr): 
@@ -37,17 +35,36 @@ struct option {
 		def_scalar{def_scalar_},
 		def_string{def_string_},
 		multi{multi_}
-		{
-			finish_setup();
-		}
+	{
+	}
 
 };
 
+struct option {
+	char type;
+	unsigned long def_scalar;
+	const char *def_string;
+	const char *multi;
+	VALUE arg;
+	void finish_setup(const char* optiontext);
+	option()
+	{
+	}
+	option(const option_init& i):
+	    type{i.type},
+	    def_scalar{i.def_scalar},
+	    def_string{i.def_string},
+	    multi{i.multi}
+	{
+		finish_setup(i.optiontext);
+	}
+};
+
 struct option_set {
-	std::map<const char *, option *> options;
+	std::map<const char *, option> options;
 	option& operator[](const char* s)
 	{
-		return *options[s];
+		return options[s];
 	}
 	template<class T>
 	option_set(T b, T e)
@@ -58,15 +75,15 @@ struct option_set {
 	void add(T b, T e)
 	{
 		for (auto i = b; i != e; ++i)
-			options[i->optiontext] = i;
+			options[i->optiontext] = *i;
 	}
 	long get_long(const char *t)
 	{
-		return std::get<long>(options[t]->arg);
+		return std::get<long>(options[t].arg);
 	}
 	const char *get_string(const char *t)
 	{
-		return std::get<const char *>(options[t]->arg);
+		return std::get<const char *>(options[t].arg);
 	}
 	void parse(int argc, char *argv[], void (*what_to_do) (const char *arg));
 	int do1(char* text, char* arg);

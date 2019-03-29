@@ -40,7 +40,7 @@ int trandom;
 
 bool loop = false;	/* main automaton looping at end of argv ? */
 
-static option opts[] = {
+static option_init opts[] = {
 	{"help", 's'},				
 	{"frequency", 'n'},			
 	{"stereo", 's', 1},			

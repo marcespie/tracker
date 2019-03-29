@@ -101,7 +101,7 @@ string2args(char *s, char *v[])
 }
 
 void
-option::finish_setup()
+option::finish_setup(const char* optiontext)
 {
 	switch (type) {
 	case 's':
@@ -130,14 +130,14 @@ option_set::do1(char *text, char *arg)
 
 	auto& set = *this;
 
-	for (auto [key, opt]: set.options) {
+	for (auto& [key, opt]: set.options) {
 		for (j = 0; key[j] && (key[j] == tolower(text[j])); j++)
 			;
-		if (opt->type == 'm')
-			argindex = opt->multi;
+		if (opt.type == 'm')
+			argindex = opt.multi;
 		else
 			argindex = key;
-		type = opt->type;
+		type = opt.type;
 		if (text[j]) {
 			/* last chance for switches */
 			if (type == 's'
@@ -149,7 +149,7 @@ option_set::do1(char *text, char *arg)
 					;
 				if (!text[j+2]) {
 					if (key == argindex)
-						opt->arg = 0;
+						opt.arg = 0;
 					else
 						set[argindex].arg = 1; 
 					return 0;
@@ -161,7 +161,7 @@ option_set::do1(char *text, char *arg)
 			case 's':
 			case 'm':
 				if (key == argindex)
-					opt->arg = 1;
+					opt.arg = 1;
 				else
 					set[argindex].arg = 0; 
 				return 0;
@@ -170,7 +170,7 @@ option_set::do1(char *text, char *arg)
 					set[argindex].arg = d;
 					return 1;
 				} else {
-					set[argindex].arg = opt->def_scalar;
+					set[argindex].arg = opt.def_scalar;
 					return 0;
 				}
 			case 'a':
@@ -178,7 +178,7 @@ option_set::do1(char *text, char *arg)
 					set[argindex].arg = arg;
 					return 1;
 				} else {
-					set[argindex].arg = opt->def_string;
+					set[argindex].arg = opt.def_string;
 					return 0;
 				}
 			}
