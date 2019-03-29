@@ -35,7 +35,7 @@ absdiff(S x, T y)
 	return x<y ?  y-x : x-y;
 }
 
-static int stereo;
+static bool stereo;
 
 
 static unsigned long pps[32], pms[32];
@@ -184,7 +184,7 @@ open_audio(unsigned long f, int)
 
 	int buf_max = par.appbufsz * par.bps * par.pchan;
 	current_freq = par.rate;
-	stereo = par.pchan == 2 ? 1 : 0;
+	stereo = par.pchan == 2 ? true : false;
 
 	dsp_samplesize = par.bits;
 	dsize = par.bps;
