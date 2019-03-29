@@ -116,8 +116,7 @@ set_up_args(option_set& set)
 			break;
 		case 'm':
 			for (auto [k2, o2]: set.options) {
-				if (strcmp(opt->def_string, 
-				    o2->optiontext) == 0) {
+				if (strcmp(opt->def_string, k2) == 0) {
 				    	opt->multi = k2;
 					break;
 			    }
@@ -143,16 +142,13 @@ static int
 do_option(char *text, char *arg)
 {
 	int j;
-	const char *check;
 	const char *argindex;
 	int type;
 
 	for (auto& p: options) {
 		auto set = *p;
 		for (auto [key, opt]: set.options) {
-			check = opt->optiontext;
-
-			for (j = 0; check[j] && (check[j] == tolower(text[j])); j++)
+			for (j = 0; key[j] && (key[j] == tolower(text[j])); j++)
 				;
 			if (opt->type == 'm')
 				argindex = opt->multi;
@@ -165,8 +161,8 @@ do_option(char *text, char *arg)
 				    && tolower(text[0]) == 'n'
 				    && tolower(text[1]) == 'o') {
 					for (j = 0; 
-					    check[j] && 
-					    check[j] == tolower(text[j+2]); j++)
+					    key[j] && 
+					    key[j] == tolower(text[j+2]); j++)
 						;
 					if (!text[j+2]) {
 						if (key == argindex)
