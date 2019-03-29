@@ -115,12 +115,7 @@ set_up_args(option_set& set)
 			opt->arg = opt->def_string;
 			break;
 		case 'm':
-			for (auto [k2, o2]: set.options) {
-				if (strcmp(opt->def_string, k2) == 0) {
-				    	opt->multi = k2;
-					break;
-			    }
-			}
+			opt->multi = opt->def_string;
 			break;
 		default:
 			notice("Internal problem with option:");
