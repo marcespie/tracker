@@ -132,7 +132,7 @@ set_up_args(option_set& set)
 }
 
 void 
-add_option_set(option_set& set)
+add_option_set(const option_set& set)
 {
 	auto s = new option_set(set);
 	set_up_args(*s);

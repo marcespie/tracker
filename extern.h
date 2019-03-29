@@ -332,7 +332,7 @@ extern void audio_ui(char c);
 /* add_option_set(set)
  * add a set of options to known options. 
  */
-extern void add_option_set(option_set& options);
+extern void add_option_set(const option_set& options);
 
 /* parse_options(argc, argv, what_to_do):
  * parse options according to the currently known options. Call
