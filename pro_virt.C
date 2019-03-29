@@ -29,43 +29,38 @@
 
 static unsigned long *loop_start;
 
-static unsigned long compute_pattern_duration(struct event *base, 
-	unsigned int plength, unsigned int ntracks, struct automaton *a)
-	{
+static unsigned long 
+compute_pattern_duration(event *base, unsigned int plength, unsigned int ntracks, 
+    automaton *a)
+{
 	unsigned int i, j;
 	unsigned long d;
-	struct event *e;
+	event *e;
 
 	a->bpm=50;
 	d = 0;
 	for(i = 0; i < ntracks; i++)
 		loop_start[i] = 0;
 
-	for (i = ((a->do_stuff & SET_SKIP) ? a->new_note : 0); i < plength; i++)
-		{
+	for (i = ((a->do_stuff & SET_SKIP) ? a->new_note : 0); i < plength; i++) {
 		a->do_stuff = DO_SET_NOTHING;
 		a->delay_counter = 1;
-		for (j = 0; j < ntracks; j++)
-			{
+		for (j = 0; j < ntracks; j++) {
 			e = base + j * plength + i;
-			switch(e->effect)
-				{
+			switch(e->effect) {
 			case EFF_SPEED:
 				if (e->parameters >= 32 && 
-					get_pref(Pref::speedmode) != OLD_SPEEDMODE)
-					{
+				    get_pref(Pref::speedmode) != OLD_SPEEDMODE) {
 					a->new_finespeed = e->parameters;
 					a->do_stuff |= SET_FINESPEED;
-					}
-				else if (e->parameters)
-					{
+				} else if (e->parameters) {
 					a->new_speed = e->parameters;
 					a->do_stuff |= SET_SPEED;
-					}
+				}
 				break;
-		   case EFF_DELAY:
-		      a->delay_counter = (e->parameters + 1);
-		      break;
+			case EFF_DELAY:
+				a->delay_counter = (e->parameters + 1);
+				break;
 			case EFF_SKIP:
 				a->do_stuff |= SET_SKIP;
 				a->new_note = e->parameters;
@@ -80,57 +75,52 @@ static unsigned long compute_pattern_duration(struct event *base,
 				break;
 			default:
 				break;
-				}
 			}
-      
-      update_tempo(a);
-		d += ratio2time(NORMAL_FINESPEED * a->delay_counter * a->speed,
-			 a->finespeed * 50);
+		}
 
-		for (j = 0; j < ntracks; j++)
-			{
+		update_tempo(a);
+		d += ratio2time(NORMAL_FINESPEED * a->delay_counter * a->speed,
+		    a->finespeed * 50);
+
+		for (j = 0; j < ntracks; j++) {
 			e = base + j * plength + i;
-			if ( (e->effect == EFF_LOOP) && e->parameters)
-				{
+			if ( (e->effect == EFF_LOOP) && e->parameters) {
 				d += (d - loop_start[j]) * e->parameters;
 				break;
-				}
 			}
-				
+		}
+
 		if ((a->do_stuff & SET_SKIP) || (a->do_stuff & SET_FASTSKIP))
 			break;
-		}
-	return d;
 	}
+	return d;
+}
 			
-static void set_pattern(struct automaton *a)
-	{
+static void 
+set_pattern(automaton *a)
+{
 	if ((a->pattern_num >= a->info->length) ||
-		a->gonethrough[a->pattern_num])
-		{
+	    a->gonethrough[a->pattern_num]) {
 		error = ENDED;
 		return;
-		}
+	}
 	a->gonethrough[a->pattern_num] = true;
 	a->pattern = a->info->patterns+a->pattern_num;
-	}
+}
 
-void compute_duration(struct automaton *a, struct song *song)
-	{
+void 
+compute_duration(automaton *a, song *song)
+{
 	unsigned long duration;
 
-	loop_start = (unsigned long *)calloc(song->ntracks, 
-	    sizeof(unsigned long));
-	if (!loop_start)
-		return;
+	loop_start = new unsigned long [song->ntracks];
 	duration = 0;
 	a->pattern->total = 0;
 	error = NONE;
-	while (error != ENDED)
-		{
+	while (error != ENDED) {
 		a->pattern->duration =
-			compute_pattern_duration(a->pattern->e,
-				song->info.plength, song->ntracks, a);
+		    compute_pattern_duration(a->pattern->e,
+			song->info.plength, song->ntracks, a);
 		duration += a->pattern->duration;
 		if (a->do_stuff & SET_FASTSKIP)
 			a->pattern_num = a->new_pattern;
@@ -138,8 +128,8 @@ void compute_duration(struct automaton *a, struct song *song)
 			a->pattern_num++; 
 		set_pattern(a);
 		a->pattern->total = duration;
-		}
-	song->info.duration = duration;
-	free(loop_start);
-	error = NONE;
 	}
+	song->info.duration = duration;
+	delete [] loop_start;
+	error = NONE;
+}
