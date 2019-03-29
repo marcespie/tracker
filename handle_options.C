@@ -39,9 +39,9 @@ int stereo;
 int start;			/* parameters for st_play */
 int trandom;
 
-int loop = false;	/* main automaton looping at end of argv ? */
+bool loop = false;	/* main automaton looping at end of argv ? */
 
-static struct option opts[] = {
+static option opts[] = {
 	{"help", 's'},				/* 0 */
 	{"frequency", 'n'},			/* 1 */
 	{"stereo", 's', 1},			/* 2 */
