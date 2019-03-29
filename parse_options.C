@@ -23,6 +23,7 @@
 #include "extern.h"
 #include "autoinit.h"
 #include <ctype.h>
+#include <list>
 
 
 enum class state {
@@ -99,10 +100,7 @@ string2args(char *s, char *v[])
 	return j;
 }
 
-static struct option_set_list {
-	struct option_set_list *next;
-	struct option_set set;
-} *first, *current;
+std::list<std::unique_ptr<option_set>> options;
 
 static void 
 set_up_args(option_set& set)
@@ -136,41 +134,31 @@ set_up_args(option_set& set)
 void 
 add_option_set(option_set& set)
 {
-	auto n = new option_set_list;
-	n->next = nullptr;
-	n->set.options = set.options;
-	n->set.number = set.number;
-	n->set.args = set.args;
-	set_up_args(set);
-	if (current)
-		current->next = n;
-	else
-		first = n;
-	current = n;
+	auto s = new option_set(set);
+	set_up_args(*s);
+	options.push_back(std::unique_ptr<option_set>(s));
 }
 
 static int 
 do_option(char *text, char *arg)
 {
-	struct option_set_list *sweep;
-	struct option_set *set;
 	int i, j;
 	const char *check;
 	int argindex;
 	int type;
 
-	for (sweep = first; sweep; sweep = sweep->next) {
-		set = &(sweep->set);
-		for (i = 0; i < set->number; i++) {
-			check = set->options[i].optiontext;
+	for (auto& p: options) {
+		auto set = *p;
+		for (i = 0; i < set.number; i++) {
+			check = set.options[i].optiontext;
 
 			for (j = 0; check[j] && (check[j] == tolower(text[j])); j++)
 				;
-			if (set->options[i].type == 'm')
-				argindex = set->options[i].multi;
+			if (set.options[i].type == 'm')
+				argindex = set.options[i].multi;
 			else
 				argindex = i;
-			type = set->options[argindex].type;
+			type = set.options[argindex].type;
 			if (text[j]) {
 				/* last chance for switches */
 				if (type == 's'
@@ -182,9 +170,9 @@ do_option(char *text, char *arg)
 						;
 					if (!text[j+2]) {
 						if (i == argindex)
-							set->args[i] = 0;
+							set.args[i] = 0;
 						else
-							set->args[argindex] = 1; 
+							set.args[argindex] = 1; 
 						return 0;
 					}
 				}
@@ -194,26 +182,26 @@ do_option(char *text, char *arg)
 				case 's':
 				case 'm':
 					if (i == argindex)
-						set->args[argindex] = 1;
+						set.args[argindex] = 1;
 					else
-						set->args[argindex] = 0;
+						set.args[argindex] = 0;
 					return 0;
 				case 'n':
 					if (int d; arg && sscanf(arg, "%d", &d) == 1) {
-						set->args[argindex] = d;
+						set.args[argindex] = d;
 						return 1;
 					} else {
-						set->args[argindex] = 
-						    set->options[i].def_scalar;
+						set.args[argindex] = 
+						    set.options[i].def_scalar;
 						return 0;
 					}
 				case 'a':
 					if (arg && (arg[0] != '-')) {
-						set->args[argindex] = arg;
+						set.args[argindex] = arg;
 						return 1;
 					} else {
-						set->args[argindex] = 
-						    set->options[i].def_string;
+						set.args[argindex] = 
+						    set.options[i].def_string;
 						return 0;
 					}
 				}
