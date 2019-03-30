@@ -64,14 +64,20 @@ static T* buf;
 template<> int16_t* buf<int16_t>;
 template<> uint8_t* buf<uint8_t>;
 
+template<typename T>
+inline T
+VALUE(int32_t x);
+
+template<>
 inline int16_t
-VALUE16(int32_t x)
+VALUE<int16_t>(int32_t x)
 {
 	return x;
 }
 
+template<>
 inline uint8_t
-VALUE8(int32_t x)
+VALUE<uint8_t>(int32_t x)
 {
 	return x+128;
 }
@@ -91,8 +97,8 @@ do_add_samples<int16_t>(int32_t left, int32_t right, int n)
 	int32_t s1 = (left+right)*pps[n];
 	int32_t s2 = (left-right)*pms[n];
 
-	buf<int16_t>[idx++] = VALUE16( (s1 + s2) >> 16);
-	buf<int16_t>[idx++] = VALUE16( (s1 - s2) >> 16);
+	buf<int16_t>[idx++] = VALUE<int16_t>( (s1 + s2) >> 16);
+	buf<int16_t>[idx++] = VALUE<int16_t>( (s1 - s2) >> 16);
 }
 
 template<>
@@ -100,11 +106,11 @@ void
 do_add_samples<int16_t, true, false>(int32_t left, int32_t right, int n)
 {
 	if (n<16) {
-		buf<int16_t>[idx++] = VALUE16(left << (16-n) );
-		buf<int16_t>[idx++] = VALUE16(right << (16-n) );
+		buf<int16_t>[idx++] = VALUE<int16_t>(left << (16-n) );
+		buf<int16_t>[idx++] = VALUE<int16_t>(right << (16-n) );
 	} else {
-		buf<int16_t>[idx++] = VALUE16(left >> (n-16) );
-		buf<int16_t>[idx++] = VALUE16(right >> (n-16) );
+		buf<int16_t>[idx++] = VALUE<int16_t>(left >> (n-16) );
+		buf<int16_t>[idx++] = VALUE<int16_t>(right >> (n-16) );
 	}
 }
 
@@ -113,9 +119,9 @@ void
 do_add_samples<int16_t,false>(int32_t left, int32_t right, int n)
 {
 	if (n<15)		/* is this possible? */
-		buf<int16_t>[idx++] = VALUE16( (left + right) << (15-n) );
+		buf<int16_t>[idx++] = VALUE<int16_t>( (left + right) << (15-n) );
 	else
-		buf<int16_t>[idx++] = VALUE16( (left + right) >> (n-15) );
+		buf<int16_t>[idx++] = VALUE<int16_t>( (left + right) >> (n-15) );
 }
 
 template<>
@@ -125,8 +131,8 @@ do_add_samples<uint8_t>(int32_t left, int32_t right, int n)
 	int32_t s1 = (left+right)*pps[n];
 	int32_t s2 = (left-right)*pms[n];
 
-	buf<uint8_t>[idx++] = VALUE8( (s1 + s2) >> 24);
-	buf<uint8_t>[idx++] = VALUE8( (s1 - s2) >> 24);
+	buf<uint8_t>[idx++] = VALUE<uint8_t>( (s1 + s2) >> 24);
+	buf<uint8_t>[idx++] = VALUE<uint8_t>( (s1 - s2) >> 24);
 }
 
 template<>
@@ -135,15 +141,15 @@ do_add_samples<uint8_t,true, false>(int32_t left, int32_t right, int n)
 {
 	/* if n<8 -> same problem as above,
 	but that won't happen, right? */
-	buf<uint8_t>[idx++] = VALUE8(left >> (n-8) );
-	buf<uint8_t>[idx++] = VALUE8(right >> (n-8) );
+	buf<uint8_t>[idx++] = VALUE<uint8_t>(left >> (n-8) );
+	buf<uint8_t>[idx++] = VALUE<uint8_t>(right >> (n-8) );
 }
 
 template<>
 void 
 do_add_samples<uint8_t,false>(int32_t left, int32_t right, int n)
 {
-	buf<uint8_t>[idx++] = VALUE8( (left+right) >> (n-7) );
+	buf<uint8_t>[idx++] = VALUE<uint8_t>( (left+right) >> (n-7) );
 }
 
 using audio_offset = unsigned long long;
@@ -204,7 +210,7 @@ set_add_samples()
 	bool mix = pps[10] == pms[10];
 	if (dsp_samplesize == 16) {
 		if (stereo) {
-			if (pps[10] == pms[10])
+			if (mix)
 				add_samples = do_add_samples<int16_t, true, false>;
 			else
 				add_samples = do_add_samples<int16_t>;
@@ -212,7 +218,7 @@ set_add_samples()
 			add_samples = do_add_samples<int16_t, false>;
 	} else {
 		if (stereo) {
-			if (pps[10] == pms[10])
+			if (mix)
 				add_samples = do_add_samples<uint8_t, true, false>;
 			else
 				add_samples = do_add_samples<uint8_t>;
