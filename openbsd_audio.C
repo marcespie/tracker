@@ -36,11 +36,11 @@ absdiff(S x, T y)
 }
 
 static bool stereo;
-static uint32_t pps[32], pms[32];
+static int32_t pps[32], pms[32];
 static int dsp_samplesize = 0;
 
 
-void (*add_samples)(long, long, int);
+void (*add_samples)(int32_t, int32_t, int);
 
 
 static void set_add_samples();
@@ -60,14 +60,14 @@ set_mix(int percent)
 
 static int16_t *buffer16;
 inline int16_t
-VALUE16(long x)
+VALUE16(int32_t x)
 {
 	return x;
 }
 
 static uint8_t *buffer;
 inline uint8_t
-VALUE8(long x)
+VALUE8(int32_t x)
 {
 	return x+128;
 }
@@ -77,15 +77,15 @@ static int dsize;			/* current data size */
 static unsigned long samples_max;	/* number of samples in buffer */
 
 // abstract specialization for each possibility
-template<typename sample, bool stereo, bool mixing>
-static void do_add_samples(long, long, int);
+template<typename sample, bool stereo =true, bool mixing =stereo>
+static void do_add_samples(int32_t, int32_t, int);
 
 template<>
 void 
-do_add_samples<int16_t, true, true>(long left, long right, int n)
+do_add_samples<int16_t>(int32_t left, int32_t right, int n)
 {
-	long s1 = (left+right)*pps[n];
-	long s2 = (left-right)*pms[n];
+	int32_t s1 = (left+right)*pps[n];
+	int32_t s2 = (left-right)*pms[n];
 
 	buffer16[idx++] = VALUE16( (s1 + s2) >> 16);
 	buffer16[idx++] = VALUE16( (s1 - s2) >> 16);
@@ -93,7 +93,7 @@ do_add_samples<int16_t, true, true>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<int16_t, true, false>(long left, long right, int n)
+do_add_samples<int16_t, true, false>(int32_t left, int32_t right, int n)
 {
 	if (n<16) {
 		buffer16[idx++] = VALUE16(left << (16-n) );
@@ -106,7 +106,7 @@ do_add_samples<int16_t, true, false>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<int16_t,false, false>(long left, long right, int n)
+do_add_samples<int16_t,false>(int32_t left, int32_t right, int n)
 {
 	if (n<15)		/* is this possible? */
 		buffer16[idx++] = VALUE16( (left + right) << (15-n) );
@@ -116,10 +116,10 @@ do_add_samples<int16_t,false, false>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<uint8_t,true, true>(long left, long right, int n)
+do_add_samples<uint8_t>(int32_t left, int32_t right, int n)
 {
-	long s1 = (left+right)*pps[n];
-	long s2 = (left-right)*pms[n];
+	int32_t s1 = (left+right)*pps[n];
+	int32_t s2 = (left-right)*pms[n];
 
 	buffer[idx++] = VALUE8( (s1 + s2) >> 24);
 	buffer[idx++] = VALUE8( (s1 - s2) >> 24);
@@ -127,7 +127,7 @@ do_add_samples<uint8_t,true, true>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<uint8_t,true, false>(long left, long right, int n)
+do_add_samples<uint8_t,true, false>(int32_t left, int32_t right, int n)
 {
 	/* if n<8 -> same problem as above,
 	but that won't happen, right? */
@@ -137,7 +137,7 @@ do_add_samples<uint8_t,true, false>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<uint8_t,false, false>(long left, long right, int n)
+do_add_samples<uint8_t,false>(int32_t left, int32_t right, int n)
 {
 	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
 }
@@ -203,17 +203,17 @@ set_add_samples()
 			if (pps[10] == pms[10])
 				add_samples = do_add_samples<int16_t, true, false>;
 			else
-				add_samples = do_add_samples<int16_t, true, true>;
+				add_samples = do_add_samples<int16_t>;
 		} else
-			add_samples = do_add_samples<int16_t, false, false>;
+			add_samples = do_add_samples<int16_t, false>;
 	} else {
 		if (stereo) {
 			if (pps[10] == pms[10])
 				add_samples = do_add_samples<uint8_t, true, false>;
 			else
-				add_samples = do_add_samples<uint8_t, true, true>;
+				add_samples = do_add_samples<uint8_t>;
 	    	} else
-			add_samples = do_add_samples<uint8_t, false, false>;
+			add_samples = do_add_samples<uint8_t, false>;
 	}
 }
 
@@ -276,7 +276,7 @@ actually_flush_buffer(void)
 }
 
 void 
-output_samples(long left, long right, int n)
+output_samples(int32_t left, int32_t right, int n)
 {
 	if (idx >= samples_max - 1)
 		actually_flush_buffer();

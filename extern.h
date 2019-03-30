@@ -166,7 +166,7 @@ extern void set_mix(int percent);
  * Samples are n bits signed.
  * Output routine should be able to face anything from 16 to 25
  */
-extern void output_samples(long left, long right, int n);
+extern void output_samples(int32_t left, int32_t right, int n);
 
 /* flush_buffer(): call from time to time, because buffering
  * is done by the program to get better (?) performance.
