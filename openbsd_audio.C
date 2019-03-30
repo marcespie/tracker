@@ -36,9 +36,14 @@ absdiff(S x, T y)
 }
 
 static bool stereo;
-
-
 static uint32_t pps[32], pms[32];
+static int dsp_samplesize = 0;
+
+
+void (*add_samples)(long, long, int);
+
+
+static void set_add_samples();
 
 void 
 set_mix(int percent)
@@ -50,9 +55,8 @@ set_mix(int percent)
 		else
 			pms[i] = pps[i] - (percent >> (i - 29) )/25;
 	}
+	set_add_samples();
 }
-
-
 
 static int16_t *buffer16;
 inline int16_t
@@ -72,37 +76,37 @@ static unsigned long idx;
 static int dsize;			/* current data size */
 static unsigned long samples_max;	/* number of samples in buffer */
 
-void (*add_samples)(long, long, int);
-
 // abstract specialization for each possibility
-template<typename sample, bool stereo>
+template<typename sample, bool stereo, bool mixing>
 static void do_add_samples(long, long, int);
-
 
 template<>
 void 
-do_add_samples<int16_t, true>(long left, long right, int n)
+do_add_samples<int16_t, true, true>(long left, long right, int n)
 {
-	if (pms[n] == pps[n]) {	/* no mixing */
-		if (n<16) {
-			buffer16[idx++] = VALUE16(left << (16-n) );
-			buffer16[idx++] = VALUE16(right << (16-n) );
-		} else {
-			buffer16[idx++] = VALUE16(left >> (n-16) );
-			buffer16[idx++] = VALUE16(right >> (n-16) );
-		}
-	} else {
-		long s1 = (left+right)*pps[n];
-		long s2 = (left-right)*pms[n];
+	long s1 = (left+right)*pps[n];
+	long s2 = (left-right)*pms[n];
 
-		buffer16[idx++] = VALUE16( (s1 + s2) >> 16);
-		buffer16[idx++] = VALUE16( (s1 - s2) >> 16);
+	buffer16[idx++] = VALUE16( (s1 + s2) >> 16);
+	buffer16[idx++] = VALUE16( (s1 - s2) >> 16);
+}
+
+template<>
+void 
+do_add_samples<int16_t, true, false>(long left, long right, int n)
+{
+	if (n<16) {
+		buffer16[idx++] = VALUE16(left << (16-n) );
+		buffer16[idx++] = VALUE16(right << (16-n) );
+	} else {
+		buffer16[idx++] = VALUE16(left >> (n-16) );
+		buffer16[idx++] = VALUE16(right >> (n-16) );
 	}
 }
 
 template<>
 void 
-do_add_samples<int16_t,false>(long left, long right, int n)
+do_add_samples<int16_t,false, false>(long left, long right, int n)
 {
 	if (n<15)		/* is this possible? */
 		buffer16[idx++] = VALUE16( (left + right) << (15-n) );
@@ -112,25 +116,28 @@ do_add_samples<int16_t,false>(long left, long right, int n)
 
 template<>
 void 
-do_add_samples<uint8_t,true>(long left, long right, int n)
+do_add_samples<uint8_t,true, true>(long left, long right, int n)
 {
-	if (pms[n] == pps[n]) {	/* no mixing */
-		/* if n<8 -> same problem as above,
-		but that won't happen, right? */
-		buffer[idx++] = VALUE8(left >> (n-8) );
-		buffer[idx++] = VALUE8(right >> (n-8) );
-	} else {
-		long s1 = (left+right)*pps[n];
-		long s2 = (left-right)*pms[n];
+	long s1 = (left+right)*pps[n];
+	long s2 = (left-right)*pms[n];
 
-		buffer[idx++] = VALUE8( (s1 + s2) >> 24);
-		buffer[idx++] = VALUE8( (s1 - s2) >> 24);
-	}
+	buffer[idx++] = VALUE8( (s1 + s2) >> 24);
+	buffer[idx++] = VALUE8( (s1 - s2) >> 24);
 }
 
 template<>
 void 
-do_add_samples<uint8_t,false>(long left, long right, int n)
+do_add_samples<uint8_t,true, false>(long left, long right, int n)
+{
+	/* if n<8 -> same problem as above,
+	but that won't happen, right? */
+	buffer[idx++] = VALUE8(left >> (n-8) );
+	buffer[idx++] = VALUE8(right >> (n-8) );
+}
+
+template<>
+void 
+do_add_samples<uint8_t,false, false>(long left, long right, int n)
 {
 	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
 }
@@ -143,8 +150,6 @@ static struct sio_hdl *hdl;
 static unsigned long current_freq;
 
 unsigned long total;
-
-static int dsp_samplesize = 0;
 
 static void
 movecb(void *, int delta)
@@ -180,23 +185,36 @@ open_audio(unsigned long f, int)
 	dsize = par.bps;
 	buffer = new uint8_t [buf_max];
 	buffer16 = reinterpret_cast<int16_t *>(buffer);
-	if (dsp_samplesize == 16) {
-		if (stereo)
-			add_samples = do_add_samples<int16_t, true>;
-		else
-			add_samples = do_add_samples<int16_t, false>;
-	} else {
-		if (stereo)
-			add_samples = do_add_samples<uint8_t, true>;
-		else
-			add_samples = do_add_samples<uint8_t, false>;
-	}
+	set_add_samples();
 
 	idx = 0;
 	samples_max = buf_max / dsize / par.pchan;
 	set_watched(watched::frequency, current_freq);
 	total = 0;
 	return current_freq;
+}
+
+static void
+set_add_samples()
+{
+	bool mix = pps[10] == pms[10];
+	if (dsp_samplesize == 16) {
+		if (stereo) {
+			if (pps[10] == pms[10])
+				add_samples = do_add_samples<int16_t, true, false>;
+			else
+				add_samples = do_add_samples<int16_t, true, true>;
+		} else
+			add_samples = do_add_samples<int16_t, false, false>;
+	} else {
+		if (stereo) {
+			if (pps[10] == pms[10])
+				add_samples = do_add_samples<uint8_t, true, false>;
+			else
+				add_samples = do_add_samples<uint8_t, true, true>;
+	    	} else
+			add_samples = do_add_samples<uint8_t, false, false>;
+	}
 }
 
 /* synchronize stuff with audio output */
