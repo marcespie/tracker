@@ -238,7 +238,7 @@ set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
 	readjust_beat();
 }
 
-static int max_side;		/* number of bits on one side */
+static int max_side;	/* number of bits on one side */
 static int max_sample;	/* number of bits for one sample */
 
 void 
@@ -249,7 +249,7 @@ set_data_width(int side, int sample)
 }
 
 inline void
-linear_value(audio_channel& ch, long& v)
+linear_value(audio_channel& ch, int32_t& v)
 {
 	switch(ch.mode) {
 	case DO_NOTHING:
@@ -293,7 +293,7 @@ linear_value(audio_channel& ch, long& v)
 inline void
 linear_resample(void)
 {
-	long value[NUMBER_SIDES];
+	int32_t value[NUMBER_SIDES];
 
 	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
@@ -308,7 +308,7 @@ linear_resample(void)
 }
 
 inline void
-oversample_value(audio_channel& ch, long& v)
+oversample_value(audio_channel& ch, int32_t& v)
 {
 	switch(ch.mode) {
 	case DO_NOTHING:
@@ -344,7 +344,7 @@ oversample_value(audio_channel& ch, long& v)
 inline void
 over_resample(void)
 {
-	long value[NUMBER_SIDES];
+	int32_t value[NUMBER_SIDES];
 
 	value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
 
