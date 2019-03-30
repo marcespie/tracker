@@ -58,14 +58,18 @@ set_mix(int percent)
 	set_add_samples();
 }
 
-static int16_t *buffer16;
+template<typename T>
+static T* buf;
+
+template<> int16_t* buf<int16_t>;
+template<> uint8_t* buf<uint8_t>;
+
 inline int16_t
 VALUE16(int32_t x)
 {
 	return x;
 }
 
-static uint8_t *buffer;
 inline uint8_t
 VALUE8(int32_t x)
 {
@@ -87,8 +91,8 @@ do_add_samples<int16_t>(int32_t left, int32_t right, int n)
 	int32_t s1 = (left+right)*pps[n];
 	int32_t s2 = (left-right)*pms[n];
 
-	buffer16[idx++] = VALUE16( (s1 + s2) >> 16);
-	buffer16[idx++] = VALUE16( (s1 - s2) >> 16);
+	buf<int16_t>[idx++] = VALUE16( (s1 + s2) >> 16);
+	buf<int16_t>[idx++] = VALUE16( (s1 - s2) >> 16);
 }
 
 template<>
@@ -96,11 +100,11 @@ void
 do_add_samples<int16_t, true, false>(int32_t left, int32_t right, int n)
 {
 	if (n<16) {
-		buffer16[idx++] = VALUE16(left << (16-n) );
-		buffer16[idx++] = VALUE16(right << (16-n) );
+		buf<int16_t>[idx++] = VALUE16(left << (16-n) );
+		buf<int16_t>[idx++] = VALUE16(right << (16-n) );
 	} else {
-		buffer16[idx++] = VALUE16(left >> (n-16) );
-		buffer16[idx++] = VALUE16(right >> (n-16) );
+		buf<int16_t>[idx++] = VALUE16(left >> (n-16) );
+		buf<int16_t>[idx++] = VALUE16(right >> (n-16) );
 	}
 }
 
@@ -109,9 +113,9 @@ void
 do_add_samples<int16_t,false>(int32_t left, int32_t right, int n)
 {
 	if (n<15)		/* is this possible? */
-		buffer16[idx++] = VALUE16( (left + right) << (15-n) );
+		buf<int16_t>[idx++] = VALUE16( (left + right) << (15-n) );
 	else
-		buffer16[idx++] = VALUE16( (left + right) >> (n-15) );
+		buf<int16_t>[idx++] = VALUE16( (left + right) >> (n-15) );
 }
 
 template<>
@@ -121,8 +125,8 @@ do_add_samples<uint8_t>(int32_t left, int32_t right, int n)
 	int32_t s1 = (left+right)*pps[n];
 	int32_t s2 = (left-right)*pms[n];
 
-	buffer[idx++] = VALUE8( (s1 + s2) >> 24);
-	buffer[idx++] = VALUE8( (s1 - s2) >> 24);
+	buf<uint8_t>[idx++] = VALUE8( (s1 + s2) >> 24);
+	buf<uint8_t>[idx++] = VALUE8( (s1 - s2) >> 24);
 }
 
 template<>
@@ -131,15 +135,15 @@ do_add_samples<uint8_t,true, false>(int32_t left, int32_t right, int n)
 {
 	/* if n<8 -> same problem as above,
 	but that won't happen, right? */
-	buffer[idx++] = VALUE8(left >> (n-8) );
-	buffer[idx++] = VALUE8(right >> (n-8) );
+	buf<uint8_t>[idx++] = VALUE8(left >> (n-8) );
+	buf<uint8_t>[idx++] = VALUE8(right >> (n-8) );
 }
 
 template<>
 void 
 do_add_samples<uint8_t,false>(int32_t left, int32_t right, int n)
 {
-	buffer[idx++] = VALUE8( (left+right) >> (n-7) );
+	buf<uint8_t>[idx++] = VALUE8( (left+right) >> (n-7) );
 }
 
 using audio_offset = unsigned long long;
@@ -183,8 +187,8 @@ open_audio(unsigned long f, int)
 
 	dsp_samplesize = par.bits;
 	dsize = par.bps;
-	buffer = new uint8_t [buf_max];
-	buffer16 = reinterpret_cast<int16_t *>(buffer);
+	buf<uint8_t> = new uint8_t [buf_max];
+	buf<int16_t> = reinterpret_cast<int16_t *>(buf<uint8_t>);
 	set_add_samples();
 
 	idx = 0;
@@ -270,7 +274,7 @@ actually_flush_buffer(void)
 {
 	if (idx) {
 		total += idx * dsize;
-		sio_write(hdl, buffer, dsize * idx);
+		sio_write(hdl, buf<uint8_t>, dsize * idx);
 	}
 	idx = 0;
 }
@@ -298,7 +302,7 @@ close_audio(void)
 {
 	actually_flush_buffer();
 	sio_close(hdl);
-	delete [] buffer;
+	delete [] buf<uint8_t>;
 }
 
 void 
