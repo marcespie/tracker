@@ -439,9 +439,10 @@ static void
 adjust_volumes(song *song)
 {
 	for (unsigned i = 1; i <= song->ninstr; i++)
-	for (unsigned j = 0; j <= MAX_VOLUME; j++)	/* note <= not a bug */
-		song->samples[i]->volume_lookup[j] = 
-		    (song->ntracks == 6) ? (4 * j) / 3 : j;
+		/* note <= not a bug */
+		for (unsigned j = 0; j <= MAX_VOLUME; j++)	
+			song->samples[i]->volume_lookup[j] = 
+			    (song->ntracks == 6) ? (4 * j) / 3 : j;
 }
 
 void 
@@ -593,7 +594,7 @@ read_song(exfile& f, int type)
 	if (type == NEW_NO_CHECK)
 		byteskip(f, 4);
 
-	song->max_sample_width = 8;			/* temporary */
+	song->max_sample_width = 8;
 
 	if (song->ntracks == 4)
 		song->side_width = song->max_sample_width + 6 + 1;
