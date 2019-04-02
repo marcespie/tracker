@@ -92,7 +92,7 @@ dump_song(song *song)
 			static char s[15];
 			char *base = s;
 
-			if (get_pref(Pref::color))
+			if (pref::get(Pref::color))
 				base = write_color(base, 
 				    song->samples[i]->color);
 			*base++ = instname[i];
@@ -127,7 +127,7 @@ dump_song(song *song)
 				}
 			}
 			base = s;
-			if (get_pref(Pref::color))
+			if (pref::get(Pref::color))
 				base = write_color(base, 0);
 			*base = 0;
 			info(handle, s);

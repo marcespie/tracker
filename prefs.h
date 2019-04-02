@@ -23,5 +23,9 @@ enum class Pref {type, speed, tolerate, repeats,
 enum { NORMAL_SPEEDMODE, FINESPEED_ONLY, SPEED_ONLY, OLD_SPEEDMODE,
     ALTER_PROTRACKER };
 
-extern long get_pref(Pref index);
-extern void set_pref(Pref index, long value);
+class pref {
+	static inline long preferences[static_cast<size_t>(Pref::max_prefs)];
+public:
+	static long get(Pref index);
+	static void set(Pref index, long value);
+};

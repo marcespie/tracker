@@ -61,7 +61,7 @@ goodbye(int sig)
 	static char buffer[25];
 	char *pter = buffer;
 
-	if (get_pref(Pref::color))
+	if (pref::get(Pref::color))
 		pter = write_color(pter, 0);
 	sprintf(pter, "Signal %d", sig);
 	end_all(pter);
@@ -80,7 +80,7 @@ suspend(int)
 	static char buffer[25];
 	char *buf = buffer;
 
-	if (get_pref(Pref::color))
+	if (pref::get(Pref::color))
 		buf = write_color(buf, 0);
 	*buf = 0;
 	puts(buf);
@@ -214,10 +214,10 @@ get_ui(void)
 	case 'q':
 		return result(UI_QUIT);
 	case 'r':
-		if (get_pref(Pref::repeats))
-			set_pref(Pref::repeats, 0);
+		if (pref::get(Pref::repeats))
+			pref::set(Pref::repeats, 0);
 		else
-			set_pref(Pref::repeats, 1);
+			pref::set(Pref::repeats, 1);
 		break;
 
 	case 'm':
@@ -241,8 +241,8 @@ get_ui(void)
 		return result(UI_JUMP_TO_PATTERN, p);
 		}
 	case '?':
-		set_pref(Pref::show, !get_pref(Pref::show));
-		if (get_pref(Pref::show))
+		pref::set(Pref::show, !pref::get(Pref::show));
+		if (pref::get(Pref::show))
 			putchar('\n');
 		break;
 	default:
@@ -377,8 +377,8 @@ do_display_pattern(unsigned int current, unsigned int total,
 	char buf0[50], buf1[50];
 
 	if (run_in_fg()) {
-		if (get_pref(Pref::xterm)) {
-			if (get_pref(Pref::show)) {
+		if (pref::get(Pref::xterm)) {
+			if (pref::get(Pref::show)) {
 				for (int i = 0; i < ntracks; i++)
 					printf("--------------");
 				putchar('\n');
@@ -393,7 +393,7 @@ do_display_pattern(unsigned int current, unsigned int total,
 				fflush(stdout);
 			}
 		} else {
-			if (get_pref(Pref::show))
+			if (pref::get(Pref::show))
 				printf("\n%3u/%3u[%3u] %s\n", current, total, real, title);
 			else
 				printf("%3u/%3u\b\b\b\b\b\b\b", current, total);

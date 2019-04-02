@@ -16,18 +16,15 @@
  */
 #include "extern.h"
 #include "prefs.h"
-#include "autoinit.h"
-
-static long preferences[static_cast<size_t>(Pref::max_prefs)];
 
 void 
-set_pref(Pref index, long value)
+pref::set(Pref index, long value)
 {
 	preferences[static_cast<size_t>(index)] = value;
 }
 
 long 
-get_pref(Pref index)
+pref::get(Pref index)
 {
-   	return preferences[static_cast<size_t>(index)];
+ 	return preferences[static_cast<size_t>(index)];
 }

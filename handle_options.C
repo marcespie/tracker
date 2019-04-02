@@ -80,8 +80,8 @@ set_default_prefs(void)
 {
 	char *s;
 
-	set_pref(Pref::imask, 0);
-	set_pref(Pref::bcdvol, 0);
+	pref::set(Pref::imask, 0);
+	pref::set(Pref::bcdvol, 0);
 
 	/* XXX */
 	s = getenv("TERM");
@@ -157,7 +157,7 @@ set_speed_mode(const char *p)
 		end_all("Unknwon speedmode");
 		return;
 	}
-	set_pref(Pref::speedmode, mode);
+	pref::set(Pref::speedmode, mode);
 }
 
 void 
@@ -184,27 +184,27 @@ handle_options(int argc, char *argv[])
 	loop = args.get_long("loop");
 	set_watched(watched::oversample, args.get_long("oversample"));
 	trandom = args.get_long("randomize");
-	set_pref(Pref::show, args.get_long("scroll"));
-	set_pref(Pref::tolerate, args.get_long("picky"));
-	set_pref(Pref::type, args.get_long("both"));
-	set_pref(Pref::repeats, args.get_long("repeats"));
-	set_pref(Pref::speed, args.get_long("speed"));
+	pref::set(Pref::show, args.get_long("scroll"));
+	pref::set(Pref::tolerate, args.get_long("picky"));
+	pref::set(Pref::type, args.get_long("both"));
+	pref::set(Pref::repeats, args.get_long("repeats"));
+	pref::set(Pref::speed, args.get_long("speed"));
 	set_mix(args.get_long("mix"));
-	set_pref(Pref::color, args.get_long("color"));
-	set_pref(Pref::xterm, args.get_long("xterm"));
+	pref::set(Pref::color, args.get_long("color"));
+	pref::set(Pref::xterm, args.get_long("xterm"));
 
 	set_speed_mode(args.get_string("speedmode"));
 
-	set_pref(Pref::transpose, args.get_long("transpose"));
+	pref::set(Pref::transpose, args.get_long("transpose"));
 	if (args.get_string("cut"))
-		set_pref(Pref::imask, get_mask(args.get_string("cut")));
+		pref::set(Pref::imask, get_mask(args.get_string("cut")));
 	else if (args.get_string("add"))
-		set_pref(Pref::imask, ~get_mask(args.get_string("add")));
+		pref::set(Pref::imask, ~get_mask(args.get_string("add")));
 	if (args.get_string("halve"))
 		half_mask = get_mask(args.get_string("halve"));
 	else if (args.get_string("double"))
 		half_mask = ~get_mask(args.get_string("double"));
-	set_pref(Pref::dump, args.get_long("verbose"));
+	pref::set(Pref::dump, args.get_long("verbose"));
 	start = args.get_long("start");
 	if (args.get_string("list")) {
 		char *s;
@@ -217,5 +217,5 @@ handle_options(int argc, char *argv[])
 			delete [] s;
 		}
 	}
-	set_pref(Pref::output, args.get_long("output"));
+	pref::set(Pref::output, args.get_long("output"));
 }

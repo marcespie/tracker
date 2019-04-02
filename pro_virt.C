@@ -50,7 +50,7 @@ compute_pattern_duration(event *base, unsigned int plength, unsigned int ntracks
 			switch(e->effect) {
 			case EFF_SPEED:
 				if (e->parameters >= 32 && 
-				    get_pref(Pref::speedmode) != OLD_SPEEDMODE) {
+				    pref::get(Pref::speedmode) != OLD_SPEEDMODE) {
 					a->new_finespeed = e->parameters;
 					a->do_stuff |= SET_FINESPEED;
 				} else if (e->parameters) {

@@ -330,7 +330,7 @@ static void
 set_speed(automaton *a, const event *e)
 {
 	if (e->parameters >= 32 && 
-	    get_pref(Pref::speedmode) != OLD_SPEEDMODE) {
+	    pref::get(Pref::speedmode) != OLD_SPEEDMODE) {
 		a->new_finespeed = e->parameters;
 		a->do_stuff |= SET_FINESPEED;
 	} else if (e->parameters) {
