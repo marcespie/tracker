@@ -17,7 +17,7 @@
 
 #include <math.h>
 
-#include "song.h"
+#include "protracker.h"
 #include "notes.h"
 #include "channel.h"
 #include "extern.h"

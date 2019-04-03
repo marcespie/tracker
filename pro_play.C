@@ -16,7 +16,7 @@
  */
 
 #include "extern.h"
-#include "song.h"
+#include "protracker.h"
 #include "notes.h"
 #include "channel.h"
 #include "prefs.h"

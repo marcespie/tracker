@@ -18,7 +18,7 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#include "song.h"
+#include "protracker.h"
 #include "extern.h"
 #include "notes.h"
 #include "channel.h"

@@ -1,4 +1,4 @@
-/* song.h */
+/* protracker.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

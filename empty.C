@@ -16,7 +16,7 @@
  */
 
 #include "extern.h"
-#include "song.h"
+#include "protracker.h"
 #include "autoinit.h"
 #include "empty.h"
      

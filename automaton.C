@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "song.h"
+#include "protracker.h"
 #include "notes.h"
 #include "p_automaton.h"
 #include "automaton.h"
