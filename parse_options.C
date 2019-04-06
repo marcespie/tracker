@@ -19,11 +19,11 @@
  * (and parse them in the future)
  * not used yet...
  */
+#include <list>
+
 #include "parse_options.h"
 #include "extern.h"
 #include "autoinit.h"
-#include <ctype.h>
-#include <list>
 
 
 enum class state {

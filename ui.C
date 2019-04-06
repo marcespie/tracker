@@ -18,9 +18,8 @@
 /* Set terminal discipline to non blocking io and such.
  */
 
-#include <signal.h>
-#include <ctype.h>
 #include <iostream>
+#include <signal.h>
 
 #include "extern.h"
 #include "prefs.h"

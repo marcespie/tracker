@@ -16,7 +16,7 @@
  */
 
 #include <memory>
-#include <assert.h>
+#include <cassert>
 
 #include "extern.h"
 #include "protracker.h"

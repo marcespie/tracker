@@ -15,8 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <ctype.h>
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <memory>
 

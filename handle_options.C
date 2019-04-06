@@ -16,7 +16,6 @@
  */
 
 #include "extern.h"
-#include <ctype.h>
 
 #include "parse_options.h"
 #include "watched_var.h"
