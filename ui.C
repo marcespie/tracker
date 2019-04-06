@@ -25,6 +25,7 @@
 #include "prefs.h"
 #include "autoinit.h"
 #include "timing.h"
+#include "ui.h"
 
 extern char *VERSION;
 

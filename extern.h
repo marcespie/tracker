@@ -15,7 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdarg.h>
 #include <string.h>
 #include <string>
 #include <functional>
@@ -214,12 +213,6 @@ const auto PLAY_ENDED=BASE_PLAY+1;
 /* Most of these functions are information display function.
  * A correct implementation should heed run_in_fg() if needed
  */
-
-/* notice(s, ...): important message for the user (terminal error maybe).
- * take extra pain to make it apparent even if run in background
- */
-extern void notice(const char *fmt, ...);
-extern void vnotice(const char *fmt, va_list al);
 
 /* status(s): some indication of the system current status... 
  * Used for fleeing error messages too. 

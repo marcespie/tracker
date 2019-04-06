@@ -1,4 +1,4 @@
-/* autoinit.c */
+/* ui.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,24 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "extern.h"
-#include "autoinit.h"
-#include "ui.h"
-
-void 
-at_end(void (*cleanup)(void))
-{
-	atexit(cleanup);
-}
-	
-void 
-end_all(const char *fmt, ...)
-{
-	va_list al;
-	if (fmt) {
-		va_start(al, fmt);
-		vnotice(fmt, al);
-		va_end(al);
-	}
-	exit(fmt ? EXIT_FAILURE : EXIT_SUCCESS);
-}
+#include <stdarg.h>
+extern void notice(const char *fmt, ...);
+extern void vnotice(const char *fmt, va_list al);
