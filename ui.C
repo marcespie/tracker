@@ -31,7 +31,7 @@ extern char *VERSION;
 
 #include <sys/types.h>
 #include <sys/termios.h>	/* this should work on all posix hosts */
-#include <errno.h>
+#include <cerrno>
 
 using TERM_SETUP=termios;
 
