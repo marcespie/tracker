@@ -15,7 +15,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-struct audio_channel;
+struct audio_channel {
+	enum audio_state { DO_NOTHING, PLAY, REPLAY};
+	sample_info *samp;
+	enum audio_state mode;
+	unsigned long pointer;
+	unsigned long step;
+	unsigned int volume;
+	unsigned int scaled_volume;
+	::pitch pitch;
+	int side;
+	inline auto C() const;
+	void play(sample_info *, ::pitch);
+	void set_pitch(::pitch);
+	void set_volume(unsigned int);
+	void set_position(size_t);
+	inline void linear_value(int32_t&);
+	inline void oversample_value(int32_t&);
+
+};
 
 /* release_audio_channels:
  * free every audio channel previously allocated
@@ -23,6 +41,15 @@ struct audio_channel;
 extern void release_audio_channels(void);
 
 enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
+
+#if 0
+class resampler {
+public:
+	void set_data_width(int side, int sample);
+	void resample();
+	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
+};
+#endif
 
 /* chan = new_channel_tag_list(prop):
  * allocates a new channel for the current song
@@ -50,24 +77,3 @@ extern void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b
  * set up secondary data structure for faster resampling
  */
 extern void prep_sample_info(sample_info *info);
-/* play_note(au, samp, pitch)
- * set audio channel au to play samp at pitch
- */
-extern void play_note(audio_channel *au, sample_info *samp, 
-pitch pitch);
-
-/* set_play_pitch(au, pitch):
- * set channel au to play at pitch pitch
- */
-extern void set_play_pitch(audio_channel *au, pitch pitch);
-
-/* set_play_volume(au, volume):
- * set channel au to play at volume volume
- */
-extern void set_play_volume(audio_channel *au, unsigned int volume);
-
-/* set_play_position(au, pos):
- * set position in sample for channel au at given offset
- */
-extern void set_play_position(audio_channel *au, size_t position);
-

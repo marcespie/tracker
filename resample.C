@@ -29,8 +29,6 @@
      
 const auto MAX_CHANNELS=8;
 
-enum audio_state { DO_NOTHING, PLAY, REPLAY};
-
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */
 
@@ -49,6 +47,12 @@ auto inline int_to_fix(T x)
 	return x << ACCURACY;
 }
 
+inline auto
+audio_channel::C() const
+{
+		return fix_to_int(pointer);
+}
+
 template<typename T>
 auto inline fractional_part(T x)
 {
@@ -56,20 +60,7 @@ auto inline fractional_part(T x)
 }
 
 
-static struct audio_channel {
-	sample_info *samp;
-	enum audio_state mode;
-	unsigned long pointer;
-	unsigned long step;
-	unsigned int volume;
-	unsigned int scaled_volume;
-	pitch pitch;
-	int side;
-	auto C() const
-	{
-		return fix_to_int(pointer);
-	}
-} chan[MAX_CHANNELS];
+static audio_channel chan[MAX_CHANNELS];
 
 /* Have to get some leeway for vibrato (since we don't bound pitch with
  * vibrato). This is conservative.
@@ -102,7 +93,7 @@ new_channel(int side)
 
 	/* base channel setup */
 	n = &chan[allocated++];
-	n->mode = DO_NOTHING;
+	n->mode = audio_channel::DO_NOTHING;
 	n->pointer = 0;
 	n->step = 0;
 	n->pitch = 0;
@@ -249,43 +240,40 @@ set_data_width(int side, int sample)
 }
 
 inline void
-linear_value(audio_channel& ch, int32_t& v)
+audio_channel::linear_value(int32_t& v)
 {
-	switch(ch.mode) {
+	switch(mode) {
 	case DO_NOTHING:
 		break;
 	case PLAY:
 	/* Since we now have fix_length, we can
 	 * do that check with improved performance
 	 */
-		if (ch.pointer < ch.samp->fix_length) {
-			auto step = fractional_part(ch.pointer);
-			v += 
-			    (ch.samp->start[ch.C()] * (fixed_unit - step) +
-			    ch.samp->start[ch.C()+1] * step)
-			    * (ch.scaled_volume);
-			ch.pointer += ch.step;
+		if (pointer < samp->fix_length) {
+			auto step = fractional_part(pointer);
+			v += (samp->start[C()] * (fixed_unit - step) +
+			    samp->start[C()+1] * step) * (scaled_volume);
+			pointer += step;
 			break;
 		} else {
 		/* is there a replay ? */
-			if (ch.samp->rp_start) {
-				ch.mode = REPLAY;
-				ch.pointer -= ch.samp->fix_length;
+			if (samp->rp_start) {
+				mode = REPLAY;
+				pointer -= samp->fix_length;
 				[[fallthrough]];
 			} else {
-				ch.mode = DO_NOTHING;
+				mode = DO_NOTHING;
 				break;
 			}
 		}
 	case REPLAY:
-		while (ch.pointer >= ch.samp->fix_rp_length)
-			ch.pointer -= ch.samp->fix_rp_length;
-		auto step = fractional_part(ch.pointer);
+		while (pointer >= samp->fix_rp_length)
+			pointer -= samp->fix_rp_length;
+		auto step = fractional_part(pointer);
 		v +=
-		    (ch.samp->rp_start[ch.C()] * (fixed_unit - step) +
-		    ch.samp->rp_start[ch.C()+1] * step)
-		    * ch.scaled_volume ;
-		ch.pointer += ch.step;
+		    (samp->rp_start[C()] * (fixed_unit - step) +
+		    samp->rp_start[C()+1] * step) * scaled_volume ;
+		pointer += step;
 		break;
 	}
 }
@@ -299,7 +287,7 @@ linear_resample(void)
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
 		for (int channel = 0; channel < allocated; channel++) {
 			auto& ch = chan[channel];
-			linear_value(ch, value[ch.side]);
+			ch.linear_value(value[ch.side]);
 		} 
 		/* some assembly required... */
 		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
@@ -308,35 +296,35 @@ linear_resample(void)
 }
 
 inline void
-oversample_value(audio_channel& ch, int32_t& v)
+audio_channel::oversample_value(int32_t& v)
 {
-	switch(ch.mode) {
+	switch(mode) {
 	case DO_NOTHING:
 		break;
 	case PLAY:
 		/* Since we now have fix_length, we can
 		 * do that check with improved performance
 		*/
-		if (ch.pointer < ch.samp->fix_length) {
-			v += ch.samp->start[ch.C()] * ch.scaled_volume;
-			ch.pointer += ch.step;
+		if (pointer < samp->fix_length) {
+			v += samp->start[C()] * scaled_volume;
+			pointer += step;
 			break;
 		} else {
 			/* is there a replay ? */
-			if (ch.samp->rp_start) {
-				ch.mode = REPLAY;
-				ch.pointer -= ch.samp->fix_length;
+			if (samp->rp_start) {
+				mode = REPLAY;
+				pointer -= samp->fix_length;
 				[[fallthrough]];
 			} else {
-				ch.mode = DO_NOTHING;
+				mode = DO_NOTHING;
 				break;
 			}
 		}
 	case REPLAY:
-		while (ch.pointer >= ch.samp->fix_rp_length)
-			ch.pointer -= ch.samp->fix_rp_length;
-		v += ch.samp->rp_start[ch.C()] * ch.scaled_volume;
-		ch.pointer += ch.step;
+		while (pointer >= samp->fix_rp_length)
+			pointer -= samp->fix_rp_length;
+		v += samp->rp_start[C()] * scaled_volume;
+		pointer += step;
 		break;
 	}
 }
@@ -354,7 +342,7 @@ over_resample(void)
 	while(true) {
 		for (int channel = 0; channel < allocated; channel++) {
 			auto& ch = chan[channel];
-			oversample_value(ch, value[ch.side]);
+			ch.oversample_value(value[ch.side]);
 		}
 		if (++sampling >= oversample) {
 			sampling = 0;
@@ -407,51 +395,52 @@ resample(void)
 
 /* setting up a given note */
 void 
-play_note(audio_channel *au, sample_info *samp, pitch pitch)
+audio_channel::play(sample_info *samp_, ::pitch pitch_)
 {
-	au->pointer = 0;
-	au->pitch = pitch;
-	au->step = step_table[pitch];
+	pointer = 0;
+	pitch = pitch_;
+	step = step_table[pitch];
 	/* need to change the volume there: play_note is the standard
 	 * mechanism used to change samples. Since the volume lookup table
 	 * is not necesssarily the same for each sample, we need to adjust
 	 * the scaled_volume there
 	 */
-	au->samp = samp;
-	au->scaled_volume = au->samp->volume_lookup[au->volume];
-	au->mode = PLAY;
+	samp = samp_;
+	scaled_volume = samp->volume_lookup[volume];
+	mode = PLAY;
 }
 
 /* changing the current pitch (value may be temporary, and not stored
  * in channel pitch, for instance for vibratos)
  */
 void 
-set_play_pitch(audio_channel *au, pitch pitch)
+audio_channel::set_pitch(::pitch pitch_)
 {
 	/* save current pitch in case we want to change
 	 * the step table on the run
 	 */
-	au->pitch = pitch;
-	au->step = step_table[pitch];
+	pitch = pitch_;
+	step = step_table[pitch];
 }
 
 /* changing the current volume. You HAVE to get through there so that it 
  * will work on EVERY machine.
  */
 void 
-set_play_volume(audio_channel *au, unsigned int volume)
+audio_channel::set_volume(unsigned int volume_)
 {
-	au->volume = volume;
-	au->scaled_volume = au->samp->volume_lookup[volume];
+	volume = volume_;
+	scaled_volume = samp->volume_lookup[volume];
 }
 
-void set_play_position(audio_channel *au, size_t position)
+void 
+audio_channel::set_position(size_t position)
 {
-	au->pointer = int_to_fix(position);
+	pointer = int_to_fix(position);
 	/* setting position too far must have this behavior for protracker */
-	if (au->pointer >= au->samp->fix_length)
-		au->mode = DO_NOTHING;
+	if (pointer >= samp->fix_length)
+		mode = DO_NOTHING;
 	else
-		au->mode = PLAY;
+		mode = PLAY;
 }
 

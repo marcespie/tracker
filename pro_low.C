@@ -33,13 +33,13 @@ channel::start_note()
 {
 	vib.offset = 0;
 	trem.offset = 0;
-	play_note(audio, samp, pitch);
+	audio->play(samp, pitch);
 }
 
 void 
 channel::stop_note()
 {
-	play_note(audio, empty_sample(), 0);
+	audio->play(empty_sample(), 0);
 }
 
 void 
@@ -55,7 +55,7 @@ channel::set_current_note(::note note_, ::pitch pitch_)
 void 
 channel::set_temp_pitch(::pitch pitch_)
 {
-	set_play_pitch(audio, pitch_);
+	audio->set_pitch(pitch_);
 }
 
 /* changing the current volume, storing it in ch->volume
@@ -64,7 +64,7 @@ void
 channel::set_current_volume(int volume_)
 {
 	volume = MAX(MIN(volume_, MAX_VOLUME), MIN_VOLUME);
-	set_play_volume(audio, volume);
+	audio->set_volume(volume);
 }
 
 /* changing the current volume WITHOUT storing it
@@ -73,12 +73,12 @@ void
 channel::set_temp_volume(int volume_)
 {
 	volume_ = MAX(MIN(volume_, MAX_VOLUME), MIN_VOLUME);
-	set_play_volume(audio, volume_);
+	audio->set_volume(volume_);
 }
 
 void 
 channel::set_position(size_t pos)
 {
-	set_play_position(audio, pos);
+	audio->set_position(pos);
 }
 
