@@ -34,7 +34,7 @@ struct sinusoid {
 	int reset;		/* flag */
 };
 
-struct audio_channel;
+class audio_channel;
 
 struct channel {
 	channel(int side);

@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-struct audio_channel {
+class audio_channel {
 	enum audio_state { DO_NOTHING, PLAY, REPLAY};
 	sample_info *samp;
 	enum audio_state mode;
@@ -24,15 +24,17 @@ struct audio_channel {
 	unsigned int volume;
 	unsigned int scaled_volume;
 	::pitch pitch;
-	int side;
 	inline auto C() const;
+public:
+	int side;
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);
 	void set_volume(unsigned int);
 	void set_position(size_t);
 	inline void linear_value(int32_t&);
 	inline void oversample_value(int32_t&);
-
+	static void readjust_current_steps(void);
+friend audio_channel *new_channel(int side);
 };
 
 /* release_audio_channels:

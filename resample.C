@@ -178,8 +178,8 @@ build_step_table(
 	}
 }
          
-static void 
-readjust_current_steps(void)
+void 
+audio_channel::readjust_current_steps(void)
 {
 	for (int i = 0; i < allocated; i++)
 		chan[i].step = step_table[chan[i].pitch];
@@ -199,13 +199,13 @@ notify_resample(watched var, long n)
 		resampling_frequency = n;
 		build_step_table(oversample, resampling_frequency);
 		readjust_beat();
-		readjust_current_steps();
+		audio_channel::readjust_current_steps();
 		break;
 	case watched::oversample:
 		oversample = n;
 		if (resampling_frequency) {
 			build_step_table(oversample, resampling_frequency);
-			readjust_current_steps();
+			audio_channel::readjust_current_steps();
 		}
 		break;
 	default:
