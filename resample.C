@@ -17,6 +17,7 @@
 
 #include <math.h>
 #include <memory>
+#include <vector>
 
 #include "protracker.h"
 #include "notes.h"
@@ -27,7 +28,6 @@
 #include "autoinit.h"
 #include "empty.h"
 #include "watched_var.h"
-#include <vector>
      
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */

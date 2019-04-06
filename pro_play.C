@@ -15,10 +15,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <memory>
+#include <vector>
+
 #include "extern.h"
 #include "protracker.h"
 #include "notes.h"
-#include <memory>
 #include "channel.h"
 #include "prefs.h"
 #include "pro_effects.h"
@@ -28,7 +30,6 @@
 #include "resample.h"
 #include "pro_play.h"
 #include "empty.h"
-#include <vector>
      
 
 extern short vibrato_table[3][64];

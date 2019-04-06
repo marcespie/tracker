@@ -15,17 +15,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <memory>
+#include <assert.h>
+
 #include "extern.h"
 #include "protracker.h"
 #include "notes.h"
-#include <memory>
 #include "channel.h"
 #include "prefs.h"
 #include "automaton.h"
 #include "empty.h"
 #include "autoinit.h"
 
-#include <assert.h>
 static void init_display(void);
 
 static init z(init_display);

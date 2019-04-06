@@ -15,13 +15,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <memory>
 #include <ctype.h>
 #include <unistd.h>
 
 #include "protracker.h"
 #include "extern.h"
 #include "notes.h"
-#include <memory>
 #include "channel.h"
 #include "prefs.h"
 
