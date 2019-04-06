@@ -24,16 +24,16 @@ class audio_channel {
 	unsigned int volume;
 	unsigned int scaled_volume;
 	::pitch pitch;
+	int side;
 	inline auto C() const;
 public:
 	audio_channel(int);
-	int side;
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);
 	void set_volume(unsigned int);
 	void set_position(size_t);
-	inline void linear_value(int32_t&);
-	inline void oversample_value(int32_t&);
+	inline void linear_value(int32_t*);
+	inline void oversample_value(int32_t*);
 	static void readjust_current_steps(void);
 };
 

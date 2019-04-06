@@ -82,18 +82,19 @@ audio_channel::audio_channel(int side_):
     step{0}, volume{0}, scaled_volume{0}, pitch{0},
     side{side_}
 {
+	INIT_ONCE;
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
 		end_all("Improper alloc channel call (side)");
 	/* logging number of channels per side */
 	total[side]++;
-	allocated.push_back(this); // XXX
+	allocated.push_back(this); // XXX  we don't really track those objects
+	// so we depend on releasing audio channels correctly
 }
 
 void 
 release_audio_channels(void)
 {
-	INIT_ONCE;
 	allocated.clear();
 	for (unsigned int i = 0; i < NUMBER_SIDES; i++)
 		total[i] = 0;
@@ -135,8 +136,8 @@ prep_sample_info(sample_info *info)
  */
 static void 
 build_step_table(
-    int oversample, 			/* use i sample for each value output */
-    unsigned long output_fr /* output frequency */
+    int oversample, 		/* use i sample for each value output */
+    unsigned long output_fr 	/* output frequency */
     )
 {
 	/* special case: oversample of 0 means linear resampling */
@@ -215,8 +216,10 @@ set_data_width(int side, int sample)
 }
 
 inline void
-audio_channel::linear_value(int32_t& v)
+audio_channel::linear_value(int32_t* t)
 {
+	auto& v = t[side];
+
 	switch(mode) {
 	case DO_NOTHING:
 		break;
@@ -261,7 +264,7 @@ linear_resample(void)
 	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
 		for (auto ch: allocated)
-			ch->linear_value(value[ch->side]);
+			ch->linear_value(value);
 		/* some assembly required... */
 		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
 		    ACCURACY+max_side);
@@ -269,8 +272,10 @@ linear_resample(void)
 }
 
 inline void
-audio_channel::oversample_value(int32_t& v)
+audio_channel::oversample_value(int32_t* t)
 {
+	auto& v = t[side];
+
 	switch(mode) {
 	case DO_NOTHING:
 		break;
@@ -314,7 +319,7 @@ over_resample(void)
 	i = sampling = 0;
 	while(true) {
 		for (auto ch: allocated) {
-			ch->oversample_value(value[ch->side]);
+			ch->oversample_value(value);
 		}
 		if (++sampling >= oversample) {
 			sampling = 0;
