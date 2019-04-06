@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <math.h>
+#include <cmath>
 #include <memory>
 #include <vector>
 
