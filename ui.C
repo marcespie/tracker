@@ -20,6 +20,10 @@
 
 #include <iostream>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/termios.h>	/* this should work on all posix hosts */
+#include <cerrno>
+#include <unistd.h>
 
 #include "extern.h"
 #include "prefs.h"
@@ -29,13 +33,8 @@
 
 extern char *VERSION;
 
-#include <sys/types.h>
-#include <sys/termios.h>	/* this should work on all posix hosts */
-#include <cerrno>
-
 using TERM_SETUP=termios;
 
-#include <unistd.h>
 
 static void nonblocking_io(void);
 static void sane_tty(void);
