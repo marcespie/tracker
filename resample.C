@@ -16,6 +16,7 @@
  */
 
 #include <math.h>
+#include <memory>
 
 #include "protracker.h"
 #include "notes.h"
@@ -26,9 +27,8 @@
 #include "autoinit.h"
 #include "empty.h"
 #include "watched_var.h"
+#include <vector>
      
-const auto MAX_CHANNELS=8;
-
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */
 
@@ -60,8 +60,6 @@ auto inline fractional_part(T x)
 }
 
 
-static audio_channel chan[MAX_CHANNELS];
-
 /* Have to get some leeway for vibrato (since we don't bound pitch with
  * vibrato). This is conservative.
  */
@@ -75,54 +73,31 @@ static void (*INIT)(void) = init_resample;
 
 /*---------- Channels allocation mechanism -----------------------*/
 
-/* Fixed structure for `hardware audio channels' */
-static int allocated = 0;
-	
-/* log number of channels allocated according to side */
+static std::vector<audio_channel* > allocated;
 static int total[NUMBER_SIDES];
 
-audio_channel *
-new_channel(int side)
+
+audio_channel::audio_channel(int side_):
+    samp{empty_sample()}, mode{DO_NOTHING}, pointer{0}, 
+    step{0}, volume{0}, scaled_volume{0}, pitch{0},
+    side{side_}
 {
-	audio_channel *n;
-
-	INIT_ONCE;
-
-	if (allocated >= MAX_CHANNELS)
-		end_all("Maximum number of channels exceeded %d", MAX_CHANNELS);
-
-	/* base channel setup */
-	n = &chan[allocated++];
-	n->mode = audio_channel::DO_NOTHING;
-	n->pointer = 0;
-	n->step = 0;
-	n->pitch = 0;
-	n->volume = 0;
-	n->side = side;
-	n->scaled_volume = 0;
-	n->samp = empty_sample();
-
 	/* checking allocation */
-	if (n->side < 0 || n->side >= NUMBER_SIDES)
+	if (side < 0 || side >= NUMBER_SIDES)
 		end_all("Improper alloc channel call (side)");
 	/* logging number of channels per side */
-	total[n->side]++;
-	return n;
+	total[side]++;
+	allocated.push_back(this); // XXX
 }
 
 void 
 release_audio_channels(void)
 {
+	INIT_ONCE;
+	allocated.clear();
 	for (unsigned int i = 0; i < NUMBER_SIDES; i++)
 		total[i] = 0;
-
-	allocated = 0;
 }
-
-
-
-
-
 
 /*---------- Resampling engine ------------------------------------*/
 
@@ -181,8 +156,8 @@ build_step_table(
 void 
 audio_channel::readjust_current_steps(void)
 {
-	for (int i = 0; i < allocated; i++)
-		chan[i].step = step_table[chan[i].pitch];
+	for (auto ch: allocated)
+		ch->step = step_table[ch->pitch];
 }
 
 static void 
@@ -285,10 +260,8 @@ linear_resample(void)
 
 	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-		for (int channel = 0; channel < allocated; channel++) {
-			auto& ch = chan[channel];
-			ch.linear_value(value[ch.side]);
-		} 
+		for (auto ch: allocated)
+			ch->linear_value(value[ch->side]);
 		/* some assembly required... */
 		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
 		    ACCURACY+max_side);
@@ -340,9 +313,8 @@ over_resample(void)
 	unsigned int sampling;     /* oversample counter */
 	i = sampling = 0;
 	while(true) {
-		for (int channel = 0; channel < allocated; channel++) {
-			auto& ch = chan[channel];
-			ch.oversample_value(value[ch.side]);
+		for (auto ch: allocated) {
+			ch->oversample_value(value[ch->side]);
 		}
 		if (++sampling >= oversample) {
 			sampling = 0;

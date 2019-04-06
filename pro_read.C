@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <string.h>
 #include <vector>
+#include <memory>
 
 #include "extern.h"
 #include "protracker.h"

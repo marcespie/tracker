@@ -18,6 +18,7 @@
 #include "extern.h"
 #include "protracker.h"
 #include "notes.h"
+#include <memory>
 #include "channel.h"
 #include "prefs.h"
 #include "automaton.h"

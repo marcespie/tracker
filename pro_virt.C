@@ -17,6 +17,7 @@
 
 #include <ctype.h>
 #include <assert.h>
+#include <memory>
 
 #include "extern.h"
 #include "protracker.h"

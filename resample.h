@@ -26,6 +26,7 @@ class audio_channel {
 	::pitch pitch;
 	inline auto C() const;
 public:
+	audio_channel(int);
 	int side;
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);
@@ -34,7 +35,6 @@ public:
 	inline void linear_value(int32_t&);
 	inline void oversample_value(int32_t&);
 	static void readjust_current_steps(void);
-friend audio_channel *new_channel(int side);
 };
 
 /* release_audio_channels:
@@ -52,12 +52,6 @@ public:
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
 };
 #endif
-
-/* chan = new_channel_tag_list(prop):
- * allocates a new channel for the current song
- * LEFT_SIDE RIGHT_SIDE
- */
-extern audio_channel *new_channel(int side);
 
 /* set_data_width(side_width, sample_width):
  * accumulated data on each side will have width side_width bits,

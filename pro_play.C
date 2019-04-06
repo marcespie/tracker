@@ -18,6 +18,7 @@
 #include "extern.h"
 #include "protracker.h"
 #include "notes.h"
+#include <memory>
 #include "channel.h"
 #include "prefs.h"
 #include "pro_effects.h"
@@ -51,7 +52,7 @@ static struct sample_info **voices;
 
 
 
-channel::channel(int side): audio {new_channel(side)}
+channel::channel(int side): audio {std::make_unique<audio_channel>(side)}
 {
 	samp = empty_sample();
 	finetune = 0;

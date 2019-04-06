@@ -21,6 +21,7 @@
 #include "protracker.h"
 #include "extern.h"
 #include "notes.h"
+#include <memory>
 #include "channel.h"
 #include "prefs.h"
 

@@ -37,9 +37,9 @@ struct sinusoid {
 class audio_channel;
 
 struct channel {
+	std::unique_ptr<audio_channel> audio;
 	channel(int side);
 	sample_info *samp;
-	audio_channel *audio;
 	finetune finetune;
 	unsigned int volume;	/* current volume of the sample (0-64) */
 	::pitch pitch;          /* current pitch of the sample */

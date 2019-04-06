@@ -22,6 +22,7 @@
 
 #include "extern.h"
 #include "notes.h"
+#include <memory>
 #include "channel.h"
 #include "resample.h"
 #include "protracker.h"
