@@ -26,13 +26,16 @@ public:
 	}
 	bool load(exfile& file, int hint);
 	Song(exfile& file, int hint);
-	Song& operator=(Song&&) = default;
-	Song(Song&&) = default;
+	Song& operator=(Song&&);
+	Song& operator=(const Song&) = delete;
+	Song(const Song&) = delete;
+	Song(Song&&);
 	~Song();
 	int play(unsigned int start);
+	void dump() const;
 	void adjust_volume(unsigned long mask);
 	operator bool() const
 	{
-		return !mod;
+		return mod != nullptr;
 	}
 };

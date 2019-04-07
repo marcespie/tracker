@@ -26,22 +26,41 @@ Song::Song(exfile& file, int hint):
 {
 }
 
+Song& Song::operator=(Song&& o)
+{
+	mod.swap(o.mod);
+	release_song(o.mod.get());
+	return *this;
+}
+
+Song::Song(Song&& o)
+{
+	mod.swap(o.mod);
+	release_song(o.mod.get());
+}
+
 bool Song::load(exfile& file, int hint)
 {
 	release_song(mod.get());
 	mod = std::unique_ptr<song>(read_song(file, hint));
-	return !mod;
+	return mod != nullptr;
 }
 
 Song::~Song()
 {
-//	release_song(mod.get());
+	release_song(mod.get());
 }
 
 int
 Song::play(unsigned int start)
 {
 	return play_song(mod.get(), start);
+}
+
+void
+Song::dump() const
+{
+	dump_song(mod.get());
 }
 
 void
