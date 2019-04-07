@@ -18,6 +18,7 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "song.h"
 #include "protracker.h"

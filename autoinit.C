@@ -25,31 +25,14 @@ at_end(void (*cleanup)(void))
 	atexit(cleanup);
 }
 	
-End::End(): errored{false}
+End::End(): errored{false}, out{std::cerr}
 {
 }
-
-template<typename T>
-End&& operator<<(End&& o, T t)
-{
-	o.set_error();
-	std::cerr << t;
-	return std::move(o);
-}
-
-template
-End&& operator<<(End&&, const char *);
-
-template
-End&& operator<<(End&&, char *);
-
-template
-End&& operator<<(End&&, int);
 
 End::~End()
 {
 	if (errored) {
-		std::cerr << "\n";
+		out << "\n";
 		exit(EXIT_FAILURE);
 	} else 
 		exit(EXIT_SUCCESS);

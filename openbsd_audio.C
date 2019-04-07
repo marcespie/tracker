@@ -23,6 +23,7 @@
 #include "watched_var.h"
 #include <sndio.h>
 #include <queue>
+#include <iostream>
 
 // fine-tune to get the scrolling display in sync with the music
 const auto ADVANCE_TAGS=20000;

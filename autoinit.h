@@ -18,19 +18,24 @@
  * system routines
  */
 
+#include <iosfwd>
 class End {
 	bool errored;
+	std::ostream& out;
 public:
 	End();
 	~End();
-	void set_error()
-	{
-		errored = true;
-	}
+    template<typename T>
+    friend End&& operator<<(End&&, T);
 };
 
 template<typename T>
-End&& operator<<(End&& o, T t);
+End&& operator<<(End&& o, T t)
+{
+	o.errored = true;
+	o.out << t;
+	return std::move(o);
+}
 
 /* at_end(cleanup): stack cleanup to be called at program's termination
  */
