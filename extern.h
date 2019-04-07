@@ -123,11 +123,6 @@ extern int error;
  */
 extern song *read_song(class exfile& f, int type);
 
-/* release_song(s):
- * release all the memory song occupies.
- */
-extern void release_song(song *song);
-
 extern void adjust_song(song *song, unsigned long m);
 
 /*--------------------------- st_virt.c --------------------------*/
