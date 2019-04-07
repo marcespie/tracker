@@ -70,68 +70,60 @@ make_readable(const char *s)
 void
 song::dump() const
 {
-	dump_song(this);
-}
-
-void 
-dump_song(const song *song)
-{
 	unsigned int i;
 	size_t j;
 	size_t maxlen;
 	static char dummy[1];
 
 
-	auto handle = begin_info(song->title);
+	auto handle = begin_info(title);
 	if (!handle)
 		return;
 
 	dummy[0] = '\0';
 	maxlen = 0;
-	for (i = 1; i <= song->ninstr; i++) {
-		if (!song->samples[i]->name)
-			song->samples[i]->name = dummy;
-		make_readable(song->samples[i]->name);
-		if (maxlen < strlen(song->samples[i]->name))
-			maxlen = strlen(song->samples[i]->name);
+	for (i = 1; i <= ninstr; i++) {
+		if (!samples[i]->name)
+			samples[i]->name = dummy;
+		make_readable(samples[i]->name);
+		if (maxlen < strlen(samples[i]->name))
+			maxlen = strlen(samples[i]->name);
 	}
-	for (i = 1; i <= song->ninstr; i++) {
-		if (song->samples[i]->start || 
-		    strlen(song->samples[i]->name) > 2) {
+	for (i = 1; i <= ninstr; i++) {
+		if (samples[i]->start || 
+		    strlen(samples[i]->name) > 2) {
 			static char s[15];
 			char *base = s;
 
 			if (pref::get(Pref::color))
-				base = write_color(base, 
-				    song->samples[i]->color);
+				base = write_color(base, samples[i]->color);
 			*base++ = instname[i];
 			*base++ = ' ';
 			*base++ = 0;
 			infos(handle, s);
-			infos(handle, song->samples[i]->name);
-			for (j = strlen(song->samples[i]->name); 
+			infos(handle, samples[i]->name);
+			for (j = strlen(samples[i]->name); 
 			    j < maxlen + 2; j++)
 				infos(handle, " ");
-			if (song->samples[i]->start) {
-				sprintf(buffer, "%6lu", 
-				    song->samples[i]->length);
+			if (samples[i]->start) {
+				sprintf(buffer, "%6lu", samples[i]->length);
 				infos(handle, buffer);
-				if (song->samples[i]->rp_length > 2) {
+				if (samples[i]->rp_length > 2) {
 					sprintf(buffer, "(%6lu %6lu)", 
-					    song->samples[i]->rp_offset, 
-					    song->samples[i]->rp_length);
+					    samples[i]->rp_offset, 
+					    samples[i]->rp_length);
 					infos(handle, buffer);
 				} else
 					infos(handle, "             ");
-				if (song->samples[i]->volume != MAX_VOLUME) {
+				if (samples[i]->volume != MAX_VOLUME) {
 					sprintf(buffer, "%3u", 
-					    song->samples[i]->volume);
+					    samples[i]->volume);
 					infos(handle, buffer);
 				} else 
 					infos(handle, "   ");
-				if (song->samples[i]->finetune) {
+				if (samples[i]->finetune) {
 					sprintf(buffer, "%3d", 
-					    song->samples[i]->finetune);
+					    samples[i]->finetune);
 					infos(handle, buffer);
 				}
 			}
@@ -139,7 +131,7 @@ dump_song(const song *song)
 			if (pref::get(Pref::color))
 				base = write_color(base, 0);
 			*base = 0;
-			info(handle, s);
+			::info(handle, s);
 		}
 	}
 	end_info(handle);

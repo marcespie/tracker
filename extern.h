@@ -48,13 +48,6 @@ struct event;
 struct tempo;
 struct play_entry;
 struct option_set;
-/*--------------------------- dump_song.c ------------------------*/
-/* dump_song(s): 
- * display some information pertinent to the given song s
- */
-extern void dump_song(const song *song);
-
-
 /*--------------------------- display.c --------------------------*/
 /* dump_event(ch, e): dump event e as occuring on channel ch
  * (some events need the current channel state for a correct dump)
