@@ -132,7 +132,7 @@ main(int argc, char *argv[])
 				adjust_song(song, half_mask);
 			setup_audio(ask_freq, stereo);
 			auto result = play_song(song, start);
-			release_song(song);
+			delete song;
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:

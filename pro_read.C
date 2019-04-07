@@ -503,23 +503,15 @@ adjust_song(song *s, unsigned long m)
 	s->side_width++;
 }
 
-/* release_song(song): give back all memory occupied by song. Assume 
- * that each structure has been correctly allocated by a call to the
- * corresponding new_XXX function.
- */
-void 
-release_song(song *song)
+song::~song()
 {
-	if (!song)
-		return;
 	/* Since sample compression, structure is INVALID after song->ninstr */
-	for (unsigned i = 1; i <= song->ninstr; i++)
-		free_sample_info(song->samples[i]);
-	delete [] song->info.patterns;
-	delete [] song->info.data;
-	if (song->title)
-		delete [] song->title;
-	delete song;
+	for (unsigned i = 1; i <= ninstr; i++)
+		free_sample_info(samples[i]);
+	delete [] info.patterns;
+	delete [] info.data;
+	if (title)
+		delete [] title;
 }
 
 /* error_song(song): what we should return if there was an error. 
@@ -528,7 +520,7 @@ release_song(song *song)
 static song *
 error_song(song *song)
 {
-	release_song(song);
+	delete song;
 	return nullptr;
 }
 

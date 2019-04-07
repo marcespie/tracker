@@ -142,6 +142,7 @@ const auto PROTRACKER=1;
 
 class song {
 public:
+	~song();
 	char *title;
 	/* sample 0 is always a dummy sample */
 	sample_info *samples[MAX_NUMBER_SAMPLES];
