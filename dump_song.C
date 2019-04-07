@@ -42,15 +42,13 @@ extern char instname[];	/* from display.c */
  * transform s into a readable string 
  */
 static void 
-make_readable(char *s)
+make_readable(const char *s)
 {
-	char *t, *orig;
-
 	if (!s)
 		return;
 
-	orig = s;
-	t = s;
+	auto orig = s;
+	auto t = const_cast<char *>(s);
 
 	/* get rid of the st-xx: junk */
 	if (strncmp(s, "st-", 3) == 0 || strncmp(s, "ST-", 3) == 0) {
@@ -68,7 +66,7 @@ make_readable(char *s)
 }
 
 void 
-dump_song(song *song)
+dump_song(const song *song)
 {
 	unsigned int i;
 	size_t j;

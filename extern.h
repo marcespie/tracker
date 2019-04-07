@@ -52,7 +52,7 @@ struct option_set;
 /* dump_song(s): 
  * display some information pertinent to the given song s
  */
-extern void dump_song(song *song);
+extern void dump_song(const song *song);
 
 
 /*--------------------------- display.c --------------------------*/
