@@ -492,22 +492,16 @@ new_song(void)
 	return n;
 }
 
+// this allows volume lookup to do some "fun" things
 void
 song::adjust_volume(unsigned long m)
 {
-	adjust_song(this, m);
-}
-
-// this allows volume lookup to do some "fun" things
-void 
-adjust_song(song *s, unsigned long m)
-{
-	for (unsigned i = 1; i <= s->ninstr; i++)
+	for (unsigned i = 1; i <= ninstr; i++)
 		if ( (1 << i) & ~m) {
 			for (unsigned j = 0; j <= MAX_VOLUME; j++)
-				s->samples[i]->volume_lookup[j] *= 2;
+				samples[i]->volume_lookup[j] *= 2;
 		}
-	s->side_width++;
+	side_width++;
 }
 
 song::~song()
