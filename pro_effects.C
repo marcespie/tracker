@@ -21,6 +21,7 @@
 #include "extern.h"
 #include "notes.h"
 #include "channel.h"
+#include "song.h"
 #include "protracker.h"
 #include "prefs.h"
 #include "pro_effects.h"

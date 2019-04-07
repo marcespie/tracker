@@ -26,6 +26,7 @@
 #include "notes.h"
 #include "channel.h"
 #include "resample.h"
+#include "song.h"
 #include "protracker.h"
 #include "empty.h"
 

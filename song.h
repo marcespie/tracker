@@ -1,4 +1,5 @@
-/* empty.c */
+// song.h
+// song.h
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,37 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <memory>
-#include "extern.h"
-#include "song.h"
-#include "protracker.h"
-#include "autoinit.h"
-#include "empty.h"
-     
-static void init_empty (void);
+class exfile;
+// this will be a semi-abstract class probably
+class Module {
+};
 
-static void (*INIT)(void) = init_empty;
-
-static sample_info dummy;
-
-static void 
-init_empty(void)
-{
-	dummy.name = nullptr;
-	dummy.length = dummy.rp_offset = dummy.rp_length = 0;
-	dummy.fix_length = dummy.fix_rp_length = 0;
-	dummy.volume = 0;
-	dummy.finetune = 0;
-	dummy.start = dummy.rp_start = NULL;
-	dummy.color = 1;
-	for (auto& x: dummy.volume_lookup)
-		x = 0;
-}
-
-sample_info *
-empty_sample(void)
-{
-	INIT_ONCE;
-
-	return &dummy;
-}
+// wrapper class around all module types.
+class Song {
+	std::unique_ptr<Module> mod;
+public:
+	Song(exfile& file, int hint);
+	int play(unsigned int start);
+};

@@ -17,7 +17,9 @@
 
 #include <signal.h>
 #include <iostream>
+#include <memory>
      
+#include <song.h>
 #include "protracker.h"
 #include "extern.h"
 #include "autoinit.h"

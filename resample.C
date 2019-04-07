@@ -19,6 +19,7 @@
 #include <memory>
 #include <vector>
 
+#include "song.h"
 #include "protracker.h"
 #include "notes.h"
 #include "channel.h"

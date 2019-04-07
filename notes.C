@@ -19,6 +19,7 @@
 #include <cmath>
 #include <memory>
 
+#include "song.h"
 #include "protracker.h"
 #include "extern.h"
 #include "notes.h"
