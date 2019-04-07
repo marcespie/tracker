@@ -41,7 +41,7 @@ MAX(S x, T y)
 
 /* predefinitions for relevant structures */
 struct channel; 
-struct song;
+class song;
 struct automaton;
 struct sample_info;
 struct event;
@@ -52,7 +52,7 @@ struct option_set;
 /* dump_song(s): 
  * display some information pertinent to the given song s
  */
-extern void dump_song(struct song *song);
+extern void dump_song(song *song);
 
 
 /*--------------------------- display.c --------------------------*/
@@ -121,16 +121,17 @@ extern int error;
  * returns NULL (and an error) if it doesn't work.
  * Returns a dynamic song structure if successful.
  */
-extern struct song *read_song(class exfile& f, int type);
+extern song *read_song(class exfile& f, int type);
 
 /* release_song(s):
  * release all the memory song occupies.
  */
-extern void release_song(struct song *song);
+extern void release_song(song *song);
 
+extern void adjust_song(song *song, unsigned long m);
 
 /*--------------------------- st_virt.c --------------------------*/
-extern void compute_duration(struct automaton *a, struct song *song);
+extern void compute_duration(struct automaton *a, song *song);
 
 
 /*--------------------------- setup_audio.c ----------------------*/

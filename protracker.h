@@ -140,7 +140,8 @@ struct song_info {
 const auto OLD_ST=0;
 const auto PROTRACKER=1;
 
-struct song: public Module {
+class song {
+public:
 	char *title;
 	/* sample 0 is always a dummy sample */
 	sample_info *samples[MAX_NUMBER_SAMPLES];

@@ -1,5 +1,4 @@
 // song.h
-// song.h
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -17,14 +16,23 @@
  */
 
 class exfile;
-// this will be a semi-abstract class probably
-class Module {
-};
-
+class song;
 // wrapper class around all module types.
 class Song {
-	std::unique_ptr<Module> mod;
+	std::unique_ptr<song> mod;
 public:
+	Song() : mod{nullptr} 
+	{
+	}
+	bool load(exfile& file, int hint);
 	Song(exfile& file, int hint);
+	Song& operator=(Song&&) = default;
+	Song(Song&&) = default;
+	~Song();
 	int play(unsigned int start);
+	void adjust_volume(unsigned long mask);
+	operator bool() const
+	{
+		return !mod;
+	}
 };

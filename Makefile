@@ -6,7 +6,7 @@ SRCS = tracker.C \
     play_list.C handle_options.C parse_options.C watched_var.C \
     pro_low.C pro_read.C pro_effects.C \
     pro_virt.C pro_play.C \
-    openbsd_audio.C resample.C usage.C
+    openbsd_audio.C resample.C usage.C song.C
 
 CXXFLAGS = -O2 -W -Wall -std=c++17 ${DEBUG}
 CPPFLAGS = -I${.CURDIR}

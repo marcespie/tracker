@@ -16,7 +16,7 @@
  */
 
 struct automaton;
-struct song;
+class song;
 struct event;
 
 const auto NORMAL_FINESPEED=125;

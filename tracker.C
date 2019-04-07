@@ -105,17 +105,6 @@ load_song(ENTRY e)
 }
 
 
-static void 
-adjust_song(song *s, unsigned long m)
-{
-	for (unsigned i = 1; i <= s->ninstr; i++)
-		if ( (1 << i) & ~m) {
-			for (unsigned j = 0; j <= MAX_VOLUME; j++)
-				s->samples[i]->volume_lookup[j] *= 2;
-		}
-	s->side_width++;
-}
-
 int 
 main(int argc, char *argv[])
 {
