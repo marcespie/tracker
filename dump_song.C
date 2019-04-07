@@ -48,6 +48,8 @@ make_readable(const char *s)
 		return;
 
 	auto orig = s;
+	// XXX this is a logically "const" function even though it
+	// tweaks the underlying buffer
 	auto t = const_cast<char *>(s);
 
 	/* get rid of the st-xx: junk */
