@@ -96,8 +96,9 @@ load_song(ENTRY e)
 	}
 
 	if (!song)
-		std::cout << "Not a song\n";
+		std::cout << "Not a song";
 
+	std::cout << "\n";
 	return song;
 }
 

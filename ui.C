@@ -254,7 +254,7 @@ void
 status(const std::string& s)
 {
 	if (run_in_fg()) {
-		std::cout << s << std::endl;
+		std::cout << s << "\n";
 	}
 }
 
@@ -361,13 +361,12 @@ do_display_pattern(unsigned int current, unsigned int total,
 	if (run_in_fg()) {
 		if (pref::get(Pref::xterm)) {
 			if (pref::get(Pref::show)) {
-				for (int i = 0; i < ntracks; i++)
-					printf("--------------");
-				putchar('\n');
 				printf("\x1b]2;V%s %3u/%3u[%3u] %s/%s %s \007", VERSION,
 				    current, total, real, time2string(buf0, uptilnow),
 				    time2string(buf1, totaltime), title);
-				fflush(stdout);
+				for (int i = 0; i < ntracks; i++)
+					std::cout << "--------------";
+				std::cout << std::endl;
 			} else {
 				printf("\x1b]2;V%s %3u/%3u %s/%s %s\007", VERSION, 
 				    current, total, time2string(buf0, uptilnow),
