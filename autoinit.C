@@ -15,6 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <iostream>
+
 #include "extern.h"
 #include "autoinit.h"
 #include "ui.h"
@@ -40,6 +42,23 @@ end_all(const char *fmt, ...)
 End::End(): errored{false}
 {
 }
+
+template<typename T>
+End&& operator<<(End&& o, T t)
+{
+	o.set_error();
+	std::cerr << t;
+	return std::move(o);
+}
+
+template
+End&& operator<<(End&&, const char *);
+
+template
+End&& operator<<(End&&, char *);
+
+template
+End&& operator<<(End&&, int);
 
 End::~End()
 {
