@@ -272,7 +272,7 @@ song_title(const char *s)
 }
 
 
-Info::Info(const char*): fg{run_in_fg()}
+Info::Info(const char*): fg{run_in_fg()}, out{std::cout}
 {
 }
 

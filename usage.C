@@ -18,6 +18,7 @@
 
 #include "extern.h"
 #include "ui.h"
+#include <iostream>
 
 extern char *VERSION;
 

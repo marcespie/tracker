@@ -15,18 +15,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <iosfwd>
 class Info {
 public:
 	const bool fg;
+	std::ostream& out;
 	Info(const char* title =nullptr);
 };
 
-#include <iostream>
+// XXX iomanip objects are of unspecified types, so I can't write template
+// specializations
+
 
 template<typename T>
 Info& operator<<(Info& o, T t)
 {
 	if (o.fg)
-		std::cout << t;
+		o.out << t;
     	return o;
 }
