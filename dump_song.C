@@ -18,6 +18,7 @@
 #include <memory>
 #include <ctype.h>
 #include <unistd.h>
+#include <iomanip>
 
 
 #include "song.h"
@@ -26,8 +27,7 @@
 #include "notes.h"
 #include "channel.h"
 #include "prefs.h"
-
-static char buffer[80];
+#include "ui.h"
 
 extern char instname[];	/* from display.c */
 
@@ -76,8 +76,8 @@ song::dump() const
 	static char dummy[1];
 
 
-	auto handle = begin_info(title);
-	if (!handle)
+	Info handle(title);
+	if (!handle.fg)
 		return;
 
 	dummy[0] = '\0';
@@ -100,39 +100,33 @@ song::dump() const
 			*base++ = instname[i];
 			*base++ = ' ';
 			*base++ = 0;
-			infos(handle, s);
-			infos(handle, samples[i]->name);
-			for (j = strlen(samples[i]->name); 
-			    j < maxlen + 2; j++)
-				infos(handle, " ");
+			handle << s << samples[i]->name;
+			for (j = strlen(samples[i]->name); j < maxlen + 2; j++)
+				handle << " ";
 			if (samples[i]->start) {
-				sprintf(buffer, "%6lu", samples[i]->length);
-				infos(handle, buffer);
+				handle << std::setw(6) << samples[i]->length;
 				if (samples[i]->rp_length > 2) {
-					sprintf(buffer, "(%6lu %6lu)", 
-					    samples[i]->rp_offset, 
-					    samples[i]->rp_length);
-					infos(handle, buffer);
+					handle << "(" << std::setw(6)
+					    << samples[i]->rp_offset << " "
+					    << std::setw(6)
+					    << samples[i]->rp_length;
 				} else
-					infos(handle, "             ");
+					handle << "             ";
 				if (samples[i]->volume != MAX_VOLUME) {
-					sprintf(buffer, "%3u", 
-					    samples[i]->volume);
-					infos(handle, buffer);
+					handle << std::setw(3)
+					    << samples[i]->volume;
 				} else 
-					infos(handle, "   ");
+					handle << "   ";
 				if (samples[i]->finetune) {
-					sprintf(buffer, "%3d", 
-					    samples[i]->finetune);
-					infos(handle, buffer);
+					handle << std::setw(3)
+					    << samples[i]->finetune;
 				}
 			}
 			base = s;
 			if (pref::get(Pref::color))
 				base = write_color(base, 0);
 			*base = 0;
-			::info(handle, s);
+			handle << s << "\n";
 		}
 	}
-	end_info(handle);
 }

@@ -209,23 +209,6 @@ const auto PLAY_ENDED=BASE_PLAY+1;
  */
 extern void status(const std::string&);
 
-class Info;
-/* begin_info: open a logical information window.
- * returns nullptr if the window couldn't be opened.
- * A NULL window shouldn't be used, but don't count on it !
- */
-extern Info *begin_info(const char *title);
-/* info(handle, line): add a line to the info window,
- * completing the current line if applicable
- */
-extern void info(Info *handle, const char *line);
-/* infos(handle, line): add to the current line of the info window
- */
-extern void infos(Info *handle, const char *s);
-/* end_info(handle): this window is complete...
- */
-extern void end_info(Info *handle);
-
 /* Scrolling score display:
  * new_scroll() returns a writable buffer of a suitable length for n tracks
  * in which display.c will write what it needs.

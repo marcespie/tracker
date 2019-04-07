@@ -17,6 +17,7 @@
 
 
 #include "extern.h"
+#include "ui.h"
 
 extern char *VERSION;
 
@@ -52,10 +53,8 @@ const char *usage[] = {
 void 
 print_usage()
 {
-	auto handle = begin_info("Usage");
-	infos(handle, "This is tracker ");
-	info(handle, VERSION);
+	Info handle("Usage");
+	handle << "This is tracker " << VERSION << "\n";
 	for (auto s: usage)
-		info(handle, s);
-	end_info(handle);
+		handle << s << "\n";
 }

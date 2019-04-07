@@ -14,3 +14,19 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+class Info {
+public:
+	const bool fg;
+	Info(const char* title =nullptr);
+};
+
+#include <iostream>
+
+template<typename T>
+Info& operator<<(Info& o, T t)
+{
+	if (o.fg)
+		std::cout << t;
+    	return o;
+}

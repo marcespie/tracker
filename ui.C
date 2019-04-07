@@ -272,38 +272,10 @@ song_title(const char *s)
 }
 
 
-
-static class Info {
-} info_singleton;
-
-Info *
-begin_info(const char *)
+Info::Info(const char*): fg{run_in_fg()}
 {
-	if (run_in_fg())
-		return &info_singleton;
-	else
-		return nullptr;
 }
 
-void infos(Info *handle, const char *s)
-{
-	if (handle)
-		fputs(s, stdout);
-}
-
-void 
-info(Info *handle, const char *line)
-{
-	if (handle)
-		puts(line);
-}
-
-void 
-end_info(Info *handle)
-{
-	if (handle)
-		fflush(stdout);
-}
 
 static int ntracks;
 
