@@ -18,6 +18,9 @@
 class exfile;
 class Module {
 public:
+	virtual int play(unsigned int start) =0;
+	virtual void dump() const =0;
+	virtual void adjust_volume(unsigned long mask) =0;
 	virtual ~Module()
 	{
 	}

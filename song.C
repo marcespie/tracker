@@ -47,18 +47,18 @@ bool Song::load(exfile& file, int hint)
 int
 Song::play(unsigned int start)
 {
-	return play_song(dynamic_cast<song *>(mod.get()), start);
+	return mod->play(start);
 }
 
 void
 Song::dump() const
 {
-	dump_song(dynamic_cast<const song *>(mod.get()));
+	mod->dump();
 }
 
 void
 Song::adjust_volume(unsigned long mask)
 {
-	adjust_song(dynamic_cast<song *>(mod.get()), mask);
+	mod->adjust_volume(mask);
 }
 

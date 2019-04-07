@@ -436,6 +436,7 @@ fill_patterns(song *song, exfile& f, unsigned char used[])
  *** End song setup
  ***/
 
+
 static void 
 adjust_volumes(song *song)
 {
@@ -489,6 +490,12 @@ new_song(void)
 	for (unsigned i = 1; i < MAX_NUMBER_SAMPLES; i++)
 		n->samples[i] = nullptr;
 	return n;
+}
+
+void
+song::adjust_volume(unsigned long m)
+{
+	adjust_song(this, m);
 }
 
 // this allows volume lookup to do some "fun" things

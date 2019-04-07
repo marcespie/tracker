@@ -263,6 +263,12 @@ play_one_tick(automaton *a)
 }
 
 int
+song::play(unsigned int start)
+{
+	return play_song(this, start);
+}
+
+int
 play_song(song *song, unsigned int start)
 {
 	int countup;      /* keep playing the tune or not */

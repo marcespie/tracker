@@ -67,6 +67,12 @@ make_readable(const char *s)
 		*--t = '\0';
 }
 
+void
+song::dump() const
+{
+	dump_song(this);
+}
+
 void 
 dump_song(const song *song)
 {

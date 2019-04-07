@@ -143,6 +143,9 @@ const auto PROTRACKER=1;
 class song: public Module {
 public:
 	~song();
+	int play(unsigned int start);
+	void dump() const;
+	void adjust_volume(unsigned long mask);
 	char *title;
 	/* sample 0 is always a dummy sample */
 	sample_info *samples[MAX_NUMBER_SAMPLES];
