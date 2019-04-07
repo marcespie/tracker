@@ -62,14 +62,14 @@ goodbye(int sig)
 
 	if (pref::get(Pref::color))
 		pter = write_color(pter, 0);
-	sprintf(pter, "Signal %d", sig);
-	end_all(pter);
+	*pter = 0;
+	End() << pter << "Signal " << sig;;
 }
 
 static void 
 abort_this(int)
 {
-	end_all("Abort");
+	End() << "Abort";
 }
 
 #ifdef SIGTSTP

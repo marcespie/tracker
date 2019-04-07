@@ -25,6 +25,24 @@
  */
 extern void end_all(const char *fmt = nullptr, ...);
 
+#include <iostream>
+class End {
+	bool errored;
+public:
+	End();
+	~End();
+	template<typename T>
+	friend End&& operator<<(End&& o, T t);
+};
+
+template<typename T>
+End&& operator<<(End&& o, T t)
+{
+	o.errored = true;
+	std::cerr << t;
+	return std::move(o);
+}
+
 /* at_end(cleanup): stack cleanup to be called at program's termination
  */
 extern void at_end(void (*cleanup)(void));

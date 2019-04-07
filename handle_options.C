@@ -153,7 +153,7 @@ set_speed_mode(const char *p)
 	else if (stricmp(p, "alter") == 0)
 		mode = ALTER_PROTRACKER;
 	else {
-		end_all("Unknwon speedmode");
+		End() << "Unknwon speedmode";
 		return;
 	}
 	pref::set(Pref::speedmode, mode);
@@ -174,7 +174,7 @@ handle_options(int argc, char *argv[])
 	args.parse(argc, argv, add_play_list);
 	if (args.get_long("help")) {
 		print_usage();
-		end_all();
+		End();
 	}
 	ask_freq = args.get_long("frequency");
 	if (ask_freq < 1000)
@@ -210,7 +210,7 @@ handle_options(int argc, char *argv[])
 		exfile file;
 
 		if (!file.open(args.get_string("list")))
-			end_all("List file does not exist");
+			End() << "List file does not exist";
 		while ((s = read_line(file)) != nullptr) {
 			add_play_list(s);
 			delete [] s;

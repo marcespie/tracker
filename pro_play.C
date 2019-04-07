@@ -300,7 +300,7 @@ play_song(song *song, unsigned int start)
 			return PLAY_PREVIOUS_SONG;
 		case UI_QUIT:
 			discard_buffer();
-			end_all();
+			End();
 			/* NOTREACHED */
 		case UI_SET_BPM:
 			set_bpm(a, val);

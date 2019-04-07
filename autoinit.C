@@ -36,3 +36,16 @@ end_all(const char *fmt, ...)
 	}
 	exit(fmt ? EXIT_FAILURE : EXIT_SUCCESS);
 }
+
+End::End(): errored{false}
+{
+}
+
+End::~End()
+{
+	if (errored) {
+		std::cerr << "\n";
+		exit(EXIT_FAILURE);
+	} else 
+		exit(EXIT_SUCCESS);
+}

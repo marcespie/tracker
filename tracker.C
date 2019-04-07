@@ -111,7 +111,7 @@ main(int argc, char *argv[])
 	set_default_prefs();
 	if (argc == 1) {
 		print_usage();
-		end_all();
+		End();
 	}
 
 
@@ -155,10 +155,10 @@ main(int argc, char *argv[])
 			if (loop)
 				it = begin(list);
 			else
-				end_all();
+				End();
 		}
 	}
-	end_all();
+	End();
 	/* NOTREACHED */
 }
 

@@ -172,7 +172,7 @@ open_audio(unsigned long f, int)
 {
 	hdl = sio_open(NULL, SIO_PLAY, 0);
 	if (hdl == NULL)
-		end_all("Error opening audio device");
+		End() << "Error opening audio device";
 
 	realpos = 0;
 	sio_onmove(hdl, movecb, NULL);
@@ -185,7 +185,7 @@ open_audio(unsigned long f, int)
 	if (!sio_setpar(hdl, &par) || !sio_getpar(hdl, &par) || 
 	    !sio_start(hdl) || (par.bits != 8 && par.bits != 16) || 
 	    par.pchan > 2)
-		end_all("Sorry, no audio format supported by this binary is available");
+		End() << "Sorry, no audio format supported by this binary is available";
 
 	int buf_max = par.appbufsz * par.bps * par.pchan;
 	current_freq = par.rate;

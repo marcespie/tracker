@@ -84,9 +84,10 @@ audio_channel::audio_channel(int side_):
     side{side_}
 {
 	INIT_ONCE;
+
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
-		end_all("Improper alloc channel call (side)");
+		End() << "Improper alloc channel call side: " << side;
 	/* logging number of channels per side */
 	total[side]++;
 	allocated.push_back(this); // XXX  we don't really track those objects
