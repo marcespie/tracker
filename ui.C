@@ -251,23 +251,6 @@ get_ui(void)
 }
       
 void 
-notice(const char *fmt, ...)
-{
-	va_list al;
-
-	va_start(al, fmt);
-	vfprintf(stderr, fmt, al);
-	va_end(al);
-}
-
-void 
-vnotice(const char *fmt, va_list al)
-{
-	vfprintf(stderr, fmt, al);
-	fputc('\n', stderr);
-}
-
-void 
 status(const std::string& s)
 {
 	if (run_in_fg()) {

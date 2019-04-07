@@ -14,7 +14,3 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-#include <stdarg.h>
-extern void notice(const char *fmt, ...);
-extern void vnotice(const char *fmt, va_list al);

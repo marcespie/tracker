@@ -20,10 +20,10 @@
  * not used yet...
  */
 #include <list>
+#include <iostream>
 
 #include "parse_options.h"
 #include "extern.h"
-#include "ui.h"
 #include "autoinit.h"
 
 
@@ -116,8 +116,8 @@ option::finish_setup(const char* optiontext)
 		multi = def_string;
 		break;
 	default:
-		notice("Internal problem with option:");
-		notice(optiontext);
+		std::cerr << "Internal problem with option:" << 
+		    optiontext << "\n";
 	break;
 	}
 }

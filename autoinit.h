@@ -18,13 +18,6 @@
  * system routines
  */
 
-/* end_all(s): the program must exit now, after displaying s to the user, 
- * usually through notice and calling all stacked at_end() functions. 
- * s may be 0 for normal exit. DO NOT use exit() anywhere in tracker 
- * but end_all() instead.
- */
-extern void end_all(const char *fmt = nullptr, ...);
-
 class End {
 	bool errored;
 public:
