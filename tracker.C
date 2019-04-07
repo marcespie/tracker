@@ -51,10 +51,10 @@ int error;
  * - read the song trying several formats
  * - handle errors gracefully
  */
-static song *
+static Song
 load_song(ENTRY e)
 {
-	song *song = nullptr;
+	Song song;
 	exfile file;
 
 	std::cout << e->name << "...";
@@ -63,16 +63,15 @@ load_song(ENTRY e)
 	if (file.open(e->name)) {
 		switch(e->filetype) {
 		case NEW:
-			song = read_song(file, NEW);
+			song.load(file, NEW);
 			break;
 		case OLD:
-			song = read_song(file, OLD);
+			song.load(file, OLD);
 			break;
 		case UNKNOWN:
 			switch(pref::get(Pref::type)) {
 			case BOTH:
-				song = read_song(file, NEW);
-				if (song) {
+				if (song.load(file, NEW)) {
 					e->filetype = NEW;
 					break;
 				} else {
@@ -80,16 +79,14 @@ load_song(ENTRY e)
 					[[fallthrough]];
 				}
 			case OLD:
-				song = read_song(file, OLD);
-				if (song)
+				if (song.load(file, OLD))
 					e->filetype = OLD;
 				break;
 			/* this is explicitly flagged as a new module,
 			* so we don't need to look for a signature.
 			*/
 			case NEW:
-				song = read_song(file, NEW_NO_CHECK);
-				if (song)
+				if (song.load(file, NEW_NO_CHECK))
 					e->filetype = NEW;
 				break;
 			default:
@@ -127,12 +124,11 @@ main(int argc, char *argv[])
 
 		if (song) {
 			if (pref::get(Pref::dump))
-				dump_song(song); 
+				song.dump(); 
 			if (half_mask)
-				adjust_song(song, half_mask);
+				song.adjust_volume(half_mask);
 			setup_audio(ask_freq, stereo);
-			auto result = play_song(song, start);
-			delete song;
+			auto result = song.play(start);
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:

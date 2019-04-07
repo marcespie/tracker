@@ -30,7 +30,6 @@ public:
 	Song& operator=(const Song&) = delete;
 	Song(const Song&) = delete;
 	Song(Song&&);
-	~Song();
 	int play(unsigned int start);
 	void dump() const;
 	void adjust_volume(unsigned long mask);
