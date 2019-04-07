@@ -16,10 +16,16 @@
  */
 
 class exfile;
-class song;
+class Module {
+public:
+	virtual ~Module()
+	{
+	}
+};
+
 // wrapper class around all module types.
 class Song {
-	std::unique_ptr<song> mod;
+	std::unique_ptr<Module> mod;
 public:
 	Song() : mod{nullptr} 
 	{

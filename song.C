@@ -40,25 +40,25 @@ Song::Song(Song&& o)
 bool Song::load(exfile& file, int hint)
 {
 	delete mod.get();
-	mod = std::unique_ptr<song>(read_song(file, hint));
+	mod = std::unique_ptr<Module>(read_song(file, hint));
 	return mod != nullptr;
 }
 
 int
 Song::play(unsigned int start)
 {
-	return play_song(mod.get(), start);
+	return play_song(dynamic_cast<song *>(mod.get()), start);
 }
 
 void
 Song::dump() const
 {
-	dump_song(mod.get());
+	dump_song(dynamic_cast<const song *>(mod.get()));
 }
 
 void
 Song::adjust_volume(unsigned long mask)
 {
-	adjust_song(mod.get(), mask);
+	adjust_song(dynamic_cast<song *>(mod.get()), mask);
 }
 

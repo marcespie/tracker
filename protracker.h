@@ -140,7 +140,7 @@ struct song_info {
 const auto OLD_ST=0;
 const auto PROTRACKER=1;
 
-class song {
+class song: public Module {
 public:
 	~song();
 	char *title;
