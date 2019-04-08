@@ -101,22 +101,22 @@ set_downslide(channel& ch, const event& e)
 }
 
 static int 
-sinusoid_value(sinusoid *s)
+sinusoid_value(sinusoid& s)
 {
-	s->offset += s->rate;
-	s->offset &= 63;
-	return s->table[s->offset] * s->depth;
+	s.offset += s.rate;
+	s.offset &= 63;
+	return s.table[s.offset] * s.depth;
 }
 
 static void 
-set_sinusoid(const event& e, sinusoid *s)
+set_sinusoid(const event& e, sinusoid& s)
 {
 	if (e.high())
-		s->rate = e.high();
+		s.rate = e.high();
 	if (e.low())
-		s->depth = e.low();
-	if (s->reset)
-		s->offset = 0;
+		s.depth = e.low();
+	if (s.reset)
+		s.offset = 0;
 }
 
 /* modulate the pitch with vibrato */
@@ -127,27 +127,27 @@ do_vibrato(channel& ch)
 	* note that we do not change the saved pitch.
 	*/
 	if (ch.pitch)
-		ch.set_temp_pitch(ch.pitch + sinusoid_value(&(ch.vib))/256);
+		ch.set_temp_pitch(ch.pitch + sinusoid_value(ch.vib)/256);
 }
 
 static void 
 set_vibrato(channel& ch, const event& e)
 {
 	ch.adjust = do_vibrato;
-		set_sinusoid(e, &(ch.vib));
+		set_sinusoid(e, ch.vib);
 }
 
 static void 
 do_tremolo(channel& ch)
 {
-	ch.set_temp_volume(ch.volume + sinusoid_value(&(ch.trem))/128);
+	ch.set_temp_volume(ch.volume + sinusoid_value(ch.trem)/128);
 }
 
 static void 
 set_tremolo(channel& ch, const event& e)
 {
 	ch.adjust = do_tremolo;
-	set_sinusoid(e, &(ch.trem));
+	set_sinusoid(e, ch.trem);
 }
 
 /* arpeggio looks a bit like chords: we alternate between two
@@ -539,25 +539,25 @@ set_gliss_ctrl(channel& ch, const event& e)
 }
 
 static void 
-set_sine_wave(const event& e, sinusoid *s)
+set_sine_wave(const event& e, sinusoid& s)
 {
-	s->table = vibrato_table[e.parameters & 3];
+	s.table = vibrato_table[e.parameters & 3];
 	if (e.parameters & 4)
-		s->reset = false;
+		s.reset = false;
 	else
-		s->reset = true;
+		s.reset = true;
 }
 
 static void 
 set_vibrato_wave(channel& ch, const event& e)
 {
-	set_sine_wave(e, &(ch.vib));
+	set_sine_wave(e, ch.vib);
 }
 
 static void 
 set_tremolo_wave(channel& ch, const event& e)
 {
-	set_sine_wave(e, &(ch.trem));
+	set_sine_wave(e, ch.trem);
 }
 
 static void 
