@@ -65,9 +65,3 @@ class song;
 struct event;
 
 const auto NORMAL_FINESPEED=125;
-
-/* update_tempo(a):
- * update tempo in automaton according to parameters
- */
-extern void update_tempo(automaton *a);
-extern void set_bpm(automaton *a, unsigned int bpm);

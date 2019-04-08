@@ -121,14 +121,14 @@ advance_pattern(automaton *a)
 }
 
 void 
-set_bpm(automaton *a, unsigned int bpm)
+automaton::set_bpm(unsigned int bpm_)
 {
-	a->bpm = bpm;
-	set_resampling_beat(a->bpm, NORMAL_FINESPEED, a->finespeed);
+	bpm = bpm_;
+	set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 }
 
 void 
-update_tempo(automaton *a)
+automaton::update_tempo()
 {        
 	/* there are three classes of speed changes:
 	 * 0 does nothing. (should stop for genuine protracker)
@@ -136,35 +136,34 @@ update_tempo(automaton *a)
 	 * >=32 changes the finespeed, default 125
 	 */
 
-	switch(a->do_stuff & (SET_SPEED | SET_FINESPEED)) {
+	switch(do_stuff & (SET_SPEED | SET_FINESPEED)) {
 	case SET_SPEED | SET_FINESPEED:
 		if (pref::get(Pref::speedmode) != FINESPEED_ONLY) {
-			a->finespeed = a->new_finespeed;
-			set_resampling_beat(a->bpm, NORMAL_FINESPEED, 
-			    a->finespeed);
+			finespeed = new_finespeed;
+			set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		}
 		if (pref::get(Pref::speedmode) != SPEED_ONLY)
-			a->speed = a->new_speed;
+			speed = new_speed;
 		break;
 	case SET_SPEED:
-		a->speed = a->new_speed;
+		speed = new_speed;
 		if (pref::get(Pref::speedmode) == ALTER_PROTRACKER) {
-			a->finespeed = NORMAL_FINESPEED;
-			set_resampling_beat(a->bpm, 1, 1);
+			finespeed = NORMAL_FINESPEED;
+			set_resampling_beat(bpm, 1, 1);
 		}
 		break;
 	case SET_FINESPEED:
-		a->finespeed = a->new_finespeed;
-		set_resampling_beat(a->bpm, NORMAL_FINESPEED, a->finespeed);
+		finespeed = new_finespeed;
+		set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		break;
 	default:
 		break;
 	}
 
-	if (a->finespeed == 0) {
+	if (finespeed == 0) {
 		status("Finespeed of 0");
-		a->finespeed = NORMAL_FINESPEED;
-		set_resampling_beat(a->bpm, NORMAL_FINESPEED, a->finespeed);
+		finespeed = NORMAL_FINESPEED;
+		set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		error = FAULT;
 	}
 }

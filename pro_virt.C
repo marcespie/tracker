@@ -78,7 +78,7 @@ compute_pattern_duration(event *base, unsigned int plength, unsigned int ntracks
 			}
 		}
 
-		update_tempo(a);
+		a->update_tempo();
 		d += ratio2time(NORMAL_FINESPEED * a->delay_counter * a->speed,
 		    a->finespeed * 50);
 

@@ -242,7 +242,7 @@ play_one_tick(automaton *a)
 			(chan[i].adjust)(&(chan[i]));
 		}
 
-	update_tempo(a);
+	a->update_tempo();
 	/* actually output samples */
 	if (pref::get(Pref::output))
 		resample();
@@ -263,7 +263,7 @@ song::play(unsigned int start)
 	voices = samples; 
 
 	auto a = automaton{this, start};
-	set_bpm(&a, pref::get(Pref::speed));
+	a.set_bpm(pref::get(Pref::speed));
 
 
 	set_data_width(side_width, max_sample_width);
@@ -284,7 +284,7 @@ song::play(unsigned int start)
 			End();
 			/* NOTREACHED */
 		case UI_SET_BPM:
-			set_bpm(&a, val);
+			a.set_bpm(val);
 			break;
 		case UI_RESTART:
 			discard_buffer();
