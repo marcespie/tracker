@@ -203,8 +203,8 @@ automaton::next_tick()
 }
 
 
-event *
+const event&
 automaton::EVENT(int channel) const
 {
-	return &(pattern->e[channel * info->plength + note_num]);
+	return pattern->e[channel * info->plength + note_num];
 }

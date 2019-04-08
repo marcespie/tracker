@@ -39,8 +39,8 @@ struct automaton {
 	void set_bpm(unsigned int bpm);
 	void play_one_tick();
 	void dump_events() const;
-	void setup_effect(channel*, event*);
-	event *EVENT(int channel) const;
+	void setup_effect(channel&, const event&);
+	const event& EVENT(int channel) const;
 
 	unsigned int pattern_num;	// the pattern in the song
 	unsigned int note_num;		// the note in the pattern

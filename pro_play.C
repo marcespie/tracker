@@ -135,7 +135,7 @@ automaton::dump_events() const
 	for (auto s = 0;;) {
 		for (auto i = 0U; i != chan.size(); ++i) {
 			if (chan[i].side() == s) {
-				dump_event(chan[i], EVENT(i));
+				dump_event(chan[i], &EVENT(i));
 				dump_delimiter();
 			}
 		}
@@ -147,13 +147,13 @@ automaton::dump_events() const
 }
 
 void 
-automaton::setup_effect(channel *ch, event *e)
+automaton::setup_effect(channel& ch, const event& e)
 {
 	int samp, cmd;
 	pitch pitch;
 
 	/* retrieves all the parameters */
-	samp = e->sample_number;
+	samp = e.sample_number;
 
 	/* load new instrument */
 	if (samp)  {  
@@ -162,16 +162,16 @@ automaton::setup_effect(channel *ch, event *e)
 		 * change will be taken into account for the next note, BUT the 
 		 * volume change takes effect immediately.
 		 */
-		ch->samp = voices[samp];
-		ch->finetune = voices[samp]->finetune;
+		ch.samp = voices[samp];
+		ch.finetune = voices[samp]->finetune;
 		if ((1L<<samp) & pref::get(Pref::imask))
-			ch->samp = empty_sample();
-		ch->set_current_volume(voices[samp]->volume);
+			ch.samp = empty_sample();
+		ch.set_current_volume(voices[samp]->volume);
 	}
 
-	pitch = note2pitch(e->note, ch->finetune);
+	pitch = note2pitch(e.note, ch.finetune);
 
-	cmd = e->effect;
+	cmd = e.effect;
 
 	if (pitch >= REAL_MAX_PITCH) {
 		char buffer[60];
@@ -182,43 +182,43 @@ automaton::setup_effect(channel *ch, event *e)
 		error = FAULT;
 	}
 
-	ch->adjust = do_nothing;
+	ch.adjust = do_nothing;
 
 	switch(eval[cmd].type) {
 	case NOTHING:
 		if (pitch) {
-			ch->set_current_note(e->note, pitch);
-			ch->start_note();
+			ch.set_current_note(e.note, pitch);
+			ch.start_note();
 		}
 		break;
 	case CH_E:
 		if (pitch)
-			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.CH_E)(ch, e);
+			ch.set_current_note(e.note, pitch);
+		(eval[cmd].f.CH_E)(&ch, &e);
 		if (pitch)
-			ch->start_note();
+			ch.start_note();
 		break;
 	case A_E:
 		if (pitch)
-			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.A_E)(this, e);
+			ch.set_current_note(e.note, pitch);
+		(eval[cmd].f.A_E)(this, &e);
 		if (pitch)
-			ch->start_note();
+			ch.start_note();
 		break;
 	case NO_NOTE_CH_E:
 		if (pitch)
-			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.CH_E)(ch, e);
+			ch.set_current_note(e.note, pitch);
+		(eval[cmd].f.CH_E)(&ch, &e);
 		break;
 	case PORTA_CH_PITCH_E:
-		(eval[cmd].f.CH_PITCH_E)(ch, pitch, e);
+		(eval[cmd].f.CH_PITCH_E)(&ch, pitch, &e);
 		break;
 	case CH_A_E:
 		if (pitch)
-			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.CH_A_E)(ch, this, e);
+			ch.set_current_note(e.note, pitch);
+		(eval[cmd].f.CH_A_E)(&ch, this, &e);
 		if (pitch)
-			ch->start_note();
+			ch.start_note();
 		break;
 	}
 }
@@ -231,7 +231,7 @@ automaton::play_one_tick()
 		/* do new effects only if not in delay mode */
 		if (delay_counter == 0) {
 			for (auto i = 0U; i != chan.size(); ++i)
-				setup_effect(&(chan[i]), EVENT(i));
+				setup_effect(chan[i], EVENT(i));
 			if (pref::get(Pref::show))
 				dump_events();
 		}
