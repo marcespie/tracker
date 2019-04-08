@@ -80,7 +80,7 @@ static int total[NUMBER_SIDES];
 
 
 audio_channel::audio_channel(int side_):
-    samp{empty_sample()}, mode{DO_NOTHING}, pointer{0}, 
+    samp{empty_sample()}, mode{audio_state::DO_NOTHING}, pointer{0}, 
     step{0}, volume{0}, scaled_volume{0}, pitch{0},
     side{side_}
 {
@@ -224,9 +224,9 @@ audio_channel::linear_value(int32_t* t)
 	auto& v = t[side];
 
 	switch(mode) {
-	case DO_NOTHING:
+	case audio_state::DO_NOTHING:
 		break;
-	case PLAY:
+	case audio_state::PLAY:
 	/* Since we now have fix_length, we can
 	 * do that check with improved performance
 	 */
@@ -239,15 +239,15 @@ audio_channel::linear_value(int32_t* t)
 		} else {
 		/* is there a replay ? */
 			if (samp->rp_start) {
-				mode = REPLAY;
+				mode = audio_state::REPLAY;
 				pointer -= samp->fix_length;
 				[[fallthrough]];
 			} else {
-				mode = DO_NOTHING;
+				mode = audio_state::DO_NOTHING;
 				break;
 			}
 		}
-	case REPLAY:
+	case audio_state::REPLAY:
 		while (pointer >= samp->fix_rp_length)
 			pointer -= samp->fix_rp_length;
 		auto step = fractional_part(pointer);
@@ -280,9 +280,9 @@ audio_channel::oversample_value(int32_t* t)
 	auto& v = t[side];
 
 	switch(mode) {
-	case DO_NOTHING:
+	case audio_state::DO_NOTHING:
 		break;
-	case PLAY:
+	case audio_state::PLAY:
 		/* Since we now have fix_length, we can
 		 * do that check with improved performance
 		*/
@@ -293,15 +293,15 @@ audio_channel::oversample_value(int32_t* t)
 		} else {
 			/* is there a replay ? */
 			if (samp->rp_start) {
-				mode = REPLAY;
+				mode = audio_state::REPLAY;
 				pointer -= samp->fix_length;
 				[[fallthrough]];
 			} else {
-				mode = DO_NOTHING;
+				mode = audio_state::DO_NOTHING;
 				break;
 			}
 		}
-	case REPLAY:
+	case audio_state::REPLAY:
 		while (pointer >= samp->fix_rp_length)
 			pointer -= samp->fix_rp_length;
 		v += samp->rp_start[C()] * scaled_volume;
@@ -387,7 +387,7 @@ audio_channel::play(sample_info *samp_, ::pitch pitch_)
 	 */
 	samp = samp_;
 	scaled_volume = samp->volume_lookup[volume];
-	mode = PLAY;
+	mode = audio_state::PLAY;
 }
 
 /* changing the current pitch (value may be temporary, and not stored
@@ -419,8 +419,8 @@ audio_channel::set_position(size_t position)
 	pointer = int_to_fix(position);
 	/* setting position too far must have this behavior for protracker */
 	if (pointer >= samp->fix_length)
-		mode = DO_NOTHING;
+		mode = audio_state::DO_NOTHING;
 	else
-		mode = PLAY;
+		mode = audio_state::PLAY;
 }
 

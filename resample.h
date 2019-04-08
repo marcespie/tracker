@@ -16,9 +16,9 @@
  */
 
 class audio_channel {
-	enum audio_state { DO_NOTHING, PLAY, REPLAY};
+	enum class audio_state { DO_NOTHING, PLAY, REPLAY};
 	sample_info *samp;
-	enum audio_state mode;
+	audio_state mode;
 	unsigned long pointer;
 	unsigned long step;
 	unsigned int volume;
