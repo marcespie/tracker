@@ -194,29 +194,29 @@ automaton::setup_effect(channel& ch, const event& e)
 	case CH_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.CH_E)(&ch, &e);
+		(eval[cmd].f.CH_E)(ch, e);
 		if (pitch)
 			ch.start_note();
 		break;
 	case A_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.A_E)(this, &e);
+		(eval[cmd].f.A_E)(this, e);
 		if (pitch)
 			ch.start_note();
 		break;
 	case NO_NOTE_CH_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.CH_E)(&ch, &e);
+		(eval[cmd].f.CH_E)(ch, e);
 		break;
 	case PORTA_CH_PITCH_E:
-		(eval[cmd].f.CH_PITCH_E)(&ch, pitch, &e);
+		(eval[cmd].f.CH_PITCH_E)(ch, pitch, e);
 		break;
 	case CH_A_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.CH_A_E)(&ch, this, &e);
+		(eval[cmd].f.CH_A_E)(ch, this, e);
 		if (pitch)
 			ch.start_note();
 		break;
@@ -238,8 +238,8 @@ automaton::play_one_tick()
 	} else
 		for (auto i = 0U; i != chan.size(); ++i) {
 			/* do the effects */
-			(chan[i].special)(&(chan[i]));
-			(chan[i].adjust)(&(chan[i]));
+			(chan[i].special)(chan[i]);
+			(chan[i].adjust)(chan[i]);
 		}
 
 	update_tempo();

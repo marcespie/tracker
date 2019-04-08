@@ -67,14 +67,14 @@ struct channel {
 	int current;
 
 	int funk_glissando;	/* current command to adjust parameters */
-	void (*adjust) (struct channel *ch);
+	void (*adjust) (channel& ch);
 	int loop_counter;
 	int loop_note_num;
 
 	int invert_speed;
 	int invert_offset;
 	unsigned long invert_position;
-	void (*special)(struct channel *ch);
+	void (*special)(channel& ch);
 
 	// implemented in pro_low.C
 	void start_note();

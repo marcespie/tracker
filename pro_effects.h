@@ -23,10 +23,10 @@ enum st_effect_type {
 struct st_effect {
 	enum st_effect_type type;
 	union {
-		void (*CH_E)(channel *ch, const event *e);
-		void (*A_E)(automaton *a, const event *e);
-		void (*CH_PITCH_E)(channel *ch, pitch pitch, const event *e);
-		void (*CH_A_E)(channel *ch, automaton *a, const event *e);
+		void (*CH_E)(channel& ch, const event& e);
+		void (*A_E)(automaton *a, const event& e);
+		void (*CH_PITCH_E)(channel& ch, pitch pitch, const event& e);
+		void (*CH_A_E)(channel& ch, automaton *a, const event& e);
 	} f;
 };
 
@@ -37,4 +37,4 @@ extern void init_effects(st_effect table[]);
 
 /* do_nothing: this is the default behavior for an effect
  */
-extern void do_nothing(channel *);
+extern void do_nothing(channel&);
