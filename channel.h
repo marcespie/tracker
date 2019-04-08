@@ -39,6 +39,7 @@ class audio_channel;
 struct channel {
 	std::unique_ptr<audio_channel> audio;
 	channel(int side);
+	int side() const;
 	sample_info *samp;
 	finetune finetune;
 	unsigned int volume;	/* current volume of the sample (0-64) */

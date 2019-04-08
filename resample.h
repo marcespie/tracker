@@ -24,9 +24,9 @@ class audio_channel {
 	unsigned int volume;
 	unsigned int scaled_volume;
 	::pitch pitch;
-	int side;
 	inline auto C() const;
 public:
+	const int side;
 	audio_channel(int);
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);

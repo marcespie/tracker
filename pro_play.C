@@ -53,6 +53,10 @@ static unsigned int ntracks;		/* number of tracks of the current song */
 static struct sample_info **voices;
 
 
+int channel::side() const
+{
+	return audio->side;
+}
 
 channel::channel(int side): audio {std::make_unique<audio_channel>(side)}
 {
