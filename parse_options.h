@@ -83,6 +83,9 @@ struct option_set {
 	{
 		return std::get<const char *>(options[t].arg);
 	}
+	template<class iterator>
+	void parse(iterator b, iterator e, 
+	    void (*what_to_do) (const char *arg));
 	void parse(int argc, char *argv[], void (*what_to_do) (const char *arg));
-	int do1(char* text, char* arg);
+	int do1(const char* text, const char* arg);
 };

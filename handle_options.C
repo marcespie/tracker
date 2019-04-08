@@ -171,7 +171,7 @@ handle_options(int argc, char *argv[])
 		delete []v;
 	}
 
-	args.parse(argc, argv, add_play_list);
+	args.parse(argv, argv+argc, add_play_list);
 	if (args.get_long("help")) {
 		print_usage();
 		End();

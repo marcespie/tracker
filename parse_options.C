@@ -123,7 +123,7 @@ option::finish_setup(const char* optiontext)
 }
 
 int 
-option_set::do1(char *text, char *arg)
+option_set::do1(const char *text, const char *arg)
 {
 	int j;
 	const char *argindex;
@@ -212,3 +212,29 @@ option_set::parse(int argc, char *argv[], void (*what_to_do)(const char *arg))
 			what_to_do(argv[i]);
 	}
 }
+
+template<class iterator>
+void 
+option_set::parse(iterator b, iterator e, void (*what_to_do)(const char *arg))
+{
+	const char *arg = nullptr;
+	for (auto i = b; i != e; ++i) {
+		const char *s = *i;
+		if (s[0] == '-' && s[1] != 0) {
+			if (i+1 != e)
+				arg = *(i+1);
+			else
+				arg = nullptr;
+			if (s[1] == '-') {
+				what_to_do(s);
+				what_to_do(arg);
+				i++;
+			} else
+				i += do1(s+1, arg);
+		} else
+			what_to_do(s);
+	}
+}
+
+template
+void option_set::parse<char**>(char **b, char **e, void (*what_to_do)(const char *args));
