@@ -42,7 +42,7 @@ MAX(S x, T y)
 /* predefinitions for relevant structures */
 struct channel; 
 class song;
-struct automaton;
+class automaton;
 struct sample_info;
 struct event;
 struct tempo;

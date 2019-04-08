@@ -86,4 +86,4 @@ struct channel {
 	void set_position(size_t pos);
 };
 
-struct automaton;
+class automaton;

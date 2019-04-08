@@ -32,7 +32,8 @@ const auto DELAY_PATTERN=16;
 
 const auto NORMAL_SPEED=6;
                                                                                
-struct automaton {
+class automaton {
+public:
 	automaton(const song* song, unsigned int start);
 	void next_tick();
 	void update_tempo();
