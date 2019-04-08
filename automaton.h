@@ -16,6 +16,10 @@
  */
 
 // values for do_stuff
+class song;
+struct event;
+struct channel;
+
 
 const auto DO_SET_NOTHING=0;
 const auto SET_SPEED=1;
@@ -34,6 +38,8 @@ struct automaton {
 	void update_tempo();
 	void set_bpm(unsigned int bpm);
 	void play_one_tick();
+	void dump_events() const;
+	void setup_effect(channel*, event*);
 	event *EVENT(int channel) const;
 
 	unsigned int pattern_num;	// the pattern in the song
@@ -61,8 +67,5 @@ struct automaton {
 				// >0 -> count down
 	unsigned long time_spent;
 };
-
-class song;
-struct event;
 
 const auto NORMAL_FINESPEED=125;

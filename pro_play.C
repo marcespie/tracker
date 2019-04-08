@@ -128,14 +128,14 @@ init_st_play(void)
 }
 
 
-static void 
-dump_events(automaton *a)
+void 
+automaton::dump_events() const
 {
 	dump_delimiter();
 	for (auto s = 0;;) {
 		for (auto i = 0U; i != chan.size(); ++i) {
 			if (chan[i].side() == s) {
-				dump_event(chan[i], a->EVENT(i));
+				dump_event(chan[i], EVENT(i));
 				dump_delimiter();
 			}
 		}
@@ -146,8 +146,8 @@ dump_events(automaton *a)
 	dump_event();
 }
 
-static void 
-setup_effect(channel *ch, automaton *a, event *e)
+void 
+automaton::setup_effect(channel *ch, event *e)
 {
 	int samp, cmd;
 	pitch pitch;
@@ -201,7 +201,7 @@ setup_effect(channel *ch, automaton *a, event *e)
 	case A_E:
 		if (pitch)
 			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.A_E)(a, e);
+		(eval[cmd].f.A_E)(this, e);
 		if (pitch)
 			ch->start_note();
 		break;
@@ -216,7 +216,7 @@ setup_effect(channel *ch, automaton *a, event *e)
 	case CH_A_E:
 		if (pitch)
 			ch->set_current_note(e->note, pitch);
-		(eval[cmd].f.CH_A_E)(ch, a, e);
+		(eval[cmd].f.CH_A_E)(ch, this, e);
 		if (pitch)
 			ch->start_note();
 		break;
@@ -231,9 +231,9 @@ automaton::play_one_tick()
 		/* do new effects only if not in delay mode */
 		if (delay_counter == 0) {
 			for (auto i = 0U; i != chan.size(); ++i)
-				setup_effect(&(chan[i]), this, EVENT(i));
+				setup_effect(&(chan[i]), EVENT(i));
 			if (pref::get(Pref::show))
-				dump_events(this);
+				dump_events();
 		}
 	} else
 		for (auto i = 0U; i != chan.size(); ++i) {
