@@ -224,16 +224,16 @@ setup_effect(channel *ch, automaton *a, event *e)
 }
 
 
-static void 
-play_one_tick(automaton *a)
+void 
+automaton::play_one_tick()
 {
-	if (a->counter == 0) {	
+	if (counter == 0) {	
 		/* do new effects only if not in delay mode */
-		if (a->delay_counter == 0) {
+		if (delay_counter == 0) {
 			for (auto i = 0U; i != chan.size(); ++i)
-				setup_effect(&(chan[i]), a, a->EVENT(i));
+				setup_effect(&(chan[i]), this, EVENT(i));
 			if (pref::get(Pref::show))
-				dump_events(a);
+				dump_events(this);
 		}
 	} else
 		for (auto i = 0U; i != chan.size(); ++i) {
@@ -242,7 +242,7 @@ play_one_tick(automaton *a)
 			(chan[i].adjust)(&(chan[i]));
 		}
 
-	a->update_tempo();
+	update_tempo();
 	/* actually output samples */
 	if (pref::get(Pref::output))
 		resample();
@@ -269,7 +269,7 @@ song::play(unsigned int start)
 	set_data_width(side_width, max_sample_width);
 
 	while(true) {
-		play_one_tick(&a);
+		a.play_one_tick();
 		a.next_tick();
 		auto [type, val] = get_ui();
 		switch(type) {  

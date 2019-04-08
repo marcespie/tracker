@@ -33,6 +33,7 @@ struct automaton {
 	void next_tick();
 	void update_tempo();
 	void set_bpm(unsigned int bpm);
+	void play_one_tick();
 	event *EVENT(int channel) const;
 
 	unsigned int pattern_num;	// the pattern in the song
