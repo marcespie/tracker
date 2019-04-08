@@ -80,7 +80,7 @@ set_pattern(automaton *a)
  * to play a given song.
  */
 static void 
-init_automaton(automaton *a, song *song, unsigned int start)
+init_automaton(automaton* a, const song* song, unsigned int start)
 {
 	a->info = &song->info;
 	a->pattern_num = start;    /* first pattern */
@@ -103,7 +103,7 @@ init_automaton(automaton *a, song *song, unsigned int start)
 }
 
 automaton *
-setup_automaton(song *s, unsigned int start)
+setup_automaton(const song *s, unsigned int start)
 {
 	static automaton a;
 

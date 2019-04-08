@@ -33,7 +33,7 @@ struct automaton {
 	unsigned int pattern_num;	// the pattern in the song
 	unsigned int note_num;		// the note in the pattern
 	pattern *pattern;		// the physical pattern
-	song_info *info;		// we need the song_info
+	const song_info *info;		// we need the song_info
 
 	char gonethrough[NUMBER_PATTERNS + 1];  // to check for repeats
 
