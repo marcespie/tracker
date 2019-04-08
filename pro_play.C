@@ -265,33 +265,23 @@ play_one_tick(automaton *a)
 int
 song::play(unsigned int start)
 {
-	return play_song(this, start);
-}
-
-int
-play_song(song *song, unsigned int start)
-{
-	int countup;      /* keep playing the tune or not */
-	int r;
-	automaton *a;
-
 	INIT_ONCE;
 
-	song_title(song->title);
+	song_title(title);
 
-	ntracks = song->ntracks;
+	::ntracks = ntracks;
 	set_number_tracks(ntracks);
 
-	countup = 0;
+	auto countup = 0; 	/* keep playing the tune or not */
 
-	voices = song->samples; 
+	voices = samples; 
 
-	a = setup_automaton(song, start);
+	auto a = setup_automaton(this, start);
 	set_bpm(a, pref::get(Pref::speed));
 
 	init_channels();
 
-	set_data_width(song->side_width, song->max_sample_width);
+	set_data_width(side_width, max_sample_width);
 
 	while(true) {
 		play_one_tick(a);
@@ -313,13 +303,13 @@ play_song(song *song, unsigned int start)
 			break;
 		case UI_RESTART:
 			discard_buffer();
-			a = setup_automaton(song, start);
+			a = setup_automaton(this, start);
 			init_channels();
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a->info->length) {
 				discard_buffer();
-				a = setup_automaton(song, val);
+				a = setup_automaton(this, val);
 			}
 			break;
 		default:
@@ -331,7 +321,7 @@ play_song(song *song, unsigned int start)
 			break;
 		case ENDED:
 			countup++;
-			if ( (r = pref::get(Pref::repeats)) )
+			if (auto r = pref::get(Pref::repeats); r != 0)
 				if (countup >= r)
 					return PLAY_ENDED;
 			break;
