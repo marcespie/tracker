@@ -262,15 +262,15 @@ song::play(unsigned int start)
 
 	voices = samples; 
 
-	auto a = setup_automaton(this, start);
-	set_bpm(a, pref::get(Pref::speed));
+	auto a = automaton{this, start};
+	set_bpm(&a, pref::get(Pref::speed));
 
 
 	set_data_width(side_width, max_sample_width);
 
 	while(true) {
-		play_one_tick(a);
-		next_tick(a);
+		play_one_tick(&a);
+		next_tick(&a);
 		auto [type, val] = get_ui();
 		switch(type) {  
 		case UI_NEXT_SONG:
@@ -284,17 +284,17 @@ song::play(unsigned int start)
 			End();
 			/* NOTREACHED */
 		case UI_SET_BPM:
-			set_bpm(a, val);
+			set_bpm(&a, val);
 			break;
 		case UI_RESTART:
 			discard_buffer();
-			a = setup_automaton(this, start);
+			a = automaton{this, start};
 			init_channels(ntracks);
 			break;
 		case UI_JUMP_TO_PATTERN:
-			if (val >= 0 && val < a->info->length) {
+			if (val >= 0 && val < a.info->length) {
 				discard_buffer();
-				a = setup_automaton(this, val);
+				a = automaton(this, val);
 			}
 			break;
 		default:

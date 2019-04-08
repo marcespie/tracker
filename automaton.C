@@ -70,7 +70,7 @@ set_pattern(automaton *a)
 
 
 	display_pattern(a->pattern_num, a->info->length, a->pattern->number, 
-	a->pattern->total, a->info->duration);
+	    a->pattern->total, a->info->duration);
 	if (error == ENDED)
 		display_time(a->time_spent, a->info->duration);
 }
@@ -101,13 +101,9 @@ init_automaton(automaton* a, const song* song, unsigned int start)
 	set_pattern(a);
 }
 
-automaton *
-setup_automaton(const song *s, unsigned int start)
+automaton::automaton(const song *s, unsigned int start)
 {
-	static automaton a;
-
-	init_automaton(&a, s, start);
-	return &a;
+	init_automaton(this, s, start);
 }
 
 /* get to the next pattern, and display stuff 

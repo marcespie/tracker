@@ -454,9 +454,9 @@ setup_song(song *song)
 		prep_sample_info(song->samples[i]);
 	adjust_volumes(song);
 
-	auto a = setup_automaton(song, 0);
+	auto a = automaton{song, 0};
 
-	compute_duration(a, song);
+	compute_duration(&a, song);
 }
 
 /***

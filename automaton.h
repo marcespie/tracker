@@ -15,29 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-struct automaton;
-class song;
-struct event;
-
-const auto NORMAL_FINESPEED=125;
-/* a = init_automaton(song, start):
- * return an automaton set in the right state to play song from pattern #start.
- */
-extern automaton *setup_automaton(const song *song, unsigned int start);
-
-/* next_tick(a):
- * set up everything for the next tick.
- */
-extern void next_tick(automaton *a);
-
-/* update_tempo(a):
- * update tempo in automaton according to parameters
- */
-extern void update_tempo(automaton *a);
-extern void set_bpm(automaton *a, unsigned int bpm);
-
-extern event *EVENT(automaton *a, int channel);
-
 // values for do_stuff
 
 const auto DO_SET_NOTHING=0;
@@ -52,6 +29,7 @@ const auto DELAY_PATTERN=16;
 const auto NORMAL_SPEED=6;
                                                                                
 struct automaton {
+	automaton(const song* song, unsigned int start);
 	unsigned int pattern_num;	// the pattern in the song
 	unsigned int note_num;		// the note in the pattern
 	pattern *pattern;		// the physical pattern
@@ -77,3 +55,26 @@ struct automaton {
 				// >0 -> count down
 	unsigned long time_spent;
 };
+
+class song;
+struct event;
+
+const auto NORMAL_FINESPEED=125;
+/* a = init_automaton(song, start):
+ * return an automaton set in the right state to play song from pattern #start.
+ */
+extern automaton *setup_automaton(const song *song, unsigned int start);
+
+/* next_tick(a):
+ * set up everything for the next tick.
+ */
+extern void next_tick(automaton *a);
+
+/* update_tempo(a):
+ * update tempo in automaton according to parameters
+ */
+extern void update_tempo(automaton *a);
+extern void set_bpm(automaton *a, unsigned int bpm);
+
+extern event *EVENT(automaton *a, int channel);
+
