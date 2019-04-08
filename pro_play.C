@@ -25,7 +25,6 @@
 #include "channel.h"
 #include "prefs.h"
 #include "pro_effects.h"
-#include "p_automaton.h"
 #include "automaton.h"
 #include "autoinit.h"
 #include "resample.h"

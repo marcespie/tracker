@@ -23,9 +23,9 @@
 #include "channel.h"
 #include "song.h"
 #include "protracker.h"
+#include "automaton.h"
 #include "prefs.h"
 #include "pro_effects.h"
-#include "p_automaton.h"
      
 /* sine table for the vibrato effect (obtained through build_vibrato.c) */
 

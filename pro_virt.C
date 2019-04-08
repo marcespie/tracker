@@ -25,7 +25,6 @@
 #include "channel.h"
 #include "prefs.h"
 #include "automaton.h"
-#include "p_automaton.h"
 #include "timing.h"
 
 static unsigned long *loop_start;
