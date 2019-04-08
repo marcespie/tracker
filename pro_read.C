@@ -456,7 +456,7 @@ setup_song(song *song)
 
 	auto a = automaton{song, 0};
 
-	compute_duration(&a, song);
+	a.compute_duration(song);
 }
 
 /***

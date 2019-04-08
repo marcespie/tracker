@@ -34,10 +34,13 @@ const auto NORMAL_SPEED=6;
                                                                                
 class automaton {
 	void set_pattern();
+	void set_pattern_for_virt();
 	void init(const song* song, unsigned int start);
 	void advance_pattern();
 	void clear_repeats(unsigned int, unsigned int);
 	void reset_repeats();
+	unsigned long compute_pattern_duration(event *base, 
+	    unsigned int plength, unsigned int ntracks);
 public:
 	automaton(const song* song, unsigned int start);
 	void next_tick();
@@ -47,6 +50,8 @@ public:
 	void dump_events() const;
 	void setup_effect(channel&, const event&);
 	const event& EVENT(int channel) const;
+
+	void compute_duration(song* song);
 
 	unsigned int pattern_num;	// the pattern in the song
 	unsigned int note_num;		// the note in the pattern
