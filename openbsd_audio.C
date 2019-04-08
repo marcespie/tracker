@@ -24,6 +24,7 @@
 #include <sndio.h>
 #include <queue>
 #include <iostream>
+#include <limits>
 
 // fine-tune to get the scrolling display in sync with the music
 const auto ADVANCE_TAGS=20000;
@@ -67,21 +68,14 @@ template<> uint8_t* buf<uint8_t>;
 
 template<typename T>
 inline T
-VALUE(int32_t x);
-
-template<>
-inline int16_t
-VALUE<int16_t>(int32_t x)
+VALUE(int32_t x)
 {
-	return x;
+	if constexpr (!std::numeric_limits<T>::is_signed)
+		return x + ((std::numeric_limits<T>::max()>>1U) +1);
+	else
+		return x;
 }
 
-template<>
-inline uint8_t
-VALUE<uint8_t>(int32_t x)
-{
-	return x+128;
-}
 
 static unsigned long idx;
 static int dsize;			/* current data size */
