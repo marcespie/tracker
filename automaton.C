@@ -48,76 +48,76 @@ reset_repeats(automaton *a)
 /* update the pattern to play in the automaton. Checks that the pattern 
  * actually exists. Handle repetitions as well.
  */
-static void 
-set_pattern(automaton *a)
+void 
+automaton::set_pattern()
 {
-	if (a->pattern_num >= a->info->length) {
+	if (pattern_num >= info->length) {
 		error = UNRECOVERABLE;
 		return;
 	}
 
-	if (a->gonethrough[a->pattern_num]) {
+	if (gonethrough[pattern_num]) {
 		error = ENDED;
-		reset_repeats(a);
+		reset_repeats(this);
 	}
 	else
-		a->gonethrough[a->pattern_num] = true;
+		gonethrough[pattern_num] = true;
 
 	/* there is a level of indirection in the format,
 	* i.e., patterns can be repeated.
 	*/
-	a->pattern = a->info->patterns+a->pattern_num;
+	pattern = info->patterns+pattern_num;
 
 
-	display_pattern(a->pattern_num, a->info->length, a->pattern->number, 
-	    a->pattern->total, a->info->duration);
+	display_pattern(pattern_num, info->length, pattern->number, 
+	    pattern->total, info->duration);
 	if (error == ENDED)
-		display_time(a->time_spent, a->info->duration);
+		display_time(time_spent, info->duration);
 }
 
 /* initialize all the fields of the automaton necessary
  * to play a given song.
  */
-static void 
-init_automaton(automaton* a, const song* song, unsigned int start)
+void
+automaton::init(const song* song, unsigned int start)
 {
-	a->info = &song->info;
-	a->pattern_num = start;    /* first pattern */
+	info = &song->info;
+	pattern_num = start;    /* first pattern */
 
-	a->delay_counter = 0;
+	delay_counter = 0;
 
-	reset_repeats(a);
+	reset_repeats(this);
 
-	a->note_num = 0;           /* first note in pattern */
-	a->counter = 0;            /* counter for the effect tempo */
-	a->speed = NORMAL_SPEED;
-	a->finespeed = NORMAL_FINESPEED;
+	note_num = 0;           /* first note in pattern */
+	counter = 0;            /* counter for the effect tempo */
+	speed = NORMAL_SPEED;
+	finespeed = NORMAL_FINESPEED;
 	/* (100%=NORMAL_FINESPEED) */
-	a->do_stuff = DO_SET_NOTHING;  /* some effects affect the automaton,
+	do_stuff = DO_SET_NOTHING;  /* some effects affect the automaton,
 			       		* we keep them here.  */
 	error = NONE;              /* Maybe we should not reset errors at
 			       	    * this point ?  */
-	a->time_spent = 0;
-	set_pattern(a);
+	time_spent = 0;
+	set_pattern();
 }
 
 automaton::automaton(const song *s, unsigned int start)
 {
-	init_automaton(this, s, start);
+	init(s, start);
 }
 
 /* get to the next pattern, and display stuff 
  */
-static void 
-advance_pattern(automaton *a)
+void 
+automaton::advance_pattern()
 {
-	if (++a->pattern_num >= a->info->length) {
+	if (++pattern_num >= info->length) {
 		error = ENDED;
-		reset_repeats(a);
-		a->pattern_num = 0;
+		reset_repeats(this);
+		pattern_num = 0;
 	}
-	set_pattern(a);
-	a->note_num = 0;
+	set_pattern();
+	note_num = 0;
 }
 
 void 
@@ -187,14 +187,14 @@ automaton::next_tick()
 				note_num = loop_note_num;
 			else if (do_stuff & SET_FASTSKIP) {
 				pattern_num = new_pattern;
-				set_pattern(this);
+				set_pattern();
 				note_num = 0;
 			} else if (do_stuff & SET_SKIP) {
-				advance_pattern(this);
+				advance_pattern();
 				note_num = new_note;
 			} else {
 				if (++note_num >= info->plength) {
-					advance_pattern(this);
+					advance_pattern();
 				}
 			}
 			do_stuff = DO_SET_NOTHING;

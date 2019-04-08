@@ -33,6 +33,9 @@ const auto DELAY_PATTERN=16;
 const auto NORMAL_SPEED=6;
                                                                                
 class automaton {
+	void set_pattern();
+	void init(const song* song, unsigned int start);
+	void advance_pattern();
 public:
 	automaton(const song* song, unsigned int start);
 	void next_tick();
