@@ -173,39 +173,39 @@ update_tempo(automaton *a)
  * including set_skip, set_fastskip, and set_loop.
  */
 void 
-next_tick(automaton *a)
+automaton::next_tick()
 {
-	a->time_spent += ratio2time(NORMAL_FINESPEED, a->finespeed * 50);
-	if (++a->counter >= a->speed) {
-		a->counter = 0;
+	time_spent += ratio2time(NORMAL_FINESPEED, finespeed * 50);
+	if (++counter >= speed) {
+		counter = 0;
 		/* if we are in delay mode, count down delay */
-		if (a->delay_counter > 0)
-			a->delay_counter--;
+		if (delay_counter > 0)
+			delay_counter--;
 		/* get to next tick ONLY if no delay */
-		if (a->delay_counter == 0) {
+		if (delay_counter == 0) {
 			/* loop: may change note in pattern right away */
-			if (a->do_stuff & JUMP_PATTERN)
-				a->note_num = a->loop_note_num;
-			else if (a->do_stuff & SET_FASTSKIP) {
-				a->pattern_num = a->new_pattern;
-				set_pattern(a);
-				a->note_num = 0;
-			} else if (a->do_stuff & SET_SKIP) {
-				advance_pattern(a);
-				a->note_num = a->new_note;
+			if (do_stuff & JUMP_PATTERN)
+				note_num = loop_note_num;
+			else if (do_stuff & SET_FASTSKIP) {
+				pattern_num = new_pattern;
+				set_pattern(this);
+				note_num = 0;
+			} else if (do_stuff & SET_SKIP) {
+				advance_pattern(this);
+				note_num = new_note;
 			} else {
-				if (++a->note_num >= a->info->plength) {
-					advance_pattern(a);
+				if (++note_num >= info->plength) {
+					advance_pattern(this);
 				}
 			}
-			a->do_stuff = DO_SET_NOTHING;
+			do_stuff = DO_SET_NOTHING;
 		}
 	}
 }
 
 
 event *
-EVENT(automaton *a, int channel)
+automaton::EVENT(int channel) const
 {
-	return &(a->pattern->e[channel * a->info->plength + a->note_num]);
+	return &(pattern->e[channel * info->plength + note_num]);
 }

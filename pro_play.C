@@ -135,7 +135,7 @@ dump_events(automaton *a)
 	for (auto s = 0;;) {
 		for (auto i = 0U; i != chan.size(); ++i) {
 			if (chan[i].side() == s) {
-				dump_event(chan[i], EVENT(a, i));
+				dump_event(chan[i], a->EVENT(i));
 				dump_delimiter();
 			}
 		}
@@ -231,7 +231,7 @@ play_one_tick(automaton *a)
 		/* do new effects only if not in delay mode */
 		if (a->delay_counter == 0) {
 			for (auto i = 0U; i != chan.size(); ++i)
-				setup_effect(&(chan[i]), a, EVENT(a, i));
+				setup_effect(&(chan[i]), a, a->EVENT(i));
 			if (pref::get(Pref::show))
 				dump_events(a);
 		}
@@ -270,7 +270,7 @@ song::play(unsigned int start)
 
 	while(true) {
 		play_one_tick(&a);
-		next_tick(&a);
+		a.next_tick();
 		auto [type, val] = get_ui();
 		switch(type) {  
 		case UI_NEXT_SONG:
