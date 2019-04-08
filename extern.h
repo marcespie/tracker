@@ -116,10 +116,8 @@ extern int error;
  */
 extern song *read_song(class exfile& f, int type);
 
-extern void adjust_song(song *song, unsigned long m);
-
 /*--------------------------- st_virt.c --------------------------*/
-extern void compute_duration(struct automaton *a, song *song);
+extern void compute_duration(automaton *a, song *song);
 
 
 /*--------------------------- setup_audio.c ----------------------*/
