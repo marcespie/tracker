@@ -252,6 +252,4 @@ extern char *write_color(char *base, unsigned int color);
 extern void audio_ui(char c);
 /*--------------------------- parse_options.c --------------------*/
 
-extern int string2args(char *s, char *v[]);
-
 extern void add_play_list(const char *);

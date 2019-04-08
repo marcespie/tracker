@@ -17,6 +17,7 @@
 
 #include <variant>
 #include <map>
+#include <vector>
 
 using VALUE = std::variant<long, const char *>;
 
@@ -89,3 +90,5 @@ struct option_set {
 	void parse(int argc, char *argv[], void (*what_to_do) (const char *arg));
 	int do1(const char* text, const char* arg);
 };
+
+std::vector<char *>string2args(char *);

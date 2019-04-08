@@ -21,6 +21,7 @@
  */
 #include <list>
 #include <iostream>
+#include <vector>
 
 #include "parse_options.h"
 #include "extern.h"
@@ -33,13 +34,13 @@ enum class state {
 			// looking for corresponding quote
 	IN_ARG }; 	// inside normal argument
 
-int 
-string2args(char *s, char *v[])
+std::vector<char *> 
+string2args(char *s)
 {
+	std::vector<char *> result;
 	char c;
 
 	auto mode = state::LOOK_FOR_ARG;
-	int j = 0;
 
 	while (*s) {
 		switch(mode) {
@@ -48,24 +49,18 @@ string2args(char *s, char *v[])
 			case ' ': case '\t':
 				break;
 			case '\\':
-				if (v != nullptr)
-					v[j] = s;
-				j++;
+				result.push_back(s);
 				if (! *++s)	/* check for last char */
-					return j;
+					return result;
 				mode = state::IN_ARG;
 				break;
 			case '"': case '\'':
 				c = *s;
-				if (v != nullptr)
-					v[j] = s+1;
-				j++;
+				result.push_back(s+1);
 				mode = state::QUOTED_ARG;
 				break;
 			default:
-				if (v != nullptr)
-					v[j] = s;
-				j++;
+				result.push_back(s);
 				mode = state::IN_ARG;
 				break;
 			}
@@ -73,13 +68,12 @@ string2args(char *s, char *v[])
 		case state::IN_ARG:
 			switch(*s) {
 			case ' ': case '\t':
-				if (v != nullptr)
-					*s = 0;
+				*s = 0;
 				mode = state::LOOK_FOR_ARG;
 				break;
 			case '\\':
 				if (! *++s)
-					return j;
+					return result;
 				break;
 			default:
 				break;
@@ -88,17 +82,16 @@ string2args(char *s, char *v[])
 		case state::QUOTED_ARG:
 			if (*s == '\\') {
 				if (! *++s)
-					return j;
+					return result;
 			} else if (*s == c) {
-				if (v != NULL)
-					*s = 0;
+				*s = 0;
 				mode = state::LOOK_FOR_ARG;
 			}
 			break;
 		}
 		s++;
 	}
-	return j;
+	return result;
 }
 
 void
@@ -238,3 +231,7 @@ option_set::parse(iterator b, iterator e, void (*what_to_do)(const char *arg))
 
 template
 void option_set::parse<char**>(char **b, char **e, void (*what_to_do)(const char *args));
+
+using I = std::vector<char *>::iterator;
+template
+void option_set::parse<I>(I b, I e, void (*what_to_do)(const char *args));

@@ -164,11 +164,8 @@ handle_options(int argc, char *argv[])
 {
 	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
-		auto t = string2args(s, nullptr);
-		auto v = new char *[t];
-		string2args(s, v);
-		args.parse(t, v, add_play_list);
-		delete []v;
+		auto t = string2args(s);
+		args.parse(begin(t), end(t), add_play_list);
 	}
 
 	args.parse(argv, argv+argc, add_play_list);
