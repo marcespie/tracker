@@ -338,7 +338,9 @@ do_display_pattern(unsigned int current, unsigned int total,
 				    time2string(buf1, totaltime), title);
 				for (int i = 0; i < ntracks; i++)
 					std::cout << "--------------";
-				std::cout << std::endl;
+				if (ntracks != 0)
+					std::cout << "--";
+				std::cout << "\n";
 			} else {
 				printf("\x1b]2;V%s %3u/%3u %s/%s %s\007", VERSION, 
 				    current, total, time2string(buf0, uptilnow),

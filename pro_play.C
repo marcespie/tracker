@@ -49,7 +49,6 @@ static struct st_effect eval[NUMBER_EFFECTS];
 
 std::vector<channel> chan;
 
-static unsigned int ntracks;		/* number of tracks of the current song */
 static struct sample_info **voices;
 
 
@@ -103,7 +102,7 @@ channel::channel(int side): audio {std::make_unique<audio_channel>(side)}
 
 
 static void 
-init_channels(void)
+init_channels(int ntracks)
 {
 	release_audio_channels();
 
@@ -133,32 +132,17 @@ init_st_play(void)
 static void 
 dump_events(automaton *a)
 {
-	/* display the output in a reasonable order:
-	 * LEFT1 LEFT2 || RIGHT1 RIGHT 2
-	 */
-	dump_event(chan[0], EVENT(a, 0));
 	dump_delimiter();
-	dump_event(chan[3], EVENT(a, 3));
-	dump_delimiter();
-	if (ntracks > 4) {
-		dump_event(chan[4], EVENT(a, 4));
+	for (auto s = 0;;) {
+		for (auto i = 0U; i != chan.size(); ++i) {
+			if (chan[i].side() == s) {
+				dump_event(chan[i], EVENT(a, i));
+				dump_delimiter();
+			}
+		}
+		if (++s == NUMBER_SIDES)
+			break;
 		dump_delimiter();
-	}
-	if (ntracks > 7) {
-		dump_event(chan[7], EVENT(a, 7));
-		dump_delimiter();
-	}
-	dump_delimiter();
-	dump_event(chan[1], EVENT(a, 1));
-	dump_delimiter();
-	dump_event(chan[2], EVENT(a, 2));
-	if (ntracks > 5) {
-		dump_delimiter();
-		dump_event(chan[5], EVENT(a, 5));
-	}
-	if (ntracks > 6) {
-		dump_delimiter();
-		dump_event(chan[6], EVENT(a, 6));
 	}
 	dump_event();
 }
@@ -247,17 +231,16 @@ play_one_tick(automaton *a)
 	if (a->counter == 0) {	
 		/* do new effects only if not in delay mode */
 		if (a->delay_counter == 0) {
-			for (unsigned channel = 0; channel < ntracks; channel++)
-				setup_effect(&(chan[channel]), a, 
-				    EVENT(a, channel));
+			for (auto i = 0U; i != chan.size(); ++i)
+				setup_effect(&(chan[i]), a, EVENT(a, i));
 			if (pref::get(Pref::show))
 				dump_events(a);
 		}
 	} else
-		for (unsigned channel = 0; channel < ntracks; channel++) {
+		for (auto i = 0U; i != chan.size(); ++i) {
 			/* do the effects */
-			(chan[channel].special)(&(chan[channel]));
-			(chan[channel].adjust)(&(chan[channel]));
+			(chan[i].special)(&(chan[i]));
+			(chan[i].adjust)(&(chan[i]));
 		}
 
 	update_tempo(a);
@@ -273,8 +256,8 @@ song::play(unsigned int start)
 
 	song_title(title);
 
-	::ntracks = ntracks;
 	set_number_tracks(ntracks);
+	init_channels(ntracks);
 
 	auto countup = 0; 	/* keep playing the tune or not */
 
@@ -283,7 +266,6 @@ song::play(unsigned int start)
 	auto a = setup_automaton(this, start);
 	set_bpm(a, pref::get(Pref::speed));
 
-	init_channels();
 
 	set_data_width(side_width, max_sample_width);
 
@@ -308,7 +290,7 @@ song::play(unsigned int start)
 		case UI_RESTART:
 			discard_buffer();
 			a = setup_automaton(this, start);
-			init_channels();
+			init_channels(ntracks);
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a->info->length) {

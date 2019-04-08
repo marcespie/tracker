@@ -636,8 +636,6 @@ init_display(void)
 void 
 dump_event(const channel& ch, const event *e)
 {
-	if (!base)
-		base = new_scroll();
 	if (base) {
 		color(ch.samp->color);
 		if (ch.samp != empty_sample())
@@ -661,6 +659,8 @@ dump_event()
 void 
 dump_delimiter(void)
 {
+	if (!base)
+		base = new_scroll();
 	if (base)
 		*base++= '|';
 }
