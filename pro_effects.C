@@ -326,39 +326,39 @@ set_vibratoslide(channel& ch, const event& e)
  * there can be several speed change in the same note.
  */
 static void 
-set_speed(automaton *a, const event& e)
+set_speed(automaton& a, const event& e)
 {
 	if (e.parameters >= 32 && 
 	    pref::get(Pref::speedmode) != OLD_SPEEDMODE) {
-		a->new_finespeed = e.parameters;
-		a->do_stuff |= SET_FINESPEED;
+		a.new_finespeed = e.parameters;
+		a.do_stuff |= SET_FINESPEED;
 	} else if (e.parameters) {
-		a->new_speed = e.parameters;
-		a->do_stuff |= SET_SPEED;
+		a.new_speed = e.parameters;
+		a.do_stuff |= SET_SPEED;
 	}
 }
 
 /* older soundtracker speed change effect */
 static void 
-set_st_speed(automaton *a, const event& e)
+set_st_speed(automaton& a, const event& e)
 {
-	a->new_speed = e.parameters;
-	a->do_stuff |= SET_SPEED;
+	a.new_speed = e.parameters;
+	a.do_stuff |= SET_SPEED;
 }
 
 static void 
-set_skip(automaton *a, const event& e)
+set_skip(automaton& a, const event& e)
 {
 	// XXX BCD decoding in pro_read.C
-	a->new_note = e.parameters;
-	a->do_stuff |= SET_SKIP;
+	a.new_note = e.parameters;
+	a.do_stuff |= SET_SKIP;
 }
 
 static void 
-set_fastskip(automaton *a, const event& e)
+set_fastskip(automaton& a, const event& e)
 {
-	a->new_pattern = e.parameters;
-	a->do_stuff |= SET_FASTSKIP;
+	a.new_pattern = e.parameters;
+	a.do_stuff |= SET_FASTSKIP;
 }
 
 /* immediate effect: starts the sample somewhere
@@ -482,7 +482,7 @@ set_change_finetune(channel& ch, const event& e)
 
 
 static void 
-set_loop(channel& ch, automaton *a, const event& e)
+set_loop(channel& ch, automaton& a, const event& e)
 {
 	/* Note: the current implementation of protracker
 	* does not allow for a jump from pattern to pattern,
@@ -490,7 +490,7 @@ set_loop(channel& ch, automaton *a, const event& e)
 	* format.
 	*/
 	if (e.parameters == 0) 
-		ch.loop_note_num = a->note_num;
+		ch.loop_note_num = a.note_num;
 	else {
 		if (ch.loop_counter == -1)
 			ch.loop_counter = e.parameters + 1;
@@ -501,8 +501,8 @@ set_loop(channel& ch, automaton *a, const event& e)
 		*/
 		ch.loop_counter--;
 		if (ch.loop_counter > 0) {
-			a->do_stuff |= JUMP_PATTERN;
-			a->loop_note_num = ch.loop_note_num;
+			a.do_stuff |= JUMP_PATTERN;
+			a.loop_note_num = ch.loop_note_num;
 		} else
 			ch.loop_counter = -1;
 		}
@@ -522,9 +522,9 @@ set_smooth_downvolume(channel& ch, const event& e)
 
 
 static void 
-set_delay_pattern(automaton *a, const event& e)
+set_delay_pattern(automaton& a, const event& e)
 {
-	a->delay_counter = e.parameters + 1;
+	a.delay_counter = e.parameters + 1;
 }
 
 

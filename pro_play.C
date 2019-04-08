@@ -201,7 +201,7 @@ automaton::setup_effect(channel& ch, const event& e)
 	case A_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.A_E)(this, e);
+		(eval[cmd].f.A_E)(*this, e);
 		if (pitch)
 			ch.start_note();
 		break;
@@ -216,7 +216,7 @@ automaton::setup_effect(channel& ch, const event& e)
 	case CH_A_E:
 		if (pitch)
 			ch.set_current_note(e.note, pitch);
-		(eval[cmd].f.CH_A_E)(ch, this, e);
+		(eval[cmd].f.CH_A_E)(ch, *this, e);
 		if (pitch)
 			ch.start_note();
 		break;

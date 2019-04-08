@@ -24,9 +24,9 @@ struct st_effect {
 	enum st_effect_type type;
 	union {
 		void (*CH_E)(channel& ch, const event& e);
-		void (*A_E)(automaton *a, const event& e);
+		void (*A_E)(automaton& a, const event& e);
 		void (*CH_PITCH_E)(channel& ch, pitch pitch, const event& e);
-		void (*CH_A_E)(channel& ch, automaton *a, const event& e);
+		void (*CH_A_E)(channel& ch, automaton& a, const event& e);
 	} f;
 };
 
