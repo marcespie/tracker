@@ -29,20 +29,20 @@
 /* set up the automaton so that I haven't got through patterns 
  * #from to #to
  */
-static void 
-clear_repeats(automaton *a, unsigned int from, unsigned int upto)
+void 
+automaton::clear_repeats(unsigned int from, unsigned int upto)
 {
 	for (unsigned i = from; i <= upto; i++)
-		a->gonethrough[i] = false;
+		gonethrough[i] = false;
 }
 
 /* set up the automaton so that I haven't got through any patterns
  */
-static void 
-reset_repeats(automaton *a)
+void 
+automaton::reset_repeats()
 {
-	clear_repeats(a, 0, a->info->length);
-	a->gonethrough[a->info->length] = true;
+	clear_repeats(0, info->length);
+	gonethrough[info->length] = true;
 }
 
 /* update the pattern to play in the automaton. Checks that the pattern 
@@ -58,7 +58,7 @@ automaton::set_pattern()
 
 	if (gonethrough[pattern_num]) {
 		error = ENDED;
-		reset_repeats(this);
+		reset_repeats();
 	}
 	else
 		gonethrough[pattern_num] = true;
@@ -86,7 +86,7 @@ automaton::init(const song* song, unsigned int start)
 
 	delay_counter = 0;
 
-	reset_repeats(this);
+	reset_repeats();
 
 	note_num = 0;           /* first note in pattern */
 	counter = 0;            /* counter for the effect tempo */
@@ -113,7 +113,7 @@ automaton::advance_pattern()
 {
 	if (++pattern_num >= info->length) {
 		error = ENDED;
-		reset_repeats(this);
+		reset_repeats();
 		pattern_num = 0;
 	}
 	set_pattern();

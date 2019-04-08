@@ -36,6 +36,8 @@ class automaton {
 	void set_pattern();
 	void init(const song* song, unsigned int start);
 	void advance_pattern();
+	void clear_repeats(unsigned int, unsigned int);
+	void reset_repeats();
 public:
 	automaton(const song* song, unsigned int start);
 	void next_tick();
