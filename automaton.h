@@ -41,6 +41,21 @@ class automaton {
 	void reset_repeats();
 	unsigned long compute_pattern_duration(event *base, 
 	    unsigned int plength, unsigned int ntracks);
+
+	unsigned int pattern_num;	// the pattern in the song
+	pattern *pattern;		// the physical pattern
+
+	char gonethrough[NUMBER_PATTERNS + 1];  // to check for repeats
+
+	unsigned int counter;		// the fine position inside the effect
+
+	unsigned int bpm;
+	unsigned int speed;		// speed number of effect repeats
+	unsigned int finespeed;		// finespeed, base is 100
+
+
+
+	unsigned long time_spent;
 public:
 	automaton(const song* song, unsigned int start);
 	void next_tick();
@@ -53,30 +68,16 @@ public:
 
 	void compute_duration(song* song);
 
-	unsigned int pattern_num;	// the pattern in the song
 	unsigned int note_num;		// the note in the pattern
-	pattern *pattern;		// the physical pattern
 	const song_info *info;		// we need the song_info
-
-	char gonethrough[NUMBER_PATTERNS + 1];  // to check for repeats
-
-	unsigned int counter;		// the fine position inside the effect
-
-	unsigned int bpm;
-	unsigned int speed;		// speed number of effect repeats
-	unsigned int finespeed;		// finespeed, base is 100
-
 	int do_stuff;              	// keeping some stuff to do
 					// ... and parameters for it:
 	unsigned int new_speed, new_note, new_pattern, new_finespeed;
 
-
 	unsigned int loop_note_num; 	// for command E6
-
 	unsigned int delay_counter; 	// for command EE
 				// =0 -> no delay, next pattern immediately
 				// >0 -> count down
-	unsigned long time_spent;
 };
 
 const auto NORMAL_FINESPEED=125;
