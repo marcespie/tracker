@@ -46,7 +46,7 @@ extern void at_end(void (*cleanup)(void));
  * and add INIT_ONCE; at EVERY possible first entry point for their routine.
  * (I mean every, don't try to second-guess me !)
  */
-#define INIT_ONCE	if (INIT){void (*func)(void) = INIT; INIT = 0; (*func)();}
+#define INIT_ONCE	if (INIT){void (*func)(void) = INIT; INIT = nullptr; func();}
 
 // a template class that calls a function (object) on start
 template<class T>
