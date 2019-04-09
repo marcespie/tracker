@@ -28,6 +28,7 @@
 #include "play_list.h"
 #include "open.h"
 #include "pro_play.h"
+#include "resampler.h"
      
 extern void print_usage(void);
 extern unsigned long half_mask;
@@ -119,6 +120,7 @@ main(int argc, char *argv[])
 		randomize();
 
 	auto list = obtain_play_list();
+	resampler r;
 
 	for (auto it = begin(list); it != end(list);) {
 		auto song = load_song(it);
@@ -129,7 +131,7 @@ main(int argc, char *argv[])
 			if (half_mask)
 				song.adjust_volume(half_mask);
 			setup_audio(ask_freq, stereo);
-			auto result = song.play(start);
+			auto result = song.play(start, r);
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:

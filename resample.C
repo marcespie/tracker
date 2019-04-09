@@ -27,6 +27,7 @@
 #include "extern.h"
 #include "prefs.h"
 #include "resample.h"
+#include "resampler.h"
 #include "autoinit.h"
 #include "empty.h"
 #include "watched_var.h"

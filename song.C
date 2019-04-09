@@ -45,9 +45,9 @@ bool Song::load(exfile& file, int hint)
 }
 
 int
-Song::play(unsigned int start)
+Song::play(unsigned int start, resampler& r)
 {
-	return mod->play(start);
+	return mod->play(start, r);
 }
 
 void

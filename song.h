@@ -16,9 +16,11 @@
  */
 
 class exfile;
+class resampler;
+
 class Module {
 public:
-	virtual int play(unsigned int start) =0;
+	virtual int play(unsigned int start, resampler& r) =0;
 	virtual void dump() const =0;
 	virtual void adjust_volume(unsigned long mask) =0;
 	virtual ~Module()
@@ -39,7 +41,7 @@ public:
 	Song& operator=(const Song&) = delete;
 	Song(const Song&) = delete;
 	Song(Song&&);
-	int play(unsigned int start);
+	int play(unsigned int start, resampler& r);
 	void dump() const;
 	void adjust_volume(unsigned long mask);
 	operator bool() const

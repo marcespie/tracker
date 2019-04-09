@@ -249,7 +249,7 @@ automaton::play_one_tick()
 }
 
 int
-song::play(unsigned int start)
+song::play(unsigned int start, resampler& r)
 {
 	INIT_ONCE;
 

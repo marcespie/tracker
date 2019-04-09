@@ -140,10 +140,12 @@ struct song_info {
 const auto OLD_ST=0;
 const auto PROTRACKER=1;
 
+class resampler;
+
 class song: public Module {
 public:
 	~song();
-	int play(unsigned int start);
+	int play(unsigned int start, resampler& r);
 	void dump() const;
 	void adjust_volume(unsigned long mask);
 	char *title;
