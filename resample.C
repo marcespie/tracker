@@ -201,7 +201,7 @@ init_resample(void)
 }
 
 void 
-set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
+resampler::set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
 {
 	tempo = bpm;
 	num = a; 
@@ -213,7 +213,7 @@ static int max_side;	/* number of bits on one side */
 static int max_sample;	/* number of bits for one sample */
 
 void 
-set_data_width(int side, int sample)
+resampler::set_data_width(int side, int sample)
 {
 	max_side = side;
 	max_sample = sample;
@@ -358,7 +358,7 @@ over_resample(void)
  * generate output.
  */
 void 
-resample(void)
+resampler::resample(void)
 {
 	/* do the resampling, i.e., actually play sounds */
 	/* code unfolding for special cases */

@@ -23,7 +23,7 @@
 #include "automaton.h"
 #include "extern.h"
 #include "prefs.h"
-#include "resample.h"
+#include "resampler.h"
 #include "timing.h"
      
 /* set up the automaton so that I haven't got through patterns 
@@ -121,7 +121,7 @@ void
 automaton::set_bpm(unsigned int bpm_)
 {
 	bpm = bpm_;
-	set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+	r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 }
 
 void 
@@ -137,7 +137,7 @@ automaton::update_tempo()
 	case SET_SPEED | SET_FINESPEED:
 		if (pref::get(Pref::speedmode) != FINESPEED_ONLY) {
 			finespeed = new_finespeed;
-			set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+			r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		}
 		if (pref::get(Pref::speedmode) != SPEED_ONLY)
 			speed = new_speed;
@@ -146,12 +146,12 @@ automaton::update_tempo()
 		speed = new_speed;
 		if (pref::get(Pref::speedmode) == ALTER_PROTRACKER) {
 			finespeed = NORMAL_FINESPEED;
-			set_resampling_beat(bpm, 1, 1);
+			r->set_resampling_beat(bpm, 1, 1);
 		}
 		break;
 	case SET_FINESPEED:
 		finespeed = new_finespeed;
-		set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+		r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		break;
 	default:
 		break;
@@ -160,7 +160,7 @@ automaton::update_tempo()
 	if (finespeed == 0) {
 		status("Finespeed of 0");
 		finespeed = NORMAL_FINESPEED;
-		set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+		r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
 		error = FAULT;
 	}
 }

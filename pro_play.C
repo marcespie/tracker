@@ -28,6 +28,7 @@
 #include "automaton.h"
 #include "autoinit.h"
 #include "resample.h"
+#include "resampler.h"
 #include "pro_play.h"
 #include "empty.h"
      
@@ -245,7 +246,7 @@ automaton::play_one_tick()
 	update_tempo();
 	/* actually output samples */
 	if (pref::get(Pref::output))
-		resample();
+		r->resample();
 }
 
 int
@@ -266,7 +267,7 @@ song::play(unsigned int start, resampler& r)
 	a.set_bpm(pref::get(Pref::speed));
 
 
-	set_data_width(side_width, max_sample_width);
+	r.set_data_width(side_width, max_sample_width);
 
 	while(true) {
 		a.play_one_tick();
