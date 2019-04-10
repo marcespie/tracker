@@ -127,6 +127,12 @@ init_channels(int ntracks, resampler& r)
 	}
 }
 
+static void
+reset_channels()
+{
+	for (auto& ch: chan)
+		ch.reset();
+}
 
 void 
 init_st_play(void)
@@ -296,15 +302,13 @@ song::play(unsigned int start, resampler& r)
 		case UI_RESTART:
 			discard_buffer();
 			a.reset_to_pattern(start);
-			for (auto& ch: chan)
-				ch.reset();
+			reset_channels();
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a.info->length) {
 				discard_buffer();
 				a.reset_to_pattern(val);
-				for (auto& ch: chan)
-					ch.reset();
+				reset_channels();
 			}
 			break;
 		default:
