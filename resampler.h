@@ -19,5 +19,6 @@ public:
 	void set_data_width(int side, int sample);
 	void resample();
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
+	void release_audio_channels();
 };
 

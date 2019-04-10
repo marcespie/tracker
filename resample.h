@@ -15,6 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+class resampler;
+
 class audio_channel {
 	enum class audio_state { DO_NOTHING, PLAY, REPLAY};
 	sample_info *samp;
@@ -27,7 +29,7 @@ class audio_channel {
 	inline auto C() const;
 public:
 	const int side;
-	audio_channel(int);
+	audio_channel(int, resampler&);
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);
 	void set_volume(unsigned int);

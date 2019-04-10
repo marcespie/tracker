@@ -57,7 +57,7 @@ int channel::side() const
 	return audio->side;
 }
 
-channel::channel(int side): audio {std::make_unique<audio_channel>(side)}
+channel::channel(int side, resampler& r): audio {std::make_unique<audio_channel>(side, r)}
 {
 	samp = empty_sample();
 	finetune = 0;
@@ -102,22 +102,22 @@ channel::channel(int side): audio {std::make_unique<audio_channel>(side)}
 
 
 static void 
-init_channels(int ntracks)
+init_channels(int ntracks, resampler& r)
 {
-	release_audio_channels();
+	r.release_audio_channels();
 
 	chan.clear();
-	chan.emplace_back(LEFT_SIDE);
-	chan.emplace_back(RIGHT_SIDE);
-	chan.emplace_back(RIGHT_SIDE);
-	chan.emplace_back(LEFT_SIDE);
+	chan.emplace_back(LEFT_SIDE, r);
+	chan.emplace_back(RIGHT_SIDE, r);
+	chan.emplace_back(RIGHT_SIDE, r);
+	chan.emplace_back(LEFT_SIDE, r);
 	if (ntracks > 4) {
-		chan.emplace_back(LEFT_SIDE);
-		chan.emplace_back(RIGHT_SIDE);
+		chan.emplace_back(LEFT_SIDE, r);
+		chan.emplace_back(RIGHT_SIDE, r);
 	}
 	if (ntracks > 6) {
-		chan.emplace_back(RIGHT_SIDE);
-		chan.emplace_back(LEFT_SIDE);
+		chan.emplace_back(RIGHT_SIDE, r);
+		chan.emplace_back(LEFT_SIDE, r);
 	}
 }
 
@@ -257,7 +257,7 @@ song::play(unsigned int start, resampler& r)
 	song_title(title);
 
 	set_number_tracks(ntracks);
-	init_channels(ntracks);
+	init_channels(ntracks, r);
 
 	auto countup = 0; 	/* keep playing the tune or not */
 
@@ -290,7 +290,7 @@ song::play(unsigned int start, resampler& r)
 		case UI_RESTART:
 			discard_buffer();
 			a.reset_to_pattern(start);
-			init_channels(ntracks);
+			init_channels(ntracks, r);
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a.info->length) {

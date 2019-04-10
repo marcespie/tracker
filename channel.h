@@ -35,10 +35,11 @@ struct sinusoid {
 };
 
 class audio_channel;
+class resampler;
 
 struct channel {
 	std::unique_ptr<audio_channel> audio;
-	channel(int side);
+	channel(int side, resampler& r);
 	int side() const;
 	sample_info *samp;
 	finetune finetune;

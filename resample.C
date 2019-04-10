@@ -80,7 +80,7 @@ static std::vector<audio_channel* > allocated;
 static int total[NUMBER_SIDES];
 
 
-audio_channel::audio_channel(int side_):
+audio_channel::audio_channel(int side_, resampler&):
     samp{empty_sample()}, mode{audio_state::DO_NOTHING}, pointer{0}, 
     step{0}, volume{0}, scaled_volume{0}, pitch{0},
     side{side_}
@@ -97,7 +97,7 @@ audio_channel::audio_channel(int side_):
 }
 
 void 
-release_audio_channels(void)
+resampler::release_audio_channels(void)
 {
 	allocated.clear();
 	for (unsigned int i = 0; i < NUMBER_SIDES; i++)
