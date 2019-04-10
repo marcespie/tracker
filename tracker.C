@@ -135,7 +135,8 @@ main(int argc, char *argv[])
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:
-				--it;
+				if (it != begin(list))
+					--it;
 				break;
 				/* NOTREACHED */
 			case PLAY_NEXT_SONG:
