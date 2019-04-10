@@ -75,13 +75,9 @@ automaton::set_pattern()
 		display_time(time_spent, info->duration);
 }
 
-/* initialize all the fields of the automaton necessary
- * to play a given song.
- */
 void
-automaton::init(const song* song, unsigned int start)
+automaton::reset_to_pattern(unsigned int start)
 {
-	info = &song->info;
 	pattern_num = start;    /* first pattern */
 
 	delay_counter = 0;
@@ -101,9 +97,10 @@ automaton::init(const song* song, unsigned int start)
 	set_pattern();
 }
 
-automaton::automaton(const song *s, unsigned int start)
+automaton::automaton(const song *s, resampler* r_):
+    r{r_}, info{&s->info}
 {
-	init(s, start);
+	reset_to_pattern(0);
 }
 
 /* get to the next pattern, and display stuff 

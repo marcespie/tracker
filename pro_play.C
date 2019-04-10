@@ -262,7 +262,7 @@ song::play(unsigned int start, resampler& r)
 
 	voices = samples; 
 
-	auto a = automaton{this, start};
+	auto a = automaton{this, r};
 	a.set_bpm(pref::get(Pref::speed));
 
 
@@ -288,13 +288,13 @@ song::play(unsigned int start, resampler& r)
 			break;
 		case UI_RESTART:
 			discard_buffer();
-			a = automaton{this, start};
+			a.reset_to_pattern(start);
 			init_channels(ntracks);
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a.info->length) {
 				discard_buffer();
-				a = automaton(this, val);
+				a.reset_to_pattern(val);
 			}
 			break;
 		default:

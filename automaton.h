@@ -52,12 +52,20 @@ class automaton {
 	unsigned int bpm;
 	unsigned int speed;		// speed number of effect repeats
 	unsigned int finespeed;		// finespeed, base is 100
+	resampler* const r;		// only on ctor
 
 
 
 	unsigned long time_spent;
 public:
-	automaton(const song* song, unsigned int start);
+	automaton(const song* song, resampler* r);
+	automaton(const song* song, resampler& r):
+	    automaton(song, &r)
+	{}
+	automaton(const song* song):
+	    automaton(song, nullptr)
+	{}
+	void reset_to_pattern(unsigned int start);
 	void next_tick();
 	void update_tempo();
 	void set_bpm(unsigned int bpm);
