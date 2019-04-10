@@ -40,6 +40,7 @@ class resampler;
 struct channel {
 	std::unique_ptr<audio_channel> audio;
 	channel(int side, resampler& r);
+	void reset();
 	int side() const;
 	sample_info *samp;
 	finetune finetune;

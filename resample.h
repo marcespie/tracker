@@ -39,28 +39,7 @@ public:
 	static void readjust_current_steps(void);
 };
 
-/* release_audio_channels:
- * free every audio channel previously allocated
- */
-extern void release_audio_channels(void);
-
 enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
-
-/* set_data_width(side_width, sample_width):
- * accumulated data on each side will have width side_width bits,
- * and each sample will never be greater than sample_width
- */
-//extern void set_data_width(int side, int sample);
-
-/* resample():
- * send out a batch of samples
- */
-//extern void resample(void);
-
-/* set_resampling_beat(bpm, a, b):
- * set bpm to bpm, tempo to  a/b
- */
-//extern void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
 
 /* prep_sample_info(info):
  * set up secondary data structure for faster resampling

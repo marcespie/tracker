@@ -57,7 +57,8 @@ int channel::side() const
 	return audio->side;
 }
 
-channel::channel(int side, resampler& r): audio {std::make_unique<audio_channel>(side, r)}
+void
+channel::reset()
 {
 	samp = empty_sample();
 	finetune = 0;
@@ -98,6 +99,11 @@ channel::channel(int side, resampler& r): audio {std::make_unique<audio_channel>
 	invert_speed = 0;
 	invert_offset = 0;
 	invert_position = 0;
+}
+
+channel::channel(int side, resampler& r): audio {std::make_unique<audio_channel>(side, r)}
+{
+	reset();
 }
 
 
@@ -290,12 +296,15 @@ song::play(unsigned int start, resampler& r)
 		case UI_RESTART:
 			discard_buffer();
 			a.reset_to_pattern(start);
-			init_channels(ntracks, r);
+			for (auto& ch: chan)
+				ch.reset();
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a.info->length) {
 				discard_buffer();
 				a.reset_to_pattern(val);
+				for (auto& ch: chan)
+					ch.reset();
 			}
 			break;
 		default:
