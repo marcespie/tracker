@@ -70,10 +70,6 @@ const auto LEEWAY=150;
 
 
 
-static void init_resample(void);
-static void (*INIT)(void) = init_resample;
-
-
 /*---------- Channels allocation mechanism -----------------------*/
 
 static std::unordered_set<audio_channel *> allocated[NUMBER_SIDES];
@@ -84,8 +80,6 @@ audio_channel::audio_channel(int side_, resampler&):
     step{0}, volume{0}, scaled_volume{0}, pitch{0},
     side{side_}
 {
-	INIT_ONCE;
-
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
 		End() << "Improper alloc channel call side: " << side;
@@ -188,21 +182,14 @@ resampler::resampler()
 {
 	frequency_f = notify_frequency;
 	oversample_f = notify_oversample;
-//	add_notify(notify_frequency, watched::frequency);
-//	add_notify(notify_oversample, watched::oversample);
+	add_notify(frequency_f, watched::frequency);
+	add_notify(oversample_f, watched::oversample);
 }
 
 resampler::~resampler()
 {
-//	remove_notify(frequency_f, watched::frequency);
-//	remove_notify(oversample_f, watched::oversample);
-}
-
-static void 
-init_resample(void)
-{
-	add_notify(notify_frequency, watched::frequency);
-	add_notify(notify_oversample, watched::oversample);
+	remove_notify(frequency_f, watched::frequency);
+	remove_notify(oversample_f, watched::oversample);
 }
 
 void 

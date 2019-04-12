@@ -39,7 +39,7 @@ extern long get_watched(watched var);
  * f(var, value, context) each time the variable is set to a new value.
  * The function f must be ready to be called at add_notify() time.
  */
-extern void add_notify(notify_function f, watched var);
-extern void remove_notify(notify_function f, watched var);
+extern void add_notify(notify_function& f, watched var);
+extern void remove_notify(notify_function& f, watched var);
 
 

@@ -56,7 +56,7 @@ get_watched(watched var)
 
 
 void 
-add_notify(notify_function f, watched var)
+add_notify(notify_function& f, watched var)
 {
 	const auto idx = static_cast<size_t>(var);
 	variable[idx].l.insert(&f);
@@ -65,7 +65,7 @@ add_notify(notify_function f, watched var)
 }
 
 void 
-remove_notify(notify_function f, watched var)
+remove_notify(notify_function& f, watched var)
 {
 	const auto idx = static_cast<size_t>(var);
 	variable[idx].l.erase(&f);
