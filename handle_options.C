@@ -160,15 +160,15 @@ set_speed_mode(const char *p)
 }
 
 void 
-handle_options(int argc, char *argv[])
+handle_options(int argc, char *argv[], std::function<void(const char*)> f)
 {
 	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
 		auto t = string2args(s);
-		args.parse(begin(t), end(t), add_play_list);
+		args.parse(begin(t), end(t), f);
 	}
 
-	args.parse(argv, argv+argc, add_play_list);
+	args.parse(argv, argv+argc, f);
 	if (args.get_long("help")) {
 		print_usage();
 		End();
@@ -209,7 +209,7 @@ handle_options(int argc, char *argv[])
 		if (!file.open(args.get_string("list")))
 			End() << "List file does not exist";
 		while ((s = read_line(file)) != nullptr) {
-			add_play_list(s);
+			f(s);
 			delete [] s;
 		}
 	}

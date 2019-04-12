@@ -44,8 +44,6 @@ play_entry::play_entry(const char* dir, const char* f):
 		name = f;
 }
 
-play_list table;
-
 static int 
 is_dir(const char *name)
 {
@@ -57,7 +55,7 @@ is_dir(const char *name)
 }
 
 static void 
-expand_dir(const char *name)
+expand_dir(play_list&p, const char *name)
 {
 	DIR *dir;
 	struct dirent *de;
@@ -68,38 +66,32 @@ expand_dir(const char *name)
 				continue;
 			play_entry n {name, de->d_name};
 			if (is_dir(n.filename()))
-				expand_dir(n.filename());
+				expand_dir(p, n.filename());
 			else
-				table.push_back(n);
+				p.push_back(n);
 		}
 		closedir(dir);
 	}
 }
 
-play_list&
-obtain_play_list()
-{
-	return table;
-}
-
-void 
-add_play_list(const char *name)
+void
+add_entry(play_list& p, const char *name)
 {
 	if (is_dir(name))
-		expand_dir(name);
+		expand_dir(p, name);
 	else
-		table.emplace_back(nullptr, name);
+		p.emplace_back(nullptr, name);
 }
 
 ENTRY
-delete_entry(ENTRY entry)
+delete_entry(play_list& p, ENTRY entry)
 {
-	return table.erase(entry);
+	return p.erase(entry);
 }
 
 void 
-randomize(void)
+randomize(play_list& p)
 {
-	shuffle(begin(table), end(table), g);
+	shuffle(begin(p), end(p), g);
 }
 

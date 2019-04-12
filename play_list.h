@@ -33,7 +33,6 @@ using play_list=std::vector<play_entry>;
 
 using ENTRY = play_list::iterator;
 
-extern play_list& obtain_play_list(void);
-
-extern void randomize(void);
-extern ENTRY delete_entry(ENTRY);
+extern void randomize(play_list&);
+extern ENTRY delete_entry(play_list&, ENTRY);
+extern void add_entry(play_list&, const char*);

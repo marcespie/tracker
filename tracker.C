@@ -37,7 +37,8 @@ extern int stereo;
 extern unsigned int start;
 extern int trandom;
 extern int loop;
-extern int handle_options(int argc, char *argv[]);
+extern int handle_options(int argc, char *argv[], 
+    std::function<void(const char*)> f);
 extern void set_default_prefs(void);
 
 /* global variable to catch various types of errors and achieve the 
@@ -113,13 +114,18 @@ main(int argc, char *argv[])
 		End();
 	}
 
+	play_list list;
+
 
 	// remove the program name from the options to parse !!!
-	handle_options(argc-1, argv+1);
+	handle_options(argc-1, argv+1, 
+	    [&list](const char *a)
+	    {
+	    		add_entry(list, a);
+	    });
 	if (trandom)
-		randomize();
+		randomize(list);
 
-	auto& list = obtain_play_list();
 	resampler r;
 
 	for (auto it = begin(list); it != end(list);) {
@@ -144,12 +150,12 @@ main(int argc, char *argv[])
 				++it;
 				break;
 			case PLAY_ERROR:
-				it = delete_entry(it);
+				it = delete_entry(list, it);
 			default:
 				break;
 			}
 		} else
-			it = delete_entry(it);
+			it = delete_entry(list, it);
 
 		if (it == end(list)) {
 			if (loop)
