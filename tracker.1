@@ -93,22 +93,25 @@ Shortcuts to
 or
 .Fl ntsc .
 .It Fl speedmode Ar mode
-Choose speed commands interpretation.
+Compatibility hack for old soundtracker tunes and various variants.
+Ideally, the automaton should default to something sensible.
 Default is
 .Ar normal.
 Possible
 .Ar modes are:
 .Bl -tag -width oversample
 .It Ar old
-Ignore finespeed changes
+Ignore finespeed changes, all speed commands affect the major tempo
 .It Ar normal
-Normal protracker commands (speed and finespeed)
+Normal protracker commands
 .It Ar finespeed
-Consider all speed changes to be finespeed changes
+Consider all speed changes to be finespeed changes (not encountered
+in nature)
 .It Ar alter
-Special "altertracker" mode
+Alternate version of the speed/finespeed changes found in some tunes.
 .It Ar vblank
-Do speed mode changes on vblank transitions only
+Synonym for
+.Ar old
 .El
 .It Fl stereo
 Set audio output to stereophonic.
