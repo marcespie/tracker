@@ -110,8 +110,6 @@ channel::channel(int side, resampler& r): audio {std::make_unique<audio_channel>
 static void 
 init_channels(int ntracks, resampler& r)
 {
-	r.release_audio_channels();
-
 	chan.clear();
 	chan.emplace_back(LEFT_SIDE, r);
 	chan.emplace_back(RIGHT_SIDE, r);

@@ -30,6 +30,7 @@ class audio_channel {
 public:
 	const int side;
 	audio_channel(int, resampler&);
+	~audio_channel();
 	void play(sample_info *, ::pitch);
 	void set_pitch(::pitch);
 	void set_volume(unsigned int);

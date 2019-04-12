@@ -17,7 +17,7 @@
 
 #include <cmath>
 #include <memory>
-#include <vector>
+#include <unordered_set>
 #include <iostream>
 
 #include "song.h"
@@ -76,8 +76,7 @@ static void (*INIT)(void) = init_resample;
 
 /*---------- Channels allocation mechanism -----------------------*/
 
-static std::vector<audio_channel* > allocated;
-static int total[NUMBER_SIDES];
+static std::unordered_set<audio_channel *> allocated[NUMBER_SIDES];
 
 
 audio_channel::audio_channel(int side_, resampler&):
@@ -91,19 +90,13 @@ audio_channel::audio_channel(int side_, resampler&):
 	if (side < 0 || side >= NUMBER_SIDES)
 		End() << "Improper alloc channel call side: " << side;
 	/* logging number of channels per side */
-	total[side]++;
-	allocated.push_back(this); // XXX  we don't really track those objects
-	// so we depend on releasing audio channels correctly
+	allocated[side].insert(this);
 }
 
-void 
-resampler::release_audio_channels(void)
+audio_channel::~audio_channel()
 {
-	allocated.clear();
-	for (unsigned int i = 0; i < NUMBER_SIDES; i++)
-		total[i] = 0;
+	allocated[side].erase(this);
 }
-
 /*---------- Resampling engine ------------------------------------*/
 
 static unsigned long step_table[REAL_MAX_PITCH + LEEWAY];  
@@ -161,8 +154,9 @@ build_step_table(
 void 
 audio_channel::readjust_current_steps(void)
 {
-	for (auto ch: allocated)
-		ch->step = step_table[ch->pitch];
+	for (auto& s: allocated)
+		for (auto ch: s)
+			ch->step = step_table[ch->pitch];
 }
 
 static void 
@@ -267,8 +261,9 @@ linear_resample(void)
 
 	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-		for (auto ch: allocated)
-			ch->linear_value(value);
+		for (auto& s: allocated)
+			for (auto ch: s)
+				ch->linear_value(value);
 		/* some assembly required... */
 		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
 		    ACCURACY+max_side);
@@ -322,9 +317,9 @@ over_resample(void)
 	unsigned int sampling;     /* oversample counter */
 	i = sampling = 0;
 	while(true) {
-		for (auto ch: allocated) {
-			ch->oversample_value(value);
-		}
+		for (auto& s: allocated)
+			for (auto ch: s)
+				ch->oversample_value(value);
 		if (++sampling >= oversample) {
 			sampling = 0;
 			switch(oversample) {
