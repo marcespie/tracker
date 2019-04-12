@@ -153,7 +153,7 @@ set_speed_mode(const char *p)
 	else if (stricmp(p, "alter") == 0)
 		mode = ALTER_PROTRACKER;
 	else {
-		End() << "Unknwon speedmode";
+		End() << "Unknown speedmode";
 		return;
 	}
 	pref::set(Pref::speedmode, mode);

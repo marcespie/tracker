@@ -19,6 +19,7 @@
 .Op Fl repeats Ar count
 .Op Fl scroll
 .Op Fl speed Ar speed
+.Op Fl speedmode Ar mode
 .Op Fl stereo
 .Op Fl tolerant
 .Op Fl transpose Ar n
@@ -91,6 +92,24 @@ Shortcuts to
 .Fl pal
 or
 .Fl ntsc .
+.It Fl speedmode Ar mode
+Choose speed commands interpretation.
+Default is
+.Ar normal.
+Possible
+.Ar modes are:
+.Bl -tag -width oversample
+.It Ar old
+Ignore finespeed changes
+.It Ar normal
+Normal protracker commands (speed and finespeed)
+.It Ar finespeed
+Consider all speed changes to be finespeed changes
+.It Ar alter
+Special "altertracker" mode
+.It Ar vblank
+Do speed mode changes on vblank transitions only
+.El
 .It Fl stereo
 Set audio output to stereophonic.
 .It Fl tolerant

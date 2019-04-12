@@ -33,6 +33,7 @@ const char *usage[] = {
 "-repeats <count>    Number of repeats (0 is forever) (default 1)",
 "-loop               Loops the song list (plays again and again)",
 "-speed <speed>      Song speed.  Some songs want 60 (default 50)",
+"-speedmode normal|finespeed|speed|old|vblank|alter",
 "-mix <percent>      Percent of channel mixing. (0 = spatial, 100 = mono)",
 "-new -old -both     Select default reading type (default is -both)",
 "-frequency <freq>   Set playback frequency in KHz",
