@@ -186,7 +186,7 @@ option_set::do1(const char *text, const char *arg)
 					
 template<class iterator>
 void 
-option_set::parse(iterator b, iterator e, void (*what_to_do)(const char *arg))
+option_set::parse(iterator b, iterator e, parm_function what_to_do)
 {
 	const char *arg = nullptr;
 	for (auto i = b; i != e; ++i) {
@@ -208,8 +208,9 @@ option_set::parse(iterator b, iterator e, void (*what_to_do)(const char *arg))
 }
 
 template
-void option_set::parse<char**>(char **b, char **e, void (*what_to_do)(const char *args));
+void 
+option_set::parse<char**>(char **b, char **e, parm_function what_to_do);
 
 using I = std::vector<char *>::iterator;
 template
-void option_set::parse<I>(I b, I e, void (*what_to_do)(const char *args));
+void option_set::parse<I>(I b, I e, parm_function what_to_do);

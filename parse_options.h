@@ -61,6 +61,7 @@ struct option {
 	}
 };
 
+using parm_function = std::function<void(const char *)>;
 struct option_set {
 	std::unordered_map<const char *, option> options;
 	option& operator[](const char* s)
@@ -85,9 +86,7 @@ struct option_set {
 		return std::get<const char *>(options[t].arg);
 	}
 	template<class iterator>
-	void parse(iterator b, iterator e, 
-	    void (*what_to_do) (const char *arg));
-	void parse(int argc, char *argv[], void (*what_to_do) (const char *arg));
+	void parse(iterator b, iterator e, parm_function what_to_do);
 	int do1(const char* text, const char* arg);
 };
 
