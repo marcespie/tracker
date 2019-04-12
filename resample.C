@@ -166,32 +166,29 @@ readjust_beat(void)
 }
 
 static void 
-notify_resample(watched var, long n)
+notify_frequency(watched, long n)
 {
-	switch(var) {
-	case watched::frequency:
-		resampling_frequency = n;
+	resampling_frequency = n;
+	build_step_table(oversample, resampling_frequency);
+	readjust_beat();
+	audio_channel::readjust_current_steps();
+}
+
+static void 
+notify_oversample(watched, long n)
+{
+	oversample = n;
+	if (resampling_frequency) {
 		build_step_table(oversample, resampling_frequency);
-		readjust_beat();
 		audio_channel::readjust_current_steps();
-		break;
-	case watched::oversample:
-		oversample = n;
-		if (resampling_frequency) {
-			build_step_table(oversample, resampling_frequency);
-			audio_channel::readjust_current_steps();
-		}
-		break;
-	default:
-		break;
 	}
 }
 
 static void 
 init_resample(void)
 {
-	add_notify(notify_resample, watched::frequency);
-	add_notify(notify_resample, watched::oversample);
+	add_notify(notify_frequency, watched::frequency);
+	add_notify(notify_oversample, watched::oversample);
 }
 
 void 
