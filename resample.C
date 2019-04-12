@@ -184,6 +184,20 @@ notify_oversample(watched, long n)
 	}
 }
 
+resampler::resampler()
+{
+	frequency_f = notify_frequency;
+	oversample_f = notify_oversample;
+//	add_notify(notify_frequency, watched::frequency);
+//	add_notify(notify_oversample, watched::oversample);
+}
+
+resampler::~resampler()
+{
+//	remove_notify(frequency_f, watched::frequency);
+//	remove_notify(oversample_f, watched::oversample);
+}
+
 static void 
 init_resample(void)
 {

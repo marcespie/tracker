@@ -14,8 +14,14 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+enum class watched;
+
 class resampler {
+	std::function<void(watched, long)> frequency_f, oversample_f;
 public:
+	resampler();
+	~resampler();
 	void set_data_width(int side, int sample);
 	void resample();
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
