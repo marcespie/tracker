@@ -40,5 +40,6 @@ extern long get_watched(watched var);
  * The function f must be ready to be called at add_notify() time.
  */
 extern void add_notify(notify_function f, watched var);
+extern void remove_notify(notify_function f, watched var);
 
 

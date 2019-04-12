@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <list>
+#include <unordered_set>
 #include <functional>
 #include "watched_var.h"
 #include "autoinit.h"
@@ -23,7 +23,7 @@
 static struct {
 	long value;
 	bool set;
-	std::list<notify_function> l;
+	std::unordered_set<notify_function*> l;
 } variable[static_cast<size_t>(watched::number_watched)];
 
 static void 
@@ -32,8 +32,8 @@ notify_new(watched var)
 	const auto idx = static_cast<size_t>(var);
 	variable[idx].set = true;
 
-	for (const auto& f: variable[idx].l)
-		f(var, variable[idx].value);
+	for (const auto f: variable[idx].l)
+		(*f)(var, variable[idx].value);
 }
 
 void 
@@ -59,7 +59,14 @@ void
 add_notify(notify_function f, watched var)
 {
 	const auto idx = static_cast<size_t>(var);
-	variable[idx].l.push_back(f);
+	variable[idx].l.insert(&f);
 	if (variable[idx].set)
 		f(var, variable[idx].value);
+}
+
+void 
+remove_notify(notify_function f, watched var)
+{
+	const auto idx = static_cast<size_t>(var);
+	variable[idx].l.erase(&f);
 }
