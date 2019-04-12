@@ -16,7 +16,7 @@
  */
 
 #include <variant>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 using VALUE = std::variant<long, const char *>;
@@ -62,7 +62,7 @@ struct option {
 };
 
 struct option_set {
-	std::map<const char *, option> options;
+	std::unordered_map<const char *, option> options;
 	option& operator[](const char* s)
 	{
 		return options[s];
