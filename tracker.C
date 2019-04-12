@@ -119,7 +119,7 @@ main(int argc, char *argv[])
 	if (trandom)
 		randomize();
 
-	auto list = obtain_play_list();
+	auto& list = obtain_play_list();
 	resampler r;
 
 	for (auto it = begin(list); it != end(list);) {
