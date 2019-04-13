@@ -81,13 +81,12 @@ audio_channel::audio_channel(int side_, resampler& r_):
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
 		End() << "Improper alloc channel call side: " << side;
-	/* logging number of channels per side */
-	r.allocated[side].insert(this);
+	r.allocated.insert(this);
 }
 
 audio_channel::~audio_channel()
 {
-	r.allocated[side].erase(this);
+	r.allocated.erase(this);
 }
 /*---------- Resampling engine ------------------------------------*/
 
@@ -146,9 +145,8 @@ build_step_table(
 void 
 resampler::readjust_current_steps(void)
 {
-	for (auto& s: allocated)
-		for (auto ch: s)
-			ch->step = step_table[ch->pitch];
+	for (auto ch: allocated)
+		ch->step = step_table[ch->pitch];
 }
 
 static void 
@@ -263,9 +261,8 @@ resampler::linear_resample()
 
 	for (unsigned int i = 0; i < number_samples; i++) {
 		value[LEFT_SIDE] = value[RIGHT_SIDE] = 0;
-		for (auto& s: allocated)
-			for (auto ch: s)
-				ch->linear_value(value);
+		for (auto ch: allocated)
+			ch->linear_value(value);
 		/* some assembly required... */
 		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
 		    ACCURACY+max_side);
@@ -319,9 +316,8 @@ resampler::over_resample()
 	unsigned int sampling;     /* oversample counter */
 	i = sampling = 0;
 	while(true) {
-		for (auto& s: allocated)
-			for (auto ch: s)
-				ch->oversample_value(value);
+		for (auto ch: allocated)
+			ch->oversample_value(value);
 		if (++sampling >= oversample) {
 			sampling = 0;
 			switch(oversample) {

@@ -18,11 +18,10 @@
 
 enum class watched;
 class audio_channel;
-enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
 
 class resampler {
 	std::function<void(watched, long)> frequency_f, oversample_f;
-	std::unordered_set<audio_channel *> allocated[NUMBER_SIDES];
+	std::unordered_set<audio_channel *> allocated;
 	void notify_frequency(long);
 	void notify_oversample(long);
 	void readjust_current_steps();

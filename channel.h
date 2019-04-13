@@ -37,6 +37,8 @@ struct sinusoid {
 class audio_channel;
 class resampler;
 
+enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
+
 struct channel {
 	std::unique_ptr<audio_channel> audio;
 	channel(int side, resampler& r);
