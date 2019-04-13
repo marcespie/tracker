@@ -164,7 +164,4 @@ extern void display_time(unsigned long time_elapsed, unsigned long check);
 extern void song_title(const char *s);
 
 extern void audio_ui(char c);
-/*--------------------------- parse_options.c --------------------*/
-
-extern void add_play_list(const char *);
 #endif
