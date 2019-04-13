@@ -62,6 +62,5 @@ public:
 	{
 		return step_table[p];
 	}
-	//friend class audio_channel;
 };
 

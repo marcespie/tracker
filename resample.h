@@ -38,7 +38,7 @@ public:
 	void set_position(size_t);
 	inline void linear_value(int32_t*);
 	inline void oversample_value(int32_t*);
-	friend class resampler;
+	inline void readjust_step();
 };
 
 /* prep_sample_info(info):

@@ -138,11 +138,17 @@ resampler::build_step_table(
 	}
 }
          
+void
+audio_channel::readjust_step()
+{
+	step = r.step(pitch);
+}
+
 void 
 resampler::readjust_current_steps()
 {
 	for (auto ch: allocated)
-		ch->step = step_table[ch->pitch];
+		ch->readjust_step();
 }
 
 void 
