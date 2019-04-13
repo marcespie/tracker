@@ -1,4 +1,6 @@
-// song.C
+#ifndef PRO_READ_H
+#define PRO_READ_H
+/* pro_read.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,50 +17,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <memory>
-#include "song.h"
-#include "protracker.h"
-#include "pro_play.h"
-#include "pro_read.h"
-
-Song::Song(exfile& file, int hint):
-	mod{read_song(file, hint)}
-{
-}
-
-Song& Song::operator=(Song&& o)
-{
-	mod.swap(o.mod);
-	return *this;
-}
-
-Song::Song(Song&& o)
-{
-	mod.swap(o.mod);
-}
-
-bool Song::load(exfile& file, int hint)
-{
-	delete mod.get();
-	mod = std::unique_ptr<Module>(read_song(file, hint));
-	return mod != nullptr;
-}
-
-int
-Song::play(unsigned int start, resampler& r)
-{
-	return mod->play(start, r);
-}
-
-void
-Song::dump() const
-{
-	mod->dump();
-}
-
-void
-Song::adjust_volume(unsigned long mask)
-{
-	mod->adjust_volume(mask);
-}
-
+class song;
+class exfile;
+/* s = read_song(f, type):
+ * tries to read f as a song of type NEW/OLD/NEW_NOCHECK
+ * returns NULL (and an error) if it doesn't work.
+ * Returns a dynamic song structure if successful.
+ */
+extern song *read_song(exfile& f, int type);
+#endif

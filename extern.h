@@ -81,15 +81,6 @@ class event;
 class tempo;
 class play_entry;
 class option_set;
-class exfile;
-
-/*--------------------------- st_read.c --------------------------*/
-/* s = read_song(f, type):
- * tries to read f as a song of type NEW/OLD/NEW_NOCHECK
- * returns NULL (and an error) if it doesn't work.
- * Returns a dynamic song structure if successful.
- */
-extern song *read_song(exfile& f, int type);
 
 /*--------------------------- st_virt.c --------------------------*/
 extern void compute_duration(automaton *a, song *song);

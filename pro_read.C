@@ -30,6 +30,7 @@
 #include "empty.h"
 #include "audio_channel.h"
 #include "open.h"
+#include "pro_read.h"
 
 static unsigned int patsize;
 
