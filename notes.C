@@ -73,7 +73,7 @@ pitch2note(pitch pitch)
 		return a;
 	if (pitch_table[b][0] + FUZZ >= pitch)
 		return b;
-	error = CORRUPT_FILE;
+	error = error_type::CORRUPT_FILE;
 	return NO_NOTE;
 }
 

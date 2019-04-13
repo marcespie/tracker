@@ -24,6 +24,37 @@
 #include <iosfwd>
 #include <cstdint>
 
+/* error types. Everything is centralized,
+ * and we check in some places (see st_read, player and main)
+ * that there was no error. Additionally signal traps work
+ * that way too.
+ */
+enum class error_type {
+/* normal state */
+	NONE, 
+/* read error */
+	FILE_TOO_SHORT,
+	CORRUPT_FILE,
+/* trap error: goto next song right now */
+	NEXT_SONG,
+/* run time problem */
+	FAULT,
+/* the song has ended */
+	ENDED,
+/* unrecoverable problem: typically, trying to 
+ * jump to nowhere land.
+ */
+	UNRECOVERABLE,
+/* Missing sample. Very common error, not too serious. */
+	SAMPLE_FAULT,
+/* New */
+	PREVIOUS_SONG,
+	OUT_OF_MEM,
+/* some weird soundtracker feature */
+	NOT_SUPPORTED };
+extern error_type error;
+
+
 const auto READ_ONLY="rb";
 const auto WRITE_ONLY="wb";
 
@@ -74,38 +105,6 @@ const auto NEW=1;
 const auto BOTH=2;
 /* special type: does not check the signature */
 const auto NEW_NO_CHECK=3;
-
-
-/* error types. Everything is centralized,
- * and we check in some places (see st_read, player and main)
- * that there was no error. Additionally signal traps work
- * that way too.
- */
- 
-/* normal state */
-const auto NONE=0;
-/* read error */
-const auto FILE_TOO_SHORT=1;
-const auto CORRUPT_FILE=2;
-/* trap error: goto next song right now */
-const auto NEXT_SONG=3;
-/* run time problem */
-const auto FAULT=4;
-/* the song has ended */
-const auto ENDED=5;
-/* unrecoverable problem: typically, trying to 
- * jump to nowhere land.
- */
-const auto UNRECOVERABLE=6;
-/* Missing sample. Very common error, not too serious. */
-const auto SAMPLE_FAULT=7;
-/* New */
-const auto PREVIOUS_SONG=8;
-const auto OUT_OF_MEM=9;
-
-/* all soundtracker feature */
-const auto NOT_SUPPORTED=10;
-extern int error;
 
 
 /*--------------------------- play_list.c ------------------------*/

@@ -189,7 +189,7 @@ automaton::setup_effect(channel& ch, const event& e)
 		sprintf(buffer,"Pitch out of bounds %d", pitch);
 		status(buffer);
 		pitch = 0;
-		error = FAULT;
+		error = error_type::FAULT;
 	}
 
 	ch.adjust = do_nothing;
@@ -313,27 +313,29 @@ song::play(unsigned int start, resampler& r)
 		}
 
 		switch(error) {
-		case NONE:
+		case error_type::NONE:
 			break;
-		case ENDED:
+		case error_type::ENDED:
 			countup++;
 			if (auto r = pref::get(Pref::repeats); r != 0)
 				if (countup >= r)
 					return PLAY_ENDED;
 			break;
-		case SAMPLE_FAULT:
-		case FAULT:
-		case PREVIOUS_SONG:
-		case NEXT_SONG:
-		case UNRECOVERABLE:
-			if ( (error == SAMPLE_FAULT && pref::get(Pref::tolerate))
-			    ||(error == FAULT && pref::get(Pref::tolerate) > 1) )
+		case error_type::SAMPLE_FAULT:
+		case error_type::FAULT:
+		case error_type::PREVIOUS_SONG:
+		case error_type::NEXT_SONG:
+		case error_type::UNRECOVERABLE:
+			if ( (error == error_type::SAMPLE_FAULT && 
+			    pref::get(Pref::tolerate))
+			    ||(error == error_type::FAULT && 
+			    pref::get(Pref::tolerate) > 1) )
 				break;
 			return PLAY_ERROR;
 		default:
 			break;
 		}
-		error = NONE;
+		error = error_type::NONE;
 	}
 }
 

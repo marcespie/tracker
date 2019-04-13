@@ -52,12 +52,12 @@ void
 automaton::set_pattern()
 {
 	if (pattern_num >= info->length) {
-		error = UNRECOVERABLE;
+		error = error_type::UNRECOVERABLE;
 		return;
 	}
 
 	if (gonethrough[pattern_num]) {
-		error = ENDED;
+		error = error_type::ENDED;
 		reset_repeats();
 	}
 	else
@@ -71,7 +71,7 @@ automaton::set_pattern()
 
 	display_pattern(pattern_num, info->length, pattern->number, 
 	    pattern->total, info->duration);
-	if (error == ENDED)
+	if (error == error_type::ENDED)
 		display_time(time_spent, info->duration);
 }
 
@@ -91,7 +91,7 @@ automaton::reset_to_pattern(unsigned int start)
 	/* (100%=NORMAL_FINESPEED) */
 	do_stuff = DO_SET_NOTHING;  /* some effects affect the automaton,
 			       		* we keep them here.  */
-	error = NONE;              /* Maybe we should not reset errors at
+	error = error_type::NONE;  /* Maybe we should not reset errors at
 			       	    * this point ?  */
 	time_spent = 0;
 	set_pattern();
@@ -109,7 +109,7 @@ void
 automaton::advance_pattern()
 {
 	if (++pattern_num >= info->length) {
-		error = ENDED;
+		error = error_type::ENDED;
 		reset_repeats();
 		pattern_num = 0;
 	}
@@ -168,7 +168,7 @@ automaton::update_tempo()
 		status("Finespeed of 0");
 		finespeed = NORMAL_FINESPEED;
 		set_beat(bpm, NORMAL_FINESPEED, finespeed);
-		error = FAULT;
+		error = error_type::FAULT;
 	}
 }
 

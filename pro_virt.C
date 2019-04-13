@@ -97,7 +97,7 @@ void
 automaton::set_pattern_for_virt()
 {
 	if (pattern_num >= info->length || gonethrough[pattern_num]) {
-		error = ENDED;
+		error = error_type::ENDED;
 		return;
 	}
 	gonethrough[pattern_num] = true;
@@ -110,8 +110,8 @@ automaton::compute_duration(song *song)
 	loop_start = new unsigned long [song->ntracks];
 	unsigned long duration = 0;
 	pattern->total = 0;
-	error = NONE;
-	while (error != ENDED) {
+	error = error_type::NONE;
+	while (error != error_type::ENDED) {
 		pattern->duration =
 		    compute_pattern_duration(pattern->e,
 			song->info.plength, song->ntracks);
@@ -125,5 +125,5 @@ automaton::compute_duration(song *song)
 	}
 	song->info.duration = duration;
 	delete [] loop_start;
-	error = NONE;
+	error = error_type::NONE;
 }

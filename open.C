@@ -21,8 +21,6 @@
 #include "autoinit.h"
 #include "open.h"
 
-extern int error;
-
 bool
 exfile::open(const std::string& fname)
 {
@@ -39,7 +37,7 @@ exfile::getc()
 {
 	int c = handle.get();
 	if (c == EOF)
-		error = FILE_TOO_SHORT;
+		error = error_type::FILE_TOO_SHORT;
 	return c;
 }
 

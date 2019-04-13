@@ -44,7 +44,7 @@ extern void set_default_prefs();
 /* global variable to catch various types of errors and achieve the 
  * desired flow of control
  */
-int error;
+auto error = error_type::NONE;
 
 /* song = load_song(namesong):
  * syntactic sugar around read_song

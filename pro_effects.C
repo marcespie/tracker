@@ -170,18 +170,18 @@ set_arpeggio(channel& ch, const event& e)
 	*/
 	if (ch.note == NO_NOTE) {
 		status("No note present for arpeggio");
-		error = FAULT;
+		error = error_type::FAULT;
 	} else {
 		ch.arp[0] = note2pitch(ch.note, ch.finetune);
 		ch.arp[1] = note2pitch(ch.note + e.high(), ch.finetune);
 		if (!ch.arp[1]) {
 			status("Arpeggio note out of range");
-			error = FAULT;
+			error = error_type::FAULT;
 		}
 		ch.arp[2] = note2pitch(ch.note + e.low(), ch.finetune);
 		if (!ch.arp[2]) {
 			status("Arpeggio note out of range");
-			error = FAULT;
+			error = error_type::FAULT;
 		}
 		ch.arpindex = 0;
 		ch.adjust = do_arpeggio;

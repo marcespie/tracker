@@ -120,7 +120,7 @@ fill_sample_info(exfile& f)
 
 	info->name = getstring(f, SAMPLENAME_MAXLENGTH);
 	if (!info->name) {
-		error = OUT_OF_MEM;
+		error = error_type::OUT_OF_MEM;
 		return nullptr;
 	}
 	info->length = getushort(f);
@@ -161,7 +161,7 @@ fill_sample_info(exfile& f)
 		return nullptr;
 	}
 	if (info->length > MAX_SAMPLE_LENGTH)
-		error = CORRUPT_FILE;
+		error = error_type::CORRUPT_FILE;
 	result = info;
 	info = nullptr;
 	return result;
@@ -173,7 +173,7 @@ fill_sample_infos(song *song, exfile& f)
 {
 	for (unsigned int i = 1; i <= song->ninstr; i++) {
 		song->samples[i] = fill_sample_info(f);
-		if (error != NONE)
+		if (error != error_type::NONE)
 			return;
 	}
 }
@@ -342,7 +342,7 @@ setup_patterns(song_info *info, unsigned int ntracks, unsigned int used)
 		info->patterns = new pattern[info->length];
 		info->data = new event [info->plength * ntracks * used];
 	} catch (...) {
-		error = OUT_OF_MEM;
+		error = error_type::OUT_OF_MEM;
 		return 0;
 	}
 	/* setup the pointers to various patterns. Note we allocate
@@ -421,7 +421,7 @@ fill_patterns(song *song, exfile& f, unsigned char used[])
 	for (unsigned i = 0; i < song->info.npat; i++) {
 		if (used[i]) {
 			e = fill_pattern(f, song, e);
-			if (error != NONE)
+			if (error != error_type::NONE)
 				return 0;
 		} else {
 			byteskip(f, patsize);
@@ -472,7 +472,7 @@ fill_song_info(song_info *info, exfile& f)
 	fill_pattern_numbers(info, f);
 	if (info->npat == 0 || 
 	    info->length == 0 || info->length >= NUMBER_PATTERNS)
-		error = CORRUPT_FILE;
+		error = error_type::CORRUPT_FILE;
 }
 
 /* new_song: allocate a new structure for a song.
@@ -562,7 +562,7 @@ read_song(exfile& f, int type)
 	unsigned char pattern_used[NUMBER_PATTERNS];
 	unsigned char sample_used[MAX_NUMBER_SAMPLES];
 
-	error = NONE;
+	error = error_type::NONE;
 
 	if (buffer.size() == 0)
 		setup_buffer(1024);
@@ -584,14 +584,14 @@ read_song(exfile& f, int type)
 	song->info.plength = NORMAL_PLENGTH;
 
 	song->title = getstring(f, TITLE_MAXLENGTH);
-	if (error != NONE)
+	if (error != error_type::NONE)
 		return error_song(song);
 
 	fill_sample_infos(song, f);
 
 	fill_song_info(&song->info, f);
 
-	if (error != NONE)
+	if (error != error_type::NONE)
 		return error_song(song);
 
 	if (type == NEW && bad_sig(f, song))
@@ -610,13 +610,13 @@ read_song(exfile& f, int type)
 	auto used_patterns = compress_patterns(&song->info, pattern_used);
 
 	patsize = setup_patterns(&song->info, song->ntracks, used_patterns);
-	if (error != NONE)
+	if (error != error_type::NONE)
 		return error_song(song);
 
 	setup_buffer(patsize);
 
 	auto won = fill_patterns(song, f, pattern_used);
-	if (error != NONE)
+	if (error != error_type::NONE)
 		return error_song(song);
 
 	song->info.npat = used_patterns;
@@ -626,7 +626,7 @@ read_song(exfile& f, int type)
 	song->samples_start = f.tell();
 
 	read_samples(song, f, (char *)sample_used);
-	if (error != NONE)
+	if (error != error_type::NONE)
 		return error_song(song);
 
 	/* remap samples around */
