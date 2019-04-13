@@ -1,6 +1,6 @@
-#ifndef EXTERN_H
-#define EXTERN_H
-/* extern.h */
+#ifndef MINMAX_H
+#define MINMAX_H
+/* minmax.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -17,11 +17,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <string.h>
-#include <string>
-#include <functional>
-#include <utility>
-#include <iosfwd>
-#include <cstdint>
+// strangely enough, the standard doesn't provide for min/max with
+// different types
+template<typename S, typename T>
+inline auto
+MIN(S x, T y)
+{
+	return x<y ?  x : y;
+}
+
+template<typename S, typename T>
+inline auto
+MAX(S x, T y)
+{
+	return x>y ?  x : y;
+}
 
 #endif

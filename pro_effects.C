@@ -28,6 +28,7 @@
 #include "pro_effects.h"
 #include "ui.h"
 #include "errortype.h"
+#include "minmax.h"
      
 /* sine table for the vibrato effect (obtained through build_vibrato.c) */
 

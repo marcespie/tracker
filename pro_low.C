@@ -29,6 +29,7 @@
 #include "song.h"
 #include "protracker.h"
 #include "empty.h"
+#include "minmax.h"
 
 /* setting up a given note */
 void 

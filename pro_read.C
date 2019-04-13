@@ -32,6 +32,7 @@
 #include "open.h"
 #include "pro_read.h"
 #include "errortype.h"
+#include "minmax.h"
 
 static unsigned int patsize;
 
