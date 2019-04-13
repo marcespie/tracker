@@ -69,14 +69,4 @@ MAX(S x, T y)
 	return x>y ?  x : y;
 }
 
-/* predefinitions for relevant structures */
-class channel; 
-class song;
-class automaton;
-class sample_info;
-class event;
-class tempo;
-class play_entry;
-class option_set;
-
 #endif
