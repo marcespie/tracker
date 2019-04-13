@@ -17,6 +17,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+
 enum class Pref {type, speed, tolerate, repeats,
     imask, bcdvol, dump, show, speedmode, color,
     xterm, output, transpose, max_prefs };

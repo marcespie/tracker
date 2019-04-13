@@ -15,8 +15,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "extern.h"
-
 #include "parse_options.h"
 #include "watched_var.h"
 #include "prefs.h"

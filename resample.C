@@ -24,7 +24,6 @@
 #include "protracker.h"
 #include "notes.h"
 #include "channel.h"
-#include "extern.h"
 #include "prefs.h"
 #include "audio_channel.h"
 #include "resampler.h"

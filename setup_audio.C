@@ -16,7 +16,9 @@
  */
 /* higher level interface to the raw metal */
 
-#include "extern.h"
+//#include <cstddef>
+#include <functional>
+
 #include "prefs.h"
 #include "autoinit.h"
 #include "notes.h"

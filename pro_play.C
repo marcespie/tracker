@@ -17,8 +17,8 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
-#include "extern.h"
 #include "song.h"
 #include "protracker.h"
 #include "notes.h"

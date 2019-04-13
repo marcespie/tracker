@@ -22,7 +22,6 @@
 
 #include <memory>
 
-#include "extern.h"
 #include "notes.h"
 #include "channel.h"
 #include "audio_channel.h"

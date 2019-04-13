@@ -20,9 +20,10 @@
 #include <dirent.h>
 
 #include <time.h>
-
+#include <cstddef>
+#include <string>
 #include <vector>
-#include "extern.h"
+
 #include "play_list.h"
 #include "autoinit.h"
 #include <vector>

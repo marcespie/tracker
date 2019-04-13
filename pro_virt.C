@@ -18,7 +18,6 @@
 #include <cassert>
 #include <memory>
 
-#include "extern.h"
 #include "song.h"
 #include "protracker.h"
 #include "notes.h"

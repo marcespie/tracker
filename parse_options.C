@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "parse_options.h"
-#include "extern.h"
 #include "autoinit.h"
 
 

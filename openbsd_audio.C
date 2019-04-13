@@ -22,8 +22,6 @@
 #include <iostream>
 #include <limits>
 #include <utility>
-//#include "extern.h"
-//#include "prefs.h"
 #include "autoinit.h"
 #include "watched_var.h"
 #include "openbsd_audio.h"

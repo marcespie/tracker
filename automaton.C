@@ -16,12 +16,12 @@
  */
 
 #include <memory>
+#include <string>
 
 #include "song.h"
 #include "protracker.h"
 #include "notes.h"
 #include "automaton.h"
-#include "extern.h"
 #include "prefs.h"
 #include "resampler.h"
 #include "timing.h"

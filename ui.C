@@ -25,7 +25,6 @@
 #include <cerrno>
 #include <unistd.h>
 
-#include "extern.h"
 #include "prefs.h"
 #include "autoinit.h"
 #include "timing.h"

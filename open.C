@@ -17,7 +17,8 @@
 
 /* Magic open file: path lookup and transparent decompression */
 
-#include "extern.h"
+#include <utility>
+
 #include "autoinit.h"
 #include "open.h"
 #include "errortype.h"

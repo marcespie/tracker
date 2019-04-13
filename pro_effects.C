@@ -17,8 +17,8 @@
 
 
 #include <memory>
+#include <string>
 
-#include "extern.h"
 #include "notes.h"
 #include "channel.h"
 #include "song.h"
