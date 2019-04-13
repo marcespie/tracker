@@ -1,6 +1,6 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
-/* display.h */
+#ifndef HANDLE_OPTIONS_H
+#define HANDLE_OPTIONS_H
+/* handle_options.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -17,22 +17,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-class channel;
-class event;
-
-/* dump_event(ch, e): dump event e as occuring on channel ch
- * (some events need the current channel state for a correct dump)
- * special case: ch == 0 means current set of events done
- */
-extern void dump_event(const channel& ch, const event *e);
-// finish the line if necessary
-extern void dump_event();
-
-/* dump_delimiter(): add a delimiter to the current dump, to 
- * separate left channels from right channels, for instance
- */
-extern void dump_delimiter();
-
-extern char instname[];
+extern unsigned long half_mask;
+extern unsigned int ask_freq;
+extern int stereo;
+extern unsigned int start;
+extern int trandom;
+extern bool loop;
+extern void handle_options(int argc, char *argv[], 
+    std::function<void(const char*)> f);
 
 #endif

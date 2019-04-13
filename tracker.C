@@ -1,4 +1,4 @@
-/* main.c */
+/* tracker.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -32,15 +32,8 @@
 #include "usage.h"
 #include "setup_audio.h"
 #include "ui.h"
+#include "handle_options.h"
      
-extern unsigned long half_mask;
-extern unsigned int ask_freq;
-extern int stereo;
-extern unsigned int start;
-extern int trandom;
-extern int loop;
-extern int handle_options(int argc, char *argv[], 
-    std::function<void(const char*)> f);
 extern void set_default_prefs();
 
 /* global variable to catch various types of errors and achieve the 

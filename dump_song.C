@@ -29,8 +29,7 @@
 #include "prefs.h"
 #include "ui.h"
 #include "color.h"
-
-extern char instname[];	/* from display.c */
+#include "display.h"
 
 
 

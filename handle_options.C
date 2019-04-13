@@ -24,19 +24,19 @@
 #include "open.h"
 #include "song.h"
 #include "openbsd_audio.h"
+#include "usage.h"
+#include "handle_options.h"
 
 inline int stricmp(const char *a, const char *b)
 {
 	return strcasecmp(a, b);
 }
 
-extern void print_usage();
-
 unsigned long half_mask = 0;
-int ask_freq;		/* parameters for setup audio */
+unsigned int ask_freq;		/* parameters for setup audio */
 int stereo;
 
-int start;			/* parameters for st_play */
+unsigned int start;			/* parameters for st_play */
 int trandom;
 
 bool loop = false;	/* main automaton looping at end of argv ? */
@@ -162,9 +162,6 @@ set_speed_mode(const char *p)
 	}
 	pref::set(Pref::speedmode, mode);
 }
-
-void 
-handle_options(int argc, char *argv[], std::function<void(const char*)> f);
 
 void 
 handle_options(int argc, char *argv[], std::function<void(const char*)> f)
