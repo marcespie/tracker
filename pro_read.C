@@ -106,8 +106,8 @@ fill_sample_info(exfile& f)
 {
 	/* New method: instead of allocating/freeing sample infos,
 	* we keep one in reserve */
-	static struct sample_info *info = nullptr;
-	struct sample_info *result;
+	static sample_info *info = nullptr;
+	sample_info *result;
 
 	if (!info)
 		info = new sample_info;
@@ -224,7 +224,7 @@ compress_samples(song *song, unsigned char used[])
 			map_sample[i] = LAST_SAMPLE;
 		} else {
 			map_sample[i] = 0;
-			won += sizeof(struct sample_info);
+			won += sizeof(sample_info);
 			if (song->samples[i]) {
 				won += song->samples[i]->length;
 			}

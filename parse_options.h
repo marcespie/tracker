@@ -21,7 +21,8 @@
 
 using VALUE = std::variant<long, const char *>;
 
-struct option_init {
+class option_init {
+public:
 	const char *optiontext;
 	char type;
 	unsigned long def_scalar;
@@ -41,7 +42,8 @@ struct option_init {
 
 };
 
-struct option {
+class option {
+public:
 	char type;
 	unsigned long def_scalar;
 	const char *def_string;
@@ -62,7 +64,8 @@ struct option {
 };
 
 using parm_function = std::function<void(const char *)>;
-struct option_set {
+class option_set {
+public:
 	std::unordered_map<const char *, option> options;
 	option& operator[](const char* s)
 	{

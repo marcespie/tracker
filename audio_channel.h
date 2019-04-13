@@ -16,6 +16,7 @@
  */
 
 class resampler;
+class sample_info;
 
 class audio_channel {
 	enum class audio_state { DO_NOTHING, PLAY, REPLAY};

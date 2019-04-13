@@ -18,7 +18,8 @@
 #include <vector>
 const int UNKNOWN=42;
 
-struct play_entry {
+class play_entry {
+public:
 	play_entry(const char*, const char *);
 	int filetype;
 	std::string name;

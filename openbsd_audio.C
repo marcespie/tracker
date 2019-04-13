@@ -224,7 +224,8 @@ set_add_samples()
 
 /* synchronize stuff with audio output */
 
-struct tagged {
+class tagged {
+public:
 	using callback= std::function<void ()>;
 	callback f;		/* function to call */
 	callback f2;		/* function to call  for flush */

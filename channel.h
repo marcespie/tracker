@@ -26,7 +26,8 @@ const auto MAX_ARP=3;
  * detect faulty modules.
  */
 
-struct sinusoid {
+class sinusoid {
+public:
 	int offset;		/* current offset */
 	int depth;		/* current depth */
 	int rate;		/* current step rate */
@@ -39,7 +40,8 @@ class resampler;
 
 enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
 
-struct channel {
+class channel {
+public:
 	std::unique_ptr<audio_channel> audio;
 	channel(int side, resampler& r);
 	void reset();

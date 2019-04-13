@@ -42,14 +42,13 @@ static auto INIT = init_st_play;
  **************
  **************/
 
-
-static struct st_effect eval[NUMBER_EFFECTS];
+static st_effect eval[NUMBER_EFFECTS];
                     		/* the effect table */
 
 
 std::vector<channel> chan;
 
-static struct sample_info **voices;
+static sample_info **voices;
 
 
 int channel::side() const

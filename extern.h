@@ -40,14 +40,15 @@ MAX(S x, T y)
 }
 
 /* predefinitions for relevant structures */
-struct channel; 
+class channel; 
 class song;
 class automaton;
-struct sample_info;
-struct event;
-struct tempo;
-struct play_entry;
-struct option_set;
+class sample_info;
+class event;
+class tempo;
+class play_entry;
+class option_set;
+class exfile;
 /*--------------------------- display.c --------------------------*/
 /* dump_event(ch, e): dump event e as occuring on channel ch
  * (some events need the current channel state for a correct dump)
@@ -114,7 +115,7 @@ extern int error;
  * returns NULL (and an error) if it doesn't work.
  * Returns a dynamic song structure if successful.
  */
-extern song *read_song(class exfile& f, int type);
+extern song *read_song(exfile& f, int type);
 
 /*--------------------------- st_virt.c --------------------------*/
 extern void compute_duration(automaton *a, song *song);

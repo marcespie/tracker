@@ -17,8 +17,8 @@
 
 // values for do_stuff
 class song;
-struct event;
-struct channel;
+class event;
+class channel;
 
 
 const auto DO_SET_NOTHING=0;

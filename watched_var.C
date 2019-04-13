@@ -20,7 +20,8 @@
 #include "watched_var.h"
 #include "autoinit.h"
 
-static struct {
+static class {
+public:
 	long value;
 	bool set;
 	std::unordered_set<notify_function*> l;

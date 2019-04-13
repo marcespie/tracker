@@ -88,7 +88,8 @@ const auto FUZZ=5;
 // we refuse to allocate more than 500000 bytes for one sample
 const auto MAX_SAMPLE_LENGTH= 500000;
 
-struct sample_info {
+class sample_info {
+public:
 	SAMPLE8 *start, *rp_start;
 	unsigned long  fix_length, fix_rp_length;
 
@@ -104,7 +105,8 @@ struct sample_info {
 
 /* the actual parameters may be split in two halves occasionally */
 
-struct event {
+class event {
+public:
 	unsigned char sample_number;
 	unsigned char effect;
 	unsigned char parameters;
@@ -119,7 +121,8 @@ struct event {
 	}
 };
 
-struct pattern {
+class pattern {
+public:
 	event *e;
 	unsigned long duration;
 	unsigned long total;
@@ -127,7 +130,8 @@ struct pattern {
 };
 
         
-struct song_info {
+class song_info {
+public:
 	unsigned int length;
 	unsigned int npat;
 	unsigned int plength;

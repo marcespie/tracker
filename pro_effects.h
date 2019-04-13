@@ -20,7 +20,8 @@ enum st_effect_type {
 	CH_E, A_E, NO_NOTE_CH_E, PORTA_CH_PITCH_E, CH_A_E, NOTHING
 };
 
-struct st_effect {
+class st_effect {
+public:
 	enum st_effect_type type;
 	union {
 		void (*CH_E)(channel& ch, const event& e);
