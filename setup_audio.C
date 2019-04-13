@@ -22,6 +22,7 @@
 #include "notes.h"
 #include "audio_channel.h"
 #include "watched_var.h"
+#include "openbsd_audio.h"
 
 static void init_audio();
 

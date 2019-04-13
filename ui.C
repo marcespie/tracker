@@ -31,6 +31,7 @@
 #include "timing.h"
 #include "ui.h"
 #include "color.h"
+#include "openbsd_audio.h"
 
 extern char *VERSION;
 

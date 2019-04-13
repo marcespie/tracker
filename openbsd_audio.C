@@ -17,14 +17,16 @@
 /* sndio(7) interface */
 
 #include <unistd.h>
-#include "extern.h"
-#include "prefs.h"
-#include "autoinit.h"
-#include "watched_var.h"
 #include <sndio.h>
 #include <queue>
 #include <iostream>
 #include <limits>
+#include <utility>
+//#include "extern.h"
+//#include "prefs.h"
+#include "autoinit.h"
+#include "watched_var.h"
+#include "openbsd_audio.h"
 
 // fine-tune to get the scrolling display in sync with the music
 const auto ADVANCE_TAGS=20000;

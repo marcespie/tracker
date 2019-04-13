@@ -31,6 +31,7 @@
 #include "autoinit.h"
 #include "empty.h"
 #include "watched_var.h"
+#include "openbsd_audio.h"
      
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */

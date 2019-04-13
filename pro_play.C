@@ -32,6 +32,7 @@
 #include "pro_play.h"
 #include "empty.h"
 #include "display.h"
+#include "openbsd_audio.h"
      
 
 extern short vibrato_table[3][64];

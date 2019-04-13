@@ -92,47 +92,6 @@ extern void compute_duration(automaton *a, song *song);
  */
 extern void setup_audio(unsigned long f, int s);
 
-/*--------------------------- audio.c ----------------------------*/
-/* frequency = open_audio(f, s):
- * try to open audio with a sampling rate of f, and eventually stereo.
- * We get the real frequency back. If we ask for 0, we
- * get the ``preferred'' frequency.
- * Note: we have to close_audio() before we can open_audio() again.
- * Note: even if we don't ask for stereo, we still have to give a
- * right and left sample.
- */
-extern unsigned long open_audio(unsigned long f, int s);
-/* close_audio():
- * returns the audio to the system control, doing necessary
- * cleanup
- */
-extern void close_audio();
-/* set_mix(percent): set mix channels level.
- * 0: spatial stereo. 100: mono.
- */
-extern void set_mix(int percent);
-
-/* output_samples(l, r, n): outputs a pair of stereo samples.
- * Samples are n bits signed.
- * Output routine should be able to face anything from 16 to 25
- */
-extern void output_samples(int32_t left, int32_t right, int n);
-
-/* flush_buffer(): call from time to time, because buffering
- * is done by the program to get better (?) performance.
- */
-extern void flush_buffer();
-
-/* discard_buffer(): try to get rid of the buffer contents
- */
-extern void discard_buffer();
-
-/* sync_audio(function, f2, parameter):
- * call function(parameter) when audio finally gets to the current point
- * call f2(parameter) if flush is in effect instead
- */
-extern void sync_audio(std::function<void()>, std::function<void()>);
-
 /*--------------------------- ui.c ------------------------*/
 /* get_ui(): returns a user-interface action + optional parameter
  */
