@@ -75,12 +75,12 @@ audio_channel::audio_channel(int side_, resampler& r_):
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
 		End() << "Improper alloc channel call side: " << side;
-	r.allocated.insert(this);
+	r.add(this);
 }
 
 audio_channel::~audio_channel()
 {
-	r.allocated.erase(this);
+	r.remove(this);
 }
 /*---------- Resampling engine ------------------------------------*/
 
@@ -90,6 +90,18 @@ prep_sample_info(sample_info *info)
 {
 	info->fix_length = int_to_fix(info->length);
 	info->fix_rp_length = int_to_fix(info->rp_length);
+}
+
+void
+resampler::add(audio_channel *ch)
+{
+	allocated.insert(ch);
+}
+
+void
+resampler::remove(audio_channel *ch)
+{
+	allocated.erase(ch);
 }
 
 /* create a table for converting ``amiga'' pitch
@@ -354,7 +366,7 @@ audio_channel::play(sample_info *samp_, ::pitch pitch_)
 {
 	pointer = 0;
 	pitch = pitch_;
-	step = r.step_table[pitch];
+	step = r.step(pitch);
 	/* need to change the volume there: play_note is the standard
 	 * mechanism used to change samples. Since the volume lookup table
 	 * is not necesssarily the same for each sample, we need to adjust
@@ -375,7 +387,7 @@ audio_channel::set_pitch(::pitch pitch_)
 	 * the step table on the run
 	 */
 	pitch = pitch_;
-	step = r.step_table[pitch];
+	step = r.step(pitch);
 }
 
 /* changing the current volume. You HAVE to get through there so that it 

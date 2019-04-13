@@ -56,6 +56,12 @@ public:
 	void set_data_width(int side, int sample);
 	void resample();
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
-	friend class audio_channel;
+	inline void add(audio_channel *ch);
+	inline void remove(audio_channel *ch);
+	inline auto step(unsigned short p) const
+	{
+		return step_table[p];
+	}
+	//friend class audio_channel;
 };
 
