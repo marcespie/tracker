@@ -55,9 +55,6 @@ enum class error_type {
 extern error_type error;
 
 
-const auto READ_ONLY="rb";
-const auto WRITE_ONLY="wb";
-
 template<typename S, typename T>
 inline auto
 MIN(S x, T y)
@@ -81,12 +78,6 @@ class event;
 class tempo;
 class play_entry;
 class option_set;
-
-/*--------------------------- setup_audio.c ----------------------*/
-/* setup_audio(ask_freq, stereo, oversample):
- * setup the audio output with these values 
- */
-extern void setup_audio(unsigned long f, int s);
 
 /*--------------------------- ui.c ------------------------*/
 /* get_ui(): returns a user-interface action + optional parameter

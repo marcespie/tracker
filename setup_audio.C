@@ -1,4 +1,4 @@
-/* setup_audio.c */
+/* setup_audio.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -23,6 +23,7 @@
 #include "audio_channel.h"
 #include "watched_var.h"
 #include "openbsd_audio.h"
+#include "setup_audio.h"
 
 static void init_audio();
 

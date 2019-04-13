@@ -30,6 +30,7 @@
 #include "pro_play.h"
 #include "resampler.h"
 #include "usage.h"
+#include "setup_audio.h"
      
 extern unsigned long half_mask;
 extern unsigned int ask_freq;
