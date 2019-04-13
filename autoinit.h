@@ -1,3 +1,5 @@
+#ifndef AUTOINIT_H
+#define AUTOINIT_H
 /* autoinit.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -57,3 +59,4 @@ public:
 		f();
 	}
 };
+#endif

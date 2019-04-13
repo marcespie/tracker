@@ -1,3 +1,5 @@
+#ifndef OPEN_H
+#define OPEN_H
 /* open.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -38,3 +40,4 @@ private:
 	exfile(const exfile&) = delete;
 	std::ifstream handle;
 };
+#endif

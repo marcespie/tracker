@@ -1,3 +1,5 @@
+#ifndef PLAY_LIST_H
+#define PLAY_LIST_H
 /* play_list.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -37,3 +39,4 @@ using ENTRY = play_list::iterator;
 extern void randomize(play_list&);
 extern ENTRY delete_entry(play_list&, ENTRY);
 extern void add_entry(play_list&, const char*);
+#endif

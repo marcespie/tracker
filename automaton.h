@@ -1,3 +1,5 @@
+#ifndef AUTOMATON_H
+#define AUTOMATON_H
 /* automaton.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -88,3 +90,4 @@ public:
 };
 
 const auto NORMAL_FINESPEED=125;
+#endif

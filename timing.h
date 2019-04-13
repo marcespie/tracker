@@ -1,3 +1,5 @@
+#ifndef TIMING_H
+#define TIMING_H
 /* timing.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -21,5 +23,4 @@ extern char *time2string(char *buffer, unsigned long t);
 /* convert a ratio n/p seconds to a time value */
 extern unsigned long ratio2time(int n, int p);
 
-
-
+#endif

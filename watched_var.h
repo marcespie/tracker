@@ -1,3 +1,5 @@
+#ifndef WATCHED_VAR_H
+#define WATCHED_VAR_H
 /* watched_var.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -43,3 +45,4 @@ extern void add_notify(notify_function& f, watched var);
 extern void remove_notify(notify_function& f, watched var);
 
 
+#endif

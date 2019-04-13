@@ -1,3 +1,5 @@
+#ifndef RESAMPLER_H
+#define RESAMPLER_H
 // resampler.h
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -64,3 +66,4 @@ public:
 	}
 };
 
+#endif

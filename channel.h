@@ -1,3 +1,5 @@
+#ifndef CHANNEL_H
+#define CHANNEL_H
 /* channel.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -93,3 +95,4 @@ public:
 };
 
 class automaton;
+#endif

@@ -1,3 +1,5 @@
+#ifndef UI_H
+#define UI_H
 /* ui.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -34,3 +36,4 @@ Info& operator<<(Info& o, T t)
 		o.out << t;
     	return o;
 }
+#endif

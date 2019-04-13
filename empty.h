@@ -1,3 +1,5 @@
+#ifndef EMPTY_H
+#define EMPTY_H
 /* empty.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -21,3 +23,4 @@
 class sample_info;
 
 extern sample_info *empty_sample();
+#endif

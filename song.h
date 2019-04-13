@@ -1,3 +1,5 @@
+#ifndef SONG_H
+#define SONG_H
 // song.h
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -49,3 +51,5 @@ public:
 		return mod != nullptr;
 	}
 };
+
+#endif

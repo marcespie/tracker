@@ -1,3 +1,5 @@
+#ifndef PARSE_OPTIONS_H
+#define PARSE_OPTIONS_H
 /* parse_options.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -93,4 +95,6 @@ public:
 	int do1(const char* text, const char* arg);
 };
 
-std::vector<char *>string2args(char *);
+extern std::vector<char *>string2args(char *);
+
+#endif

@@ -1,4 +1,6 @@
-/* Modules/Pro/effects.h */
+#ifndef PRO_EFFECTS_H
+#define PRO_EFFECTS_H
+/* pro_effects.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -39,3 +41,4 @@ extern void init_effects(st_effect table[]);
 /* do_nothing: this is the default behavior for an effect
  */
 extern void do_nothing(channel&);
+#endif

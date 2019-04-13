@@ -1,3 +1,5 @@
+#ifndef NOTES_H
+#define NOTES_H
 /* notes.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -27,3 +29,4 @@ extern note  pitch2note(pitch pitch);
 extern pitch round_pitch(pitch pitch, finetune finetune);
 extern const char *note2name(note note);
 
+#endif

@@ -1,3 +1,5 @@
+#ifndef PREFS_H
+#define PREFS_H
 /* prefs.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -29,3 +31,4 @@ public:
 	static long get(Pref index);
 	static void set(Pref index, long value);
 };
+#endif

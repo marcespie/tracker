@@ -1,4 +1,6 @@
-/* Modules/Pro/play.h */
+#ifndef PRO_PLAY_H
+#define PRO_PLAY_H
+/* pro_play.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -29,3 +31,4 @@ extern void init_player(int o, unsigned long f);
  */
 extern int play_song(song *song, unsigned int start);
 
+#endif

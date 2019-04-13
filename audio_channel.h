@@ -1,3 +1,5 @@
+#ifndef AUDIO_CHANNEL_H
+#define AUDIO_CHANNEL_H
 /* audio_channel.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -46,3 +48,4 @@ public:
  * set up secondary data structure for faster resampling
  */
 extern void prep_sample_info(sample_info *info);
+#endif

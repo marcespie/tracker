@@ -1,3 +1,5 @@
+#ifndef PROTRACKER_H
+#define PROTRACKER_H
 /* protracker.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
@@ -165,3 +167,4 @@ public:
 };
 
 const auto AMIGA_CLOCKFREQ=3575872;
+#endif
