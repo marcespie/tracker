@@ -34,8 +34,8 @@ class resampler {
 	void notify_frequency(long);
 	void notify_oversample(long);
 	void readjust_current_steps();
-	inline void linear_resample();
-	inline void over_resample();
+	inline void linear_resample() const;
+	inline void over_resample() const;
 	void readjust_beat();
 	void build_step_table(
 	    int oversample, 		/* use i sample for each value output */
@@ -54,7 +54,7 @@ public:
 	resampler();
 	~resampler();
 	void set_data_width(int side, int sample);
-	void resample();
+	void resample() const;
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
 	inline void add(audio_channel *ch);
 	inline void remove(audio_channel *ch);

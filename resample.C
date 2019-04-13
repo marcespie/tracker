@@ -248,7 +248,7 @@ audio_channel::linear_value(int32_t* t)
 }
 
 void
-resampler::linear_resample()
+resampler::linear_resample() const
 {
 	int32_t value[NUMBER_SIDES];
 
@@ -299,7 +299,7 @@ audio_channel::oversample_value(int32_t* t)
 }
 
 void
-resampler::over_resample()
+resampler::over_resample() const
 {
 	int32_t value[NUMBER_SIDES];
 
@@ -344,7 +344,7 @@ resampler::over_resample()
  * generate output.
  */
 void 
-resampler::resample()
+resampler::resample() const
 {
 	/* do the resampling, i.e., actually play sounds */
 	/* code unfolding for special cases */
