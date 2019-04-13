@@ -25,7 +25,7 @@
 #include "extern.h"
 #include "notes.h"
 #include "channel.h"
-#include "resample.h"
+#include "audio_channel.h"
 #include "song.h"
 #include "protracker.h"
 #include "empty.h"

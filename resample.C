@@ -26,7 +26,7 @@
 #include "channel.h"
 #include "extern.h"
 #include "prefs.h"
-#include "resample.h"
+#include "audio_channel.h"
 #include "resampler.h"
 #include "autoinit.h"
 #include "empty.h"

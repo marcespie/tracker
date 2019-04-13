@@ -27,7 +27,7 @@
 #include "pro_effects.h"
 #include "automaton.h"
 #include "autoinit.h"
-#include "resample.h"
+#include "audio_channel.h"
 #include "resampler.h"
 #include "pro_play.h"
 #include "empty.h"

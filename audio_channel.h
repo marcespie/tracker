@@ -1,4 +1,4 @@
-/* resample.h */
+/* audio_channel.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

@@ -20,7 +20,7 @@
 #include "prefs.h"
 #include "autoinit.h"
 #include "notes.h"
-#include "resample.h"
+#include "audio_channel.h"
 #include "watched_var.h"
 
 static void init_audio();

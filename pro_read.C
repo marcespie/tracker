@@ -28,7 +28,7 @@
 #include "autoinit.h"
 #include "automaton.h"
 #include "empty.h"
-#include "resample.h"
+#include "audio_channel.h"
 #include "open.h"
 
 static unsigned int patsize;
