@@ -26,6 +26,7 @@
 #include "resampler.h"
 #include "timing.h"
 #include "ui.h"
+#include "errortype.h"
      
 /* set up the automaton so that I haven't got through patterns 
  * #from to #to

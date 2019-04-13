@@ -1,4 +1,4 @@
-/* Modules/Pro/read.c */
+/* pro_read.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -31,6 +31,7 @@
 #include "audio_channel.h"
 #include "open.h"
 #include "pro_read.h"
+#include "errortype.h"
 
 static unsigned int patsize;
 

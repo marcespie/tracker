@@ -25,6 +25,7 @@
 #include "notes.h"
 #include "channel.h"
 #include "autoinit.h"
+#include "errortype.h"
 
 const auto NUMBER_NOTES=120;
 const auto NUMBER_FINETUNES=17;

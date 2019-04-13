@@ -26,6 +26,7 @@
 #include "prefs.h"
 #include "automaton.h"
 #include "timing.h"
+#include "errortype.h"
 
 static unsigned long *loop_start;
 

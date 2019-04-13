@@ -1,4 +1,4 @@
-/* Modules/Pro/play.c */
+/* pro_play.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -34,6 +34,7 @@
 #include "display.h"
 #include "openbsd_audio.h"
 #include "ui.h"
+#include "errortype.h"
      
 
 extern short vibrato_table[3][64];

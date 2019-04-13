@@ -33,6 +33,7 @@
 #include "setup_audio.h"
 #include "ui.h"
 #include "handle_options.h"
+#include "errortype.h"
      
 /* global variable to catch various types of errors and achieve the 
  * desired flow of control

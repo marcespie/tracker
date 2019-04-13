@@ -1,4 +1,6 @@
-/* open.c */
+#ifndef ERRORTYPE_H
+#define ERRORTYPE_H
+/* errortype.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,48 +17,34 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* Magic open file: path lookup and transparent decompression */
+/* error types. Everything is centralized,
+ * and we check in some places (see st_read, player and main)
+ * that there was no error. Additionally signal traps work
+ * that way too.
+ */
+enum class error_type {
+/* normal state */
+	NONE, 
+/* read error */
+	FILE_TOO_SHORT,
+	CORRUPT_FILE,
+/* trap error: goto next song right now */
+	NEXT_SONG,
+/* run time problem */
+	FAULT,
+/* the song has ended */
+	ENDED,
+/* unrecoverable problem: typically, trying to 
+ * jump to nowhere land.
+ */
+	UNRECOVERABLE,
+/* Missing sample. Very common error, not too serious. */
+	SAMPLE_FAULT,
+/* New */
+	PREVIOUS_SONG,
+	OUT_OF_MEM,
+/* some weird soundtracker feature */
+	NOT_SUPPORTED };
+extern error_type error;
 
-#include "extern.h"
-#include "autoinit.h"
-#include "open.h"
-#include "errortype.h"
-
-bool
-exfile::open(const std::string& fname)
-{
-	handle.open(fname, std::ios::binary);
-	return handle.is_open();
-}
-
-exfile::~exfile()
-{
-}
-
-int 
-exfile::getc()
-{
-	int c = handle.get();
-	if (c == EOF)
-		error = error_type::FILE_TOO_SHORT;
-	return c;
-}
-
-size_t
-exfile::read(char *p, size_t sz)
-{
-	handle.read(p, sz);
-	return handle.gcount();
-}
-
-void
-exfile::rewind()
-{
-	handle.seekg(0);
-}
-
-size_t
-exfile::tell()
-{
-	return handle.tellg();
-}
+#endif

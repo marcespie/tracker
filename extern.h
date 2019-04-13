@@ -24,37 +24,6 @@
 #include <iosfwd>
 #include <cstdint>
 
-/* error types. Everything is centralized,
- * and we check in some places (see st_read, player and main)
- * that there was no error. Additionally signal traps work
- * that way too.
- */
-enum class error_type {
-/* normal state */
-	NONE, 
-/* read error */
-	FILE_TOO_SHORT,
-	CORRUPT_FILE,
-/* trap error: goto next song right now */
-	NEXT_SONG,
-/* run time problem */
-	FAULT,
-/* the song has ended */
-	ENDED,
-/* unrecoverable problem: typically, trying to 
- * jump to nowhere land.
- */
-	UNRECOVERABLE,
-/* Missing sample. Very common error, not too serious. */
-	SAMPLE_FAULT,
-/* New */
-	PREVIOUS_SONG,
-	OUT_OF_MEM,
-/* some weird soundtracker feature */
-	NOT_SUPPORTED };
-extern error_type error;
-
-
 template<typename S, typename T>
 inline auto
 MIN(S x, T y)
