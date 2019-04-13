@@ -29,6 +29,7 @@
 #include "autoinit.h"
 #include "display.h"
 #include "color.h"
+#include "ui.h"
 
 static void init_display();
 

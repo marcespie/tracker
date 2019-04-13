@@ -16,10 +16,11 @@
  */
 
 
+#include <utility>
+#include <iostream>
 #include "ui.h"
 #include "usage.h"
 #include "version.h"
-#include <iostream>
 
 const char *usage[] = {
 "Usage: tracker [options] filename [...]",

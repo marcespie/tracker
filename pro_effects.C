@@ -26,6 +26,7 @@
 #include "automaton.h"
 #include "prefs.h"
 #include "pro_effects.h"
+#include "ui.h"
      
 /* sine table for the vibrato effect (obtained through build_vibrato.c) */
 

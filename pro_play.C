@@ -33,6 +33,7 @@
 #include "empty.h"
 #include "display.h"
 #include "openbsd_audio.h"
+#include "ui.h"
      
 
 extern short vibrato_table[3][64];
