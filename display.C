@@ -27,6 +27,8 @@
 #include "automaton.h"
 #include "empty.h"
 #include "autoinit.h"
+#include "display.h"
+#include "color.h"
 
 static void init_display();
 

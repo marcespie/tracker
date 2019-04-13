@@ -31,6 +31,7 @@
 #include "resampler.h"
 #include "pro_play.h"
 #include "empty.h"
+#include "display.h"
      
 
 extern short vibrato_table[3][64];

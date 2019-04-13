@@ -70,6 +70,8 @@ void do_nothing(channel&)
 {
 }
 
+void set_nothing();
+
 void set_nothing()
 {
 }

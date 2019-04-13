@@ -16,11 +16,10 @@
  */
 
 
-#include "extern.h"
 #include "ui.h"
+#include "usage.h"
+#include "version.h"
 #include <iostream>
-
-extern char *VERSION;
 
 const char *usage[] = {
 "Usage: tracker [options] filename [...]",

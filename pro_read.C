@@ -447,6 +447,7 @@ adjust_volumes(song *song)
 			    (song->ntracks == 6) ? (4 * j) / 3 : j;
 }
 
+void setup_song(song *song);
 void 
 setup_song(song *song)
 {

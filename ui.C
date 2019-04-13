@@ -30,6 +30,7 @@
 #include "autoinit.h"
 #include "timing.h"
 #include "ui.h"
+#include "color.h"
 
 extern char *VERSION;
 
@@ -89,6 +90,8 @@ suspend(int)
 	kill(0, SIGTSTP);
 }
 #endif
+
+bool run_in_fg();
 
 bool 
 run_in_fg()

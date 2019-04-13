@@ -74,6 +74,8 @@ static option_set args = {
 };
 
 /* initialize all options to default values */
+void set_default_prefs();
+
 void 
 set_default_prefs()
 {
@@ -158,6 +160,9 @@ set_speed_mode(const char *p)
 	}
 	pref::set(Pref::speedmode, mode);
 }
+
+void 
+handle_options(int argc, char *argv[], std::function<void(const char*)> f);
 
 void 
 handle_options(int argc, char *argv[], std::function<void(const char*)> f)

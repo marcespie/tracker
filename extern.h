@@ -82,20 +82,6 @@ class tempo;
 class play_entry;
 class option_set;
 class exfile;
-/*--------------------------- display.c --------------------------*/
-/* dump_event(ch, e): dump event e as occuring on channel ch
- * (some events need the current channel state for a correct dump)
- * special case: ch == 0 means current set of events done
- */
-extern void dump_event(const channel& ch, const event *e);
-// finish the line if necessary
-extern void dump_event();
-
-/* dump_delimiter(): add a delimiter to the current dump, to 
- * separate left channels from right channels, for instance
- */
-extern void dump_delimiter();
-
 
 /*--------------------------- main.c -----------------------------*/
 const auto OLD=0;
@@ -243,13 +229,6 @@ extern void display_time(unsigned long time_elapsed, unsigned long check);
  * make a copy if needed
  */
 extern void song_title(const char *s);
-
-/*--------------------------- color.c ----------------------------*/
-/* s = write_color(base, color):
- * write sequence to switch to color color at base, returning
- * position after the sequence
- */
-extern char *write_color(char *base, unsigned int color);
 
 extern void audio_ui(char c);
 /*--------------------------- parse_options.c --------------------*/

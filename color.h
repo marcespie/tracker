@@ -1,4 +1,6 @@
-/* color.c */
+#ifndef COLOR_H
+#define COLOR_H
+/* color.h */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,25 +17,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "color.h"
-char *
-write_color(char *base, unsigned int color)
-{
-	*base++ = '\033';
-	*base++ = '[';
-#ifdef SCO_ANSI_COLOR
-	if (color == 0) {
-		*base++ = 'x';
-		return base;
-	}
+/* s = write_color(base, color):
+ * write sequence to switch to color color at base, returning
+ * position after the sequence
+ */
+extern char *write_color(char *base, unsigned int color);
+
 #endif
-	*base++ = '0' + color / 8;
-	*base++=';';
-	*base++='3';
-	if (color == 0)		/* color == 0 means reset */
-		*base++ = '9';
-	else
-		*base++ = '0' + color % 8;
-	*base++ = 'm';
-	return base;
-}

@@ -29,8 +29,8 @@
 #include "open.h"
 #include "pro_play.h"
 #include "resampler.h"
+#include "usage.h"
      
-extern void print_usage();
 extern unsigned long half_mask;
 extern unsigned int ask_freq;
 extern int stereo;
