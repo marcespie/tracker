@@ -72,24 +72,22 @@ const auto LEEWAY=150;
 
 /*---------- Channels allocation mechanism -----------------------*/
 
-static std::unordered_set<audio_channel *> allocated[NUMBER_SIDES];
 
-
-audio_channel::audio_channel(int side_, resampler&):
+audio_channel::audio_channel(int side_, resampler& r_):
     samp{empty_sample()}, mode{audio_state::DO_NOTHING}, pointer{0}, 
-    step{0}, volume{0}, scaled_volume{0}, pitch{0},
+    step{0}, volume{0}, scaled_volume{0}, pitch{0}, r{r_},
     side{side_}
 {
 	/* checking allocation */
 	if (side < 0 || side >= NUMBER_SIDES)
 		End() << "Improper alloc channel call side: " << side;
 	/* logging number of channels per side */
-	allocated[side].insert(this);
+	r.allocated[side].insert(this);
 }
 
 audio_channel::~audio_channel()
 {
-	allocated[side].erase(this);
+	r.allocated[side].erase(this);
 }
 /*---------- Resampling engine ------------------------------------*/
 
@@ -146,7 +144,7 @@ build_step_table(
 }
          
 void 
-audio_channel::readjust_current_steps(void)
+resampler::readjust_current_steps(void)
 {
 	for (auto& s: allocated)
 		for (auto ch: s)
@@ -159,29 +157,35 @@ readjust_beat(void)
 	number_samples = resampling_frequency * num / tempo / den;
 }
 
-static void 
-notify_frequency(watched, long n)
+void 
+resampler::notify_frequency(long n)
 {
 	resampling_frequency = n;
 	build_step_table(oversample, resampling_frequency);
 	readjust_beat();
-	audio_channel::readjust_current_steps();
+	readjust_current_steps();
 }
 
-static void 
-notify_oversample(watched, long n)
+void 
+resampler::notify_oversample(long n)
 {
 	oversample = n;
 	if (resampling_frequency) {
 		build_step_table(oversample, resampling_frequency);
-		audio_channel::readjust_current_steps();
+		readjust_current_steps();
 	}
 }
 
 resampler::resampler()
 {
-	frequency_f = notify_frequency;
-	oversample_f = notify_oversample;
+	frequency_f = [this](watched, long n)
+	    {
+		    notify_frequency(n);
+	    };
+	oversample_f = [this](watched, long n)
+	    {
+		    notify_oversample(n);
+	    };
 	add_notify(frequency_f, watched::frequency);
 	add_notify(oversample_f, watched::oversample);
 }
@@ -252,8 +256,8 @@ audio_channel::linear_value(int32_t* t)
 	}
 }
 
-inline void
-linear_resample(void)
+void
+resampler::linear_resample()
 {
 	int32_t value[NUMBER_SIDES];
 
@@ -304,8 +308,8 @@ audio_channel::oversample_value(int32_t* t)
 	}
 }
 
-inline void
-over_resample(void)
+void
+resampler::over_resample()
 {
 	int32_t value[NUMBER_SIDES];
 

@@ -14,16 +14,27 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+#include <unordered_set>
 
 enum class watched;
+class audio_channel;
+enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
 
 class resampler {
 	std::function<void(watched, long)> frequency_f, oversample_f;
+	std::unordered_set<audio_channel *> allocated[NUMBER_SIDES];
+	void notify_frequency(long);
+	void notify_oversample(long);
+	void readjust_current_steps();
+	inline void linear_resample();
+	inline void over_resample();
+
 public:
 	resampler();
 	~resampler();
 	void set_data_width(int side, int sample);
 	void resample();
 	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
+	friend class audio_channel;
 };
 

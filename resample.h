@@ -27,6 +27,7 @@ class audio_channel {
 	unsigned int scaled_volume;
 	::pitch pitch;
 	inline auto C() const;
+	resampler& r;
 public:
 	const int side;
 	audio_channel(int, resampler&);
@@ -37,10 +38,8 @@ public:
 	void set_position(size_t);
 	inline void linear_value(int32_t*);
 	inline void oversample_value(int32_t*);
-	static void readjust_current_steps(void);
+	friend class resampler;
 };
-
-enum {LEFT_SIDE, RIGHT_SIDE, NUMBER_SIDES};
 
 /* prep_sample_info(info):
  * set up secondary data structure for faster resampling
