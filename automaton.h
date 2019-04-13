@@ -53,8 +53,7 @@ class automaton {
 	unsigned int speed;		// speed number of effect repeats
 	unsigned int finespeed;		// finespeed, base is 100
 	resampler* const r;		// only on ctor
-
-
+	inline void set_beat(unsigned int, unsigned int, unsigned int);
 
 	unsigned long time_spent;
 public:

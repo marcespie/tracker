@@ -27,6 +27,15 @@ class resampler {
 	void readjust_current_steps();
 	inline void linear_resample();
 	inline void over_resample();
+	void readjust_beat();
+	unsigned int oversample;
+	unsigned long resampling_frequency;
+	unsigned int tempo = 50;
+	unsigned int num, den = 1;
+	unsigned int number_samples;
+	int max_side;	/* number of bits on one side */
+	int max_sample;	/* number of bits for one sample */
+
 
 public:
 	resampler();

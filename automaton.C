@@ -121,7 +121,14 @@ void
 automaton::set_bpm(unsigned int bpm_)
 {
 	bpm = bpm_;
-	r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+	set_beat(bpm, NORMAL_FINESPEED, finespeed);
+}
+
+void 
+automaton::set_beat(unsigned int bpm, unsigned int a, unsigned int b)
+{
+	if (r)
+		r->set_resampling_beat(bpm, a, b);
 }
 
 void 
@@ -137,7 +144,7 @@ automaton::update_tempo()
 	case SET_SPEED | SET_FINESPEED:
 		if (pref::get(Pref::speedmode) != FINESPEED_ONLY) {
 			finespeed = new_finespeed;
-			r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+			set_beat(bpm, NORMAL_FINESPEED, finespeed);
 		}
 		if (pref::get(Pref::speedmode) != SPEED_ONLY)
 			speed = new_speed;
@@ -146,12 +153,12 @@ automaton::update_tempo()
 		speed = new_speed;
 		if (pref::get(Pref::speedmode) == ALTER_PROTRACKER) {
 			finespeed = NORMAL_FINESPEED;
-			r->set_resampling_beat(bpm, 1, 1);
+			set_beat(bpm, 1, 1);
 		}
 		break;
 	case SET_FINESPEED:
 		finespeed = new_finespeed;
-		r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+		set_beat(bpm, NORMAL_FINESPEED, finespeed);
 		break;
 	default:
 		break;
@@ -160,7 +167,7 @@ automaton::update_tempo()
 	if (finespeed == 0) {
 		status("Finespeed of 0");
 		finespeed = NORMAL_FINESPEED;
-		r->set_resampling_beat(bpm, NORMAL_FINESPEED, finespeed);
+		set_beat(bpm, NORMAL_FINESPEED, finespeed);
 		error = FAULT;
 	}
 }

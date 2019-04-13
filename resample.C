@@ -95,12 +95,6 @@ static unsigned long step_table[REAL_MAX_PITCH + LEEWAY];
                    * byte at a given pitch (see resample() ).
                    */
 
-static unsigned int oversample;
-static unsigned long resampling_frequency;
-static unsigned int tempo = 50;
-static unsigned int num, den = 1;
-static unsigned int number_samples;
-
 void 
 prep_sample_info(sample_info *info)
 {
@@ -143,14 +137,14 @@ build_step_table(
 }
          
 void 
-resampler::readjust_current_steps(void)
+resampler::readjust_current_steps()
 {
 	for (auto ch: allocated)
 		ch->step = step_table[ch->pitch];
 }
 
-static void 
-readjust_beat(void)
+void 
+resampler::readjust_beat()
 {
 	number_samples = resampling_frequency * num / tempo / den;
 }
@@ -202,9 +196,6 @@ resampler::set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
 	den = b;
 	readjust_beat();
 }
-
-static int max_side;	/* number of bits on one side */
-static int max_sample;	/* number of bits for one sample */
 
 void 
 resampler::set_data_width(int side, int sample)
