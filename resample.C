@@ -63,12 +63,6 @@ auto inline fractional_part(T x)
 }
 
 
-/* Have to get some leeway for vibrato (since we don't bound pitch with
- * vibrato). This is conservative.
- */
-const auto LEEWAY=150;
-
-
 
 /*---------- Channels allocation mechanism -----------------------*/
 
@@ -90,10 +84,6 @@ audio_channel::~audio_channel()
 }
 /*---------- Resampling engine ------------------------------------*/
 
-static unsigned long step_table[REAL_MAX_PITCH + LEEWAY];  
-                  /* holds the increment for finding the next sampled
-                   * byte at a given pitch (see resample() ).
-                   */
 
 void 
 prep_sample_info(sample_info *info)
@@ -116,8 +106,8 @@ prep_sample_info(sample_info *info)
  * - never forget that samples are SIGNED numbers. If you have unsigned 
  * samples, you have to convert them SOMEWHERE.
  */
-static void 
-build_step_table(
+void 
+resampler::build_step_table(
     int oversample, 		/* use i sample for each value output */
     unsigned long output_fr 	/* output frequency */
     )
@@ -364,7 +354,7 @@ audio_channel::play(sample_info *samp_, ::pitch pitch_)
 {
 	pointer = 0;
 	pitch = pitch_;
-	step = step_table[pitch];
+	step = r.step_table[pitch];
 	/* need to change the volume there: play_note is the standard
 	 * mechanism used to change samples. Since the volume lookup table
 	 * is not necesssarily the same for each sample, we need to adjust
@@ -385,7 +375,7 @@ audio_channel::set_pitch(::pitch pitch_)
 	 * the step table on the run
 	 */
 	pitch = pitch_;
-	step = step_table[pitch];
+	step = r.step_table[pitch];
 }
 
 /* changing the current volume. You HAVE to get through there so that it 

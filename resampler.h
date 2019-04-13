@@ -20,6 +20,15 @@ enum class watched;
 class audio_channel;
 
 class resampler {
+	/* Have to get some leeway for vibrato (since we don't bound pitch with
+	 * vibrato). This is conservative.
+	 */
+	static const auto LEEWAY=150;
+	unsigned long step_table[REAL_MAX_PITCH + LEEWAY];  
+	/* holds the increment for finding the next sampled
+	 * byte at a given pitch (see resample() ).
+	 */
+
 	std::function<void(watched, long)> frequency_f, oversample_f;
 	std::unordered_set<audio_channel *> allocated;
 	void notify_frequency(long);
@@ -28,6 +37,10 @@ class resampler {
 	inline void linear_resample();
 	inline void over_resample();
 	void readjust_beat();
+	void build_step_table(
+	    int oversample, 		/* use i sample for each value output */
+	    unsigned long output_fr 	/* output frequency */
+	);
 	unsigned int oversample;
 	unsigned long resampling_frequency;
 	unsigned int tempo = 50;
