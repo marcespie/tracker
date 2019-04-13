@@ -22,6 +22,7 @@
 #include "prefs.h"
 #include "autoinit.h"
 #include "open.h"
+#include "song.h"
 
 inline int stricmp(const char *a, const char *b)
 {

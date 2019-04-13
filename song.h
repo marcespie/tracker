@@ -30,6 +30,16 @@ public:
 	}
 };
 
+// hint values for loading songs, to be revisited
+const auto OLD=0;
+const auto NEW=1;
+/* special new type: for when we try to read it as both types.
+ */
+const auto BOTH=2;
+/* special type: does not check the signature */
+const auto NEW_NO_CHECK=3;
+
+
 // wrapper class around all module types.
 class Song {
 	std::unique_ptr<Module> mod;

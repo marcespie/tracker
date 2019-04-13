@@ -83,19 +83,6 @@ class play_entry;
 class option_set;
 class exfile;
 
-/*--------------------------- main.c -----------------------------*/
-const auto OLD=0;
-const auto NEW=1;
-/* special new type: for when we try to read it as both types.
- */
-const auto BOTH=2;
-/* special type: does not check the signature */
-const auto NEW_NO_CHECK=3;
-
-
-/*--------------------------- play_list.c ------------------------*/
-
-
 /*--------------------------- st_read.c --------------------------*/
 /* s = read_song(f, type):
  * tries to read f as a song of type NEW/OLD/NEW_NOCHECK
