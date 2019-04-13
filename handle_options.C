@@ -1,4 +1,4 @@
-/* handle_options.c */
+/* handle_options.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

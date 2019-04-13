@@ -1,4 +1,4 @@
-/* unix/ui.c */
+/* ui.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

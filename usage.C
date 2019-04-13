@@ -1,4 +1,4 @@
-/* usage.c */
+/* usage.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

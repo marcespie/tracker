@@ -1,4 +1,4 @@
-/* Modules/Pro/effects.c */
+/* pro_effects.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

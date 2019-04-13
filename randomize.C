@@ -1,4 +1,4 @@
-/* randomize.c */
+/* randomize.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

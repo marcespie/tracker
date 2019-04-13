@@ -1,4 +1,4 @@
-/* watched_var.c */
+/* watched_var.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

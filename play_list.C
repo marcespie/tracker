@@ -1,4 +1,4 @@
-/* play_list.c */
+/* play_list.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

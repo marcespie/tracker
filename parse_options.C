@@ -1,4 +1,4 @@
-/* parse_options.c */
+/* parse_options.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *

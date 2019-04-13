@@ -1,4 +1,4 @@
-/* timing.c */
+/* timing.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
@@ -15,8 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "timing.h"
 #include <stdio.h>
+#include "timing.h"
      
 /* TIME_SCALE is one microsecond. Hence an unsigned long is enough
  * for a little over one hour */
