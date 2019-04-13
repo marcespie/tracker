@@ -82,10 +82,6 @@ class tempo;
 class play_entry;
 class option_set;
 
-/*--------------------------- st_virt.c --------------------------*/
-extern void compute_duration(automaton *a, song *song);
-
-
 /*--------------------------- setup_audio.c ----------------------*/
 /* setup_audio(ask_freq, stereo, oversample):
  * setup the audio output with these values 

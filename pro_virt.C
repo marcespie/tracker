@@ -1,4 +1,4 @@
-/* Modules/Pro/virt.c */
+/* pro_virt.C */
 /*
  * Copyright (c) 2019 Marc Espie <espie@openbsd.org>
  *
