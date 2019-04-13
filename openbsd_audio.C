@@ -240,7 +240,7 @@ std::queue<tagged> q;
 
 /* flush_tags: use tags that have gone by recently */
 static void 
-flush_tags(void)
+flush_tags()
 {
 	while (!q.empty()) {
 		if (q.front().when <= realpos + ADVANCE_TAGS) {
@@ -253,7 +253,7 @@ flush_tags(void)
 
 /* remove unused tags at end */
 static void 
-remove_pending_tags(void)
+remove_pending_tags()
 {
 	while (!q.empty()) {
 		q.front().f2();
@@ -271,7 +271,7 @@ sync_audio(tagged::callback f, tagged::callback f2)
 }
 
 static void 
-actually_flush_buffer(void)
+actually_flush_buffer()
 {
 	if (idx) {
 		total += idx * dsize;
@@ -289,7 +289,7 @@ output_samples(int32_t left, int32_t right, int n)
 }
 
 void 
-flush_buffer(void)
+flush_buffer()
 {	
 	actually_flush_buffer();
 	flush_tags();
@@ -299,7 +299,7 @@ flush_buffer(void)
  * Closing the sound device waits for all pending samples to play.
  */
 void 
-close_audio(void)
+close_audio()
 {
 	actually_flush_buffer();
 	sio_close(hdl);
@@ -307,7 +307,7 @@ close_audio(void)
 }
 
 void 
-discard_buffer(void)
+discard_buffer()
 {
 	remove_pending_tags();
 	total = 0;

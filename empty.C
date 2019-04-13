@@ -22,14 +22,14 @@
 #include "autoinit.h"
 #include "empty.h"
      
-static void init_empty (void);
+static void init_empty();
 
-static void (*INIT)(void) = init_empty;
+static auto INIT = init_empty;
 
 static sample_info dummy;
 
 static void 
-init_empty(void)
+init_empty()
 {
 	dummy.name = nullptr;
 	dummy.length = dummy.rp_offset = dummy.rp_length = 0;
@@ -43,7 +43,7 @@ init_empty(void)
 }
 
 sample_info *
-empty_sample(void)
+empty_sample()
 {
 	INIT_ONCE;
 

@@ -342,7 +342,7 @@ resampler::over_resample()
  * generate output.
  */
 void 
-resampler::resample(void)
+resampler::resample()
 {
 	/* do the resampling, i.e., actually play sounds */
 	/* code unfolding for special cases */

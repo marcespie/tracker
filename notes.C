@@ -29,8 +29,8 @@
 const auto NUMBER_NOTES=120;
 const auto NUMBER_FINETUNES=17;
 
-static void create_notes_table(void);
-static void (*INIT)(void) = create_notes_table;
+static void create_notes_table();
+static auto INIT = create_notes_table;
 
 
 /* the musical notes correspond to some specific pitch.
@@ -107,7 +107,7 @@ round_pitch(pitch pitch, finetune finetune)
 
 
 static void 
-create_notes_table(void)
+create_notes_table()
 {
 	for (auto j = -8; j < 8; j++) {
 		auto k = j < 0 ? j + 16 : j;

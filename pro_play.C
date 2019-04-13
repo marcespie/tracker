@@ -35,8 +35,8 @@
 
 extern short vibrato_table[3][64];
 
-static void init_st_play(void);
-static void (*INIT)(void) = init_st_play;
+static void init_st_play();
+static auto INIT = init_st_play;
 
 /**************
  **************
@@ -133,7 +133,7 @@ reset_channels()
 }
 
 void 
-init_st_play(void)
+init_st_play()
 {
 	init_effects(eval);
 }

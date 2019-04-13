@@ -28,7 +28,7 @@
 #include "empty.h"
 #include "autoinit.h"
 
-static void init_display(void);
+static void init_display();
 
 static init z(init_display);
 
@@ -596,7 +596,7 @@ disp_gliss_ctrl(const channel& ch, const event& e)
 }
 
 static void 
-init_display(void)
+init_display()
 {
 	for (auto& x: table)
 		x = disp_nothing;
@@ -657,7 +657,7 @@ dump_event()
 }
 
 void 
-dump_delimiter(void)
+dump_delimiter()
 {
 	if (!base)
 		base = new_scroll();

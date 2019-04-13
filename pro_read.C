@@ -479,7 +479,7 @@ fill_song_info(song_info *info, exfile& f)
  *  clear each and every field as appropriate.
  */
 static song *
-new_song(void)
+new_song()
 {
 	song *n = new song;
 	n->title = nullptr;

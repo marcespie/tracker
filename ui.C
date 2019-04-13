@@ -36,10 +36,10 @@ extern char *VERSION;
 using TERM_SETUP=termios;
 
 
-static void nonblocking_io(void);
+static void nonblocking_io();
 static void sane_tty(void);
 
-static void (*INIT)(void) = nonblocking_io;
+static auto INIT = nonblocking_io;
 
 
 /* poor man's timer */
@@ -91,7 +91,7 @@ suspend(int)
 #endif
 
 bool 
-run_in_fg(void)
+run_in_fg()
 {
 	pid_t val;
 
@@ -115,7 +115,7 @@ run_in_fg(void)
  * restore tty modes, _only_ if running in foreground
  */
 static void 
-if_fg_sane_tty(void)
+if_fg_sane_tty()
 {
 	if (run_in_fg())
 		sane_tty();
@@ -151,7 +151,7 @@ static void switch_mode(int)
  * try to setup the keyboard to non blocking io
  */
 static void 
-nonblocking_io(void)
+nonblocking_io()
 {
 	if (!psanity) {
 		psanity = &sanity;
@@ -165,13 +165,13 @@ nonblocking_io(void)
 /* sane_tty():
  * restores everything to a sane state before returning to shell */
 static void 
-sane_tty(void)
+sane_tty()
 {
 	tcsetattr(0, TCSADRAIN, psanity);
 }
 
 static int 
-may_getchar(void)
+may_getchar()
 {
 	char buffer;
 
@@ -191,7 +191,7 @@ result(int type =0, unsigned long value =0)
 }
 
 std::pair<int, unsigned long>
-get_ui(void)
+get_ui()
 {
 	int c;
 
@@ -288,7 +288,7 @@ set_number_tracks(int n)
 static char scroll_line[2000];
 
 char *
-new_scroll(void)
+new_scroll()
 {
 	scroll_line[0] = 0;
 	return scroll_line;

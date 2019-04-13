@@ -18,7 +18,7 @@
 #include <iostream>
 
 int 
-main(void)
+main()
 {
 	const auto pi = 4.0 * std::atan(1.0);
 	const auto amplitude = 512.0;

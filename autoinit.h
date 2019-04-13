@@ -39,14 +39,14 @@ End&& operator<<(End&& o, T t)
 
 /* at_end(cleanup): stack cleanup to be called at program's termination
  */
-extern void at_end(void (*cleanup)(void));
+extern void at_end(void (*cleanup)());
 
 /* INIT_ONCE: macro for autoinitialization of routines.
  * modules that need an init routine should static void INIT = init_routine,
  * and add INIT_ONCE; at EVERY possible first entry point for their routine.
  * (I mean every, don't try to second-guess me !)
  */
-#define INIT_ONCE	if (INIT){void (*func)(void) = INIT; INIT = nullptr; func();}
+#define INIT_ONCE	if (INIT){auto func = INIT; INIT = nullptr; func();}
 
 // a template class that calls a function (object) on start
 template<class T>

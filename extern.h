@@ -60,7 +60,7 @@ extern void dump_event();
 /* dump_delimiter(): add a delimiter to the current dump, to 
  * separate left channels from right channels, for instance
  */
-extern void dump_delimiter(void);
+extern void dump_delimiter();
 
 
 /*--------------------------- main.c -----------------------------*/
@@ -140,7 +140,7 @@ extern unsigned long open_audio(unsigned long f, int s);
  * returns the audio to the system control, doing necessary
  * cleanup
  */
-extern void close_audio(void);
+extern void close_audio();
 /* set_mix(percent): set mix channels level.
  * 0: spatial stereo. 100: mono.
  */
@@ -155,11 +155,11 @@ extern void output_samples(int32_t left, int32_t right, int n);
 /* flush_buffer(): call from time to time, because buffering
  * is done by the program to get better (?) performance.
  */
-extern void flush_buffer(void);
+extern void flush_buffer();
 
 /* discard_buffer(): try to get rid of the buffer contents
  */
-extern void discard_buffer(void);
+extern void discard_buffer();
 
 /* sync_audio(function, f2, parameter):
  * call function(parameter) when audio finally gets to the current point
@@ -171,7 +171,7 @@ extern void sync_audio(std::function<void()>, std::function<void()>);
 /* get_ui(): returns a user-interface action + optional parameter
  */
 
-extern std::pair<int, unsigned long> get_ui(void);
+extern std::pair<int, unsigned long> get_ui();
 const auto BASE_UI=10;
 const auto UI_NEXT_SONG=BASE_UI;	/* load next song */
 const auto UI_PREVIOUS_SONG=BASE_UI+1;	/* load previous song */
@@ -212,7 +212,7 @@ extern void status(const std::string&);
  * in which display.c will write what it needs.
  * It can return 0 if not applicable.
  */
-extern char *new_scroll(void);
+extern char *new_scroll();
 
 /* set_number_tracks(n) sets the number of tracks for new_scroll, in order
  * to allocate room accordingly

@@ -23,9 +23,9 @@
 #include "resample.h"
 #include "watched_var.h"
 
-static void init_audio(void);
+static void init_audio();
 
-static void (*INIT)(void) = init_audio;
+static auto INIT = init_audio;
 
 static bool opened = false;
 static unsigned long ask_freq, real_freq;
@@ -33,10 +33,10 @@ static int stereo;
 
 
 /* forward declaration */
-static void do_close_audio(void);
+static void do_close_audio();
 
 static void 
-init_audio(void)
+init_audio()
 {
 	at_end(do_close_audio);
 }
@@ -79,7 +79,7 @@ setup_audio(unsigned long f, int s)
 }
 
 static void 
-do_close_audio(void)
+do_close_audio()
 {
 	if (opened && pref::get(Pref::output))
 		close_audio();

@@ -20,7 +20,7 @@
 #include "autoinit.h"
 
 void 
-at_end(void (*cleanup)(void))
+at_end(void (*cleanup)())
 {
 	atexit(cleanup);
 }

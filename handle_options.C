@@ -28,7 +28,7 @@ inline int stricmp(const char *a, const char *b)
 	return strcasecmp(a, b);
 }
 
-extern void print_usage(void);
+extern void print_usage();
 
 unsigned long half_mask = 0;
 int ask_freq;		/* parameters for setup audio */
@@ -75,7 +75,7 @@ static option_set args = {
 
 /* initialize all options to default values */
 void 
-set_default_prefs(void)
+set_default_prefs()
 {
 	char *s;
 

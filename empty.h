@@ -18,4 +18,6 @@
 /* empty = empty_sample():
  * return a suitable empty sample
  */
-extern struct sample_info *empty_sample(void);
+struct sample_info;
+
+extern sample_info *empty_sample();
