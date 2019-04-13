@@ -26,4 +26,6 @@ extern bool loop;
 extern void handle_options(int argc, char *argv[], 
     std::function<void(const char*)> f);
 
+extern void set_default_prefs();
+
 #endif

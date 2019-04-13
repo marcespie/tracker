@@ -34,8 +34,6 @@
 #include "ui.h"
 #include "handle_options.h"
      
-extern void set_default_prefs();
-
 /* global variable to catch various types of errors and achieve the 
  * desired flow of control
  */
