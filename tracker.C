@@ -130,7 +130,8 @@ main(int argc, char *argv[])
 				song.dump(); 
 			if (half_mask)
 				song.adjust_volume(half_mask);
-			device.open();
+			if (pref::get(Pref::output))
+				device.open();
 			auto result = song.play(start, r);
 			status("");
 			switch(result) {
