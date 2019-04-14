@@ -29,14 +29,6 @@
 // fine-tune to get the scrolling display in sync with the music
 const auto ADVANCE_TAGS=20000;
 
-/* this macro works with unsigned values !!! */
-template<typename S, typename T>
-inline auto
-absdiff(S x, T y)
-{
-	return x<y ?  y-x : x-y;
-}
-
 static bool stereo;
 static int32_t pps[32], pms[32];
 static int dsp_samplesize = 0;
