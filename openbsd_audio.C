@@ -186,7 +186,6 @@ open_audio(unsigned long f, int)
 
 	idx = 0;
 	samples_max = buf_max / dsize / par.pchan;
-	set_watched(watched::frequency, current_freq);
 	total = 0;
 	return current_freq;
 }
