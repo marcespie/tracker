@@ -30,7 +30,7 @@
 #include "timing.h"
 #include "ui.h"
 #include "color.h"
-#include "openbsd_audio.h"
+#include "audio.h"
 
 extern char *VERSION;
 
@@ -187,6 +187,16 @@ may_getchar()
 	return EOF;
 }
 
+static int ntracks;
+audio* audio_p;
+
+void 
+set_number_tracks(int n, audio& a)
+{
+	audio_p = &a;
+	ntracks = n;
+}
+
 inline auto 
 result(int type =0, unsigned long value =0)
 {
@@ -223,10 +233,10 @@ get_ui()
 		break;
 
 	case 'm':
-		set_mix(100);
+		audio_p->set_mix(100);
 		break;
 	case 'M':
-		set_mix(30);
+		audio_p->set_mix(30);
 		break;
 	case 's':
 		return result(UI_SET_BPM, 50);
@@ -280,14 +290,6 @@ Info::Info(const char*): fg{run_in_fg()}, out{std::cout}
 }
 
 
-static int ntracks;
-
-void 
-set_number_tracks(int n)
-{
-	ntracks = n;
-}
-
 static char scroll_line[2000];
 
 char *
@@ -319,7 +321,7 @@ scroll(char *end)
 			p = new char[t+1];
 			strncpy(p, scroll_line, t);
 			p[t] = 0;
-			sync_audio(
+			audio_p->sync(
 			    [p](){do_scroll(p);},
 			    [p](){delete[] p;}
 			);
@@ -366,7 +368,7 @@ void
 display_pattern(unsigned int current, unsigned int total, 
     unsigned int real, unsigned long uptilnow, unsigned long totaltime)
 {
-	sync_audio(
+	audio_p->sync(
 	    [=]() 
 	    {
 		do_display_pattern(current, total, real, 
@@ -386,15 +388,15 @@ void
 display_time(unsigned long time, unsigned long check)
 {
 	if (time/1000 != check/1000) {
-		sync_audio(
+		audio_p->sync(
 		   [check]() {do_display_time(check); },
 		   []() {});
 		if (time > check)
-			sync_audio(
+			audio_p->sync(
 			    [time,check]() {do_display_time(time-check);},
 			    []() {});
 		else
-			sync_audio(
+			audio_p->sync(
 			    [time,check]() {do_display_time(check-time);},
 			    []() {});
 	}

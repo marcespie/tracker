@@ -18,7 +18,6 @@
 #include <memory>
 #include "song.h"
 #include "protracker.h"
-#include "pro_play.h"
 #include "pro_read.h"
 
 Song::Song(exfile& file, int hint):
@@ -45,9 +44,9 @@ bool Song::load(exfile& file, int hint)
 }
 
 int
-Song::play(unsigned int start, resampler& r)
+Song::play(unsigned int start, resampler& r, audio& d)
 {
-	return mod->play(start, r);
+	return mod->play(start, r, d);
 }
 
 void

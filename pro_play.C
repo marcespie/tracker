@@ -29,12 +29,11 @@
 #include "autoinit.h"
 #include "audio_channel.h"
 #include "resampler.h"
-#include "pro_play.h"
 #include "empty.h"
 #include "display.h"
-#include "openbsd_audio.h"
 #include "ui.h"
 #include "errortype.h"
+#include "audio.h"
      
 
 extern short vibrato_table[3][64];
@@ -263,13 +262,13 @@ automaton::play_one_tick()
 }
 
 int
-song::play(unsigned int start, resampler& r)
+song::play(unsigned int start, resampler& r, audio& d)
 {
 	INIT_ONCE;
 
 	song_title(title);
 
-	set_number_tracks(ntracks);
+	set_number_tracks(ntracks, d);
 	init_channels(ntracks, r);
 
 	auto countup = 0; 	/* keep playing the tune or not */
@@ -288,26 +287,26 @@ song::play(unsigned int start, resampler& r)
 		auto [type, val] = get_ui();
 		switch(type) {  
 		case UI_NEXT_SONG:
-			discard_buffer();
+			d.discard();
 			return PLAY_NEXT_SONG;
 		case UI_PREVIOUS_SONG:
-			discard_buffer();
+			d.discard();
 			return PLAY_PREVIOUS_SONG;
 		case UI_QUIT:
-			discard_buffer();
+			d.discard();
 			End();
 			/* NOTREACHED */
 		case UI_SET_BPM:
 			a.set_bpm(val);
 			break;
 		case UI_RESTART:
-			discard_buffer();
+			d.discard();
 			a.reset_to_pattern(start);
 			reset_channels();
 			break;
 		case UI_JUMP_TO_PATTERN:
 			if (val >= 0 && val < a.info->length) {
-				discard_buffer();
+				d.discard();
 				a.reset_to_pattern(val);
 				reset_channels();
 			}

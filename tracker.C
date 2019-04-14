@@ -26,7 +26,6 @@
 #include "prefs.h"
 #include "play_list.h"
 #include "open.h"
-#include "pro_play.h"
 #include "resampler.h"
 #include "usage.h"
 #include "ui.h"
@@ -120,7 +119,7 @@ main(int argc, char *argv[])
 	if (trandom)
 		randomize(list);
 
-	resampler r;
+	resampler r(device);
 
 	for (auto it = begin(list); it != end(list);) {
 		auto song = load_song(it);
@@ -132,7 +131,7 @@ main(int argc, char *argv[])
 				song.adjust_volume(half_mask);
 			if (pref::get(Pref::output))
 				device.open();
-			auto result = song.play(start, r);
+			auto result = song.play(start, r, device);
 			status("");
 			switch(result) {
 			case PLAY_PREVIOUS_SONG:

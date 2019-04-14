@@ -20,6 +20,7 @@
 
 enum class watched;
 class audio_channel;
+class audio;
 
 class resampler {
 	/* Have to get some leeway for vibrato (since we don't bound pitch with
@@ -50,10 +51,11 @@ class resampler {
 	unsigned int number_samples;
 	int max_side;	/* number of bits on one side */
 	int max_sample;	/* number of bits for one sample */
+	audio& device;
 
 
 public:
-	resampler();
+	resampler(audio&);
 	~resampler();
 	void set_data_width(int side, int sample);
 	void resample() const;

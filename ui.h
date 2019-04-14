@@ -79,10 +79,11 @@ extern void status(const std::string&);
  */
 extern char *new_scroll();
 
+class audio;
 /* set_number_tracks(n) sets the number of tracks for new_scroll, in order
  * to allocate room accordingly
  */
-extern void set_number_tracks(int n);
+extern void set_number_tracks(int n, audio& a);
 
 /* scroll: returns this scrolling line to the program. Note that
  * scroll implies calls to new_scroll/scroll

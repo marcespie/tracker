@@ -30,7 +30,7 @@
 #include "autoinit.h"
 #include "empty.h"
 #include "watched_var.h"
-#include "openbsd_audio.h"
+#include "audio.h"
      
 /* macros for fixed point arithmetic */
 /* NOTE these should be used ONLY with unsigned values !!!! */
@@ -176,7 +176,7 @@ resampler::notify_oversample(long n)
 	}
 }
 
-resampler::resampler()
+resampler::resampler(audio& a): device{a}
 {
 	frequency_f = [this](watched, long n)
 	    {
@@ -263,7 +263,7 @@ resampler::linear_resample() const
 		for (auto ch: allocated)
 			ch->linear_value(value);
 		/* some assembly required... */
-		output_samples(value[LEFT_SIDE], value[RIGHT_SIDE], 
+		device.output(value[LEFT_SIDE], value[RIGHT_SIDE], 
 		    ACCURACY+max_side);
 	}
 }
@@ -321,19 +321,19 @@ resampler::over_resample() const
 			sampling = 0;
 			switch(oversample) {
 			case 1:
-				output_samples(value[LEFT_SIDE],
+				device.output(value[LEFT_SIDE],
 				    value[RIGHT_SIDE], max_side);
 				break;
 			case 2:
-				output_samples(value[LEFT_SIDE], 
+				device.output(value[LEFT_SIDE], 
 				    value[RIGHT_SIDE], max_side+1);
 				break;
 			case 4:
-				output_samples(value[LEFT_SIDE],
+				device.output(value[LEFT_SIDE],
 				    value[RIGHT_SIDE], max_side+2);
 				break;
 			default:
-				output_samples(value[LEFT_SIDE]/oversample,
+				device.output(value[LEFT_SIDE]/oversample,
 				    value[RIGHT_SIDE]/oversample, max_side);
 			}
 
@@ -360,9 +360,8 @@ resampler::resample() const
 	default:
 		over_resample();
 	}
-	flush_buffer();
+	device.flush();
 }
-
 
 /*--------------------- Low level note player -------------------*/
 
