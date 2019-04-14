@@ -23,7 +23,9 @@ extern int stereo;
 extern unsigned int start;
 extern int trandom;
 extern bool loop;
-extern void handle_options(int argc, char *argv[], 
+class audio;
+
+extern void handle_options(audio& a, int argc, char *argv[], 
     std::function<void(const char*)> f);
 
 extern void set_default_prefs();

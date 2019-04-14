@@ -14,10 +14,12 @@ audio::set_mix(int mix)
 void
 audio::open()
 {
-	real_freq = open_audio(ask_freq, want_stereo);
-	::set_mix(mix_percent);
-	set_watched(watched::frequency, real_freq);
-	opened = true;
+	if (!opened) {
+		real_freq = open_audio(ask_freq, want_stereo);
+		::set_mix(mix_percent);
+		set_watched(watched::frequency, real_freq);
+		opened = true;
+	}
 }
 
 audio::~audio()

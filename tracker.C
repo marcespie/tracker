@@ -29,10 +29,10 @@
 #include "pro_play.h"
 #include "resampler.h"
 #include "usage.h"
-#include "setup_audio.h"
 #include "ui.h"
 #include "handle_options.h"
 #include "errortype.h"
+#include "audio.h"
      
 /* global variable to catch various types of errors and achieve the 
  * desired flow of control
@@ -101,6 +101,7 @@ load_song(ENTRY e)
 int 
 main(int argc, char *argv[])
 {
+	audio device;
 	set_default_prefs();
 	if (argc == 1) {
 		print_usage();
@@ -111,7 +112,7 @@ main(int argc, char *argv[])
 
 
 	// remove the program name from the options to parse !!!
-	handle_options(argc-1, argv+1, 
+	handle_options(device, argc-1, argv+1, 
 	    [&list](const char *a)
 	    {
 	    		add_entry(list, a);
@@ -129,7 +130,7 @@ main(int argc, char *argv[])
 				song.dump(); 
 			if (half_mask)
 				song.adjust_volume(half_mask);
-			setup_audio(ask_freq, stereo);
+			device.open();
 			auto result = song.play(start, r);
 			status("");
 			switch(result) {

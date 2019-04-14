@@ -21,7 +21,7 @@
 #include "autoinit.h"
 #include "open.h"
 #include "song.h"
-#include "openbsd_audio.h"
+#include "audio.h"
 #include "usage.h"
 #include "handle_options.h"
 
@@ -162,7 +162,8 @@ set_speed_mode(const char *p)
 }
 
 void 
-handle_options(int argc, char *argv[], std::function<void(const char*)> f)
+handle_options(audio& a, int argc, char *argv[], 
+    std::function<void(const char*)> f)
 {
 	if (auto s = getenv("TRACKER_DEFAULTS"); s != nullptr) {
 
@@ -187,7 +188,7 @@ handle_options(int argc, char *argv[], std::function<void(const char*)> f)
 	pref::set(Pref::type, args.get_long("both"));
 	pref::set(Pref::repeats, args.get_long("repeats"));
 	pref::set(Pref::speed, args.get_long("speed"));
-	set_mix(args.get_long("mix"));
+	a.set_mix(args.get_long("mix"));
 	pref::set(Pref::color, args.get_long("color"));
 	pref::set(Pref::xterm, args.get_long("xterm"));
 
