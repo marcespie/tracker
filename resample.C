@@ -26,6 +26,7 @@
 #include "channel.h"
 #include "prefs.h"
 #include "audio_channel.h"
+#include "fraction.h"
 #include "resampler.h"
 #include "autoinit.h"
 #include "empty.h"
@@ -154,7 +155,7 @@ resampler::readjust_current_steps()
 void 
 resampler::readjust_beat()
 {
-	number_samples = resampling_frequency * num / tempo / den;
+	number_samples = resampling_frequency * f.num / tempo / f.den;
 }
 
 void 
@@ -197,14 +198,12 @@ resampler::~resampler()
 }
 
 void 
-resampler::set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b)
+resampler::set_resampling_beat(unsigned int bpm, const fraction& f_)
 {
 	tempo = bpm;
-	num = a; 
-	den = b;
+	f = f_;
 	readjust_beat();
 }
-
 void 
 resampler::set_data_width(int side, int sample)
 {

@@ -21,6 +21,7 @@
 class song;
 class event;
 class channel;
+class fraction;
 
 
 const auto DO_SET_NOTHING=0;
@@ -55,7 +56,7 @@ class automaton {
 	unsigned int speed;		// speed number of effect repeats
 	unsigned int finespeed;		// finespeed, base is 100
 	resampler* const r;		// only on ctor
-	inline void set_beat(unsigned int, unsigned int, unsigned int);
+	inline void set_beat(unsigned int, const fraction&);
 
 	unsigned long time_spent;
 	automaton(const song* song, resampler* r);

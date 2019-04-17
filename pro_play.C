@@ -28,6 +28,7 @@
 #include "automaton.h"
 #include "autoinit.h"
 #include "audio_channel.h"
+#include "fraction.h"
 #include "resampler.h"
 #include "empty.h"
 #include "display.h"

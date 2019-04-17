@@ -47,7 +47,7 @@ class resampler {
 	unsigned int oversample;
 	unsigned long resampling_frequency;
 	unsigned int tempo = 50;
-	unsigned int num, den = 1;
+	fraction f;
 	unsigned int number_samples;
 	int max_side;	/* number of bits on one side */
 	int max_sample;	/* number of bits for one sample */
@@ -59,7 +59,7 @@ public:
 	~resampler();
 	void set_data_width(int side, int sample);
 	void resample() const;
-	void set_resampling_beat(unsigned int bpm, unsigned int a, unsigned int b);
+	void set_resampling_beat(unsigned int bpm, const fraction& b);
 	inline void add(audio_channel *ch);
 	inline void remove(audio_channel *ch);
 	inline auto step(unsigned short p) const

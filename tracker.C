@@ -26,6 +26,7 @@
 #include "prefs.h"
 #include "play_list.h"
 #include "open.h"
+#include "fraction.h"
 #include "resampler.h"
 #include "usage.h"
 #include "ui.h"
