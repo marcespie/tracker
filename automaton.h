@@ -58,8 +58,8 @@ class automaton {
 	inline void set_beat(unsigned int, unsigned int, unsigned int);
 
 	unsigned long time_spent;
-public:
 	automaton(const song* song, resampler* r);
+public:
 	automaton(const song* song, resampler& r):
 	    automaton(song, &r)
 	{}
