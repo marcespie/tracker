@@ -30,8 +30,6 @@
 #include "errortype.h"
 #include "fraction.h"
      
-const auto BASE_FINESPEED = fraction{NORMAL_FINESPEED};
-
 /* set up the automaton so that I haven't got through patterns 
  * #from to #to
  */
@@ -127,7 +125,7 @@ void
 automaton::set_bpm(unsigned int bpm_)
 {
 	bpm = bpm_;
-	set_beat(bpm, BASE_FINESPEED/finespeed);
+	set_beat(bpm, fraction{NORMAL_FINESPEED, finespeed});
 }
 
 void 
@@ -150,7 +148,7 @@ automaton::update_tempo()
 	case SET_SPEED | SET_FINESPEED:
 		if (pref::get(Pref::speedmode) != FINESPEED_ONLY) {
 			finespeed = new_finespeed;
-			set_beat(bpm, BASE_FINESPEED/finespeed);
+			set_beat(bpm, fraction{NORMAL_FINESPEED, finespeed});
 		}
 		if (pref::get(Pref::speedmode) != SPEED_ONLY)
 			speed = new_speed;
@@ -164,7 +162,7 @@ automaton::update_tempo()
 		break;
 	case SET_FINESPEED:
 		finespeed = new_finespeed;
-		set_beat(bpm, BASE_FINESPEED/finespeed);
+		set_beat(bpm, fraction{NORMAL_FINESPEED, finespeed});
 		break;
 	default:
 		break;
@@ -173,7 +171,7 @@ automaton::update_tempo()
 	if (finespeed == 0) {
 		status("Finespeed of 0");
 		finespeed = NORMAL_FINESPEED;
-		set_beat(bpm, BASE_FINESPEED/finespeed);
+		set_beat(bpm, fraction{NORMAL_FINESPEED, finespeed});
 		error = error_type::FAULT;
 	}
 }
