@@ -177,7 +177,7 @@ option_set::do1(const char *text, const char *arg)
 			}
 		}
 	}
-	fprintf(stderr, "Unknown option: %s\n", text);
+	std::cerr << "Unknown option: " << text << "\n";
 	return 0;
 }
 					
